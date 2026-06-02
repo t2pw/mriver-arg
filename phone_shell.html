@@ -379,6 +379,34 @@ html,body{
 #splash .sd{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 1.5s ease infinite;}
 #splash .st{font-family:var(--serif);font-size:17px;color:var(--t1);letter-spacing:.15em;opacity:0;animation:fadeUp 1s ease .4s forwards;}
 #splash .ss{font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.2em;opacity:0;animation:fadeUp .8s ease 1.1s forwards;}
+
+/* ══ スマートフォン実機対応 ══════════════
+   画面幅が電話フレームより小さい場合（実機）、
+   フレームを画面いっぱいに拡張し、
+   ブラウザUIとセーフエリアを回避する
+══════════════════════════════════════ */
+@media (max-width: 430px) {
+  html, body {
+    align-items: flex-start;
+    justify-content: flex-start;
+    background: var(--bg);
+  }
+  #phone {
+    width: 100vw;
+    height: 100dvh;   /* ブラウザUIを除いた実表示領域 */
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+  /* フッターをセーフエリア（ホームバー等）の上に押し上げ */
+  #afooter {
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  /* ホームインジケーター（下スワイプ領域）も同様 */
+  #hind {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
 </style>
 </head>
 <body>
@@ -469,7 +497,7 @@ html,body{
       <!-- ブラウザ固有バー（動的挿入） -->
       <div id="acontent"></div>
       <!-- 履歴・デバッグ用 固定フッター（動的表示） -->
-      <div id="afooter" style="display:none;flex-shrink:0;border-top:1px solid var(--bd);background:var(--s1);padding:8px 12px;gap:8px;"></div>
+      <div id="afooter" style="display:none;flex-shrink:0;border-top:1px solid var(--bd);background:var(--s1);padding:8px 12px calc(8px + env(safe-area-inset-bottom, 0px));gap:8px;"></div>
     </div>
 
     <!-- ═══ メッセージ本文ビュー ═══ -->
