@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>声は壁を透して</title>
+<script src="os.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@300;400&family=IBM+Plex+Mono:wght@300;400&display=swap');
+
+:root {
+  --bg:        #0c0c0f;
+  --surface:   #13131a;
+  --surface2:  #1c1c26;
+  --surface3:  #242430;
+  --border:    rgba(255,255,255,0.08);
+  --border2:   rgba(255,255,255,0.14);
+  --text:      #e4e2dc;
+  --text2:     #8a889a;
+  --text3:     #4a4860;
+  --gold:      #c8a96e;
+  --gold-dim:  rgba(200,169,110,0.15);
+  --red:       #c85858;
+  --red-dim:   rgba(200,88,88,0.12);
+  --blue:      #5a8fd4;
+  --blue-dim:  rgba(90,143,212,0.15);
+  --green:     #5aad7a;
+  --mono:      'IBM Plex Mono', monospace;
+  --sans:      'Noto Sans JP', sans-serif;
+  --serif:     'Noto Serif JP', serif;
+  --phone-w:   390px;
+  --phone-h:   844px;
+  --r:         48px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: #050508;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--sans);
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════
+   電話本体フレーム
+══════════════════════════════════════ */
+#phone {
+  width: var(--phone-w);
+  height: var(--phone-h);
+  background: var(--bg);
+  border-radius: var(--r);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.8),
+    0 40px 80px rgba(0,0,0,0.7),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ダイナミックアイランド */
+#island {
+  position: absolute;
+  top: 13px; left: 50%;
+  transform: translateX(-50%);
+  width: 120px; height: 34px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 200;
+  transition: width 0.4s cubic-bezier(0.16,1,0.3,1), height 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+#island.expanded {
+  width: 260px; height: 60px;
+}
+#island-content {
+  display: none;
+  padding: 8px 14px;
+  font-size: 11px;
+  color: var(--text);
+  font-family: var(--mono);
+  letter-spacing: 0.05em;
+  line-height: 1.5;
+}
+#island.expanded #island-content { display: block; }
+
+/* ステータスバー */
+#statusbar {
+  height: 56px;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  padding: 0 28px 10px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 100;
+}
+#statusbar .time {
+  font-family: var(--mono);
+  font-size: 15px; font-weight: 400;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+#statusbar .icons {
+  display: flex; gap: 6px; align-items: center;
+}
+#statusbar .icons svg { fill: var(--text); }
+
+/* ホームインジケーター */
+#home-indicator {
+  height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+#home-indicator div {
+  width: 130px; height: 5px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#home-indicator div:hover { background: rgba(255,255,255,0.4); }
+
+/* スクリーン（ステータスバーとホームバーの間） */
+#screen {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════
+   ホーム画面
+══════════════════════════════════════ */
+#home {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease;
+}
+#home.hidden { transform: scale(0.92); opacity: 0; pointer-events: none; }
+
+/* 壁紙ぼかし層（グレインテクスチャ） */
+#wallpaper {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 30% 20%, rgba(40,30,80,0.6) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 70%, rgba(20,40,60,0.5) 0%, transparent 60%),
+    var(--bg);
+  z-index: 0;
+}
+#wallpaper::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  opacity: 0.8;
+}
+
+/* 時刻ウィジェット */
+#clock-widget {
+  position: relative; z-index: 1;
+  text-align: center;
+  padding: 32px 0 20px;
+}
+#clock-widget .clock-time {
+  font-family: var(--mono);
+  font-size: 64px; font-weight: 300;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+#clock-widget .clock-date {
+  font-size: 13px; color: var(--text2);
+  margin-top: 6px;
+  letter-spacing: 0.06em;
+  font-family: var(--mono);
+}
+#clock-widget .clock-anomaly {
+  font-size: 10px; color: var(--red);
+  margin-top: 4px;
+  font-family: var(--mono);
+  letter-spacing: 0.1em;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+#clock-widget .clock-anomaly.visible { opacity: 1; }
+
+/* アプリグリッド */
+#app-grid {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px 12px;
+  padding: 12px 24px;
+  flex: 1;
+  align-content: start;
+}
+
+.app-icon {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 5px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.app-icon:active .app-icon-box { transform: scale(0.9); }
+
+.app-icon-box {
+  width: 60px; height: 60px;
+  border-radius: 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: visible;
+}
+.app-icon-box:hover { transform: scale(1.05); }
+
+.app-icon-label {
+  font-size: 10px; color: var(--text);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+
+/* 通知バッジ */
+.notif-badge {
+  position: absolute;
+  top: -5px; right: -5px;
+  background: var(--red);
+  color: #fff;
+  font-size: 9px; font-weight: 400;
+  font-family: var(--mono);
+  min-width: 16px; height: 16px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 3px;
+  border: 1.5px solid var(--bg);
+  display: none;
+}
+.notif-badge.visible { display: flex; }
+
+/* ドック */
+#dock {
+  position: relative; z-index: 1;
+  margin: 8px 16px 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 12px 24px;
+  display: flex; justify-content: space-around;
+  backdrop-filter: blur(20px);
+}
+
+/* ══════════════════════════════════════
+   アプリ画面（共通枠）
+══════════════════════════════════════ */
+#app-screen {
+  position: absolute; inset: 0;
+  background: var(--surface);
+  transform: translateY(100%);
+  transition: transform 0.45s cubic-bezier(0.16,1,0.3,1);
+  display: flex; flex-direction: column;
+  z-index: 50;
+}
+#app-screen.open { transform: translateY(0); }
+
+/* アプリナビゲーションバー */
+#app-nav {
+  height: 52px;
+  display: flex; align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  gap: 10px;
+  background: var(--surface);
+}
+#app-nav-back {
+  color: var(--blue);
+  font-size: 15px;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: -8px;
+  user-select: none;
+}
+#app-nav-back:hover { opacity: 0.7; }
+#app-nav-title {
+  flex: 1;
+  font-size: 16px; font-weight: 500;
+  color: var(--text);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+#app-nav-action {
+  width: 32px; /* 右側スペース */
+}
+
+/* アプリコンテンツ領域 */
+#app-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+#app-content::-webkit-scrollbar { display: none; }
+
+/* ══════════════════════════════════════
+   ブラウザアプリ
+══════════════════════════════════════ */
+#browser-bar {
+  display: flex; align-items: center;
+  padding: 10px 14px;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--surface);
+}
+#browser-input {
+  flex: 1;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 7px 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  outline: none;
+  letter-spacing: 0.03em;
+  transition: border-color 0.2s;
+}
+#browser-input:focus { border-color: var(--border2); }
+#browser-input::placeholder { color: var(--text3); }
+#browser-go {
+  background: var(--gold-dim);
+  border: 1px solid rgba(200,169,110,0.3);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--gold);
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+#browser-go:hover { background: rgba(200,169,110,0.25); }
+
+/* ══════════════════════════════════════
+   メッセージアプリ
+══════════════════════════════════════ */
+.msg-thread-list { padding: 0; }
+
+.msg-thread-item {
+  display: flex; align-items: center;
+  padding: 13px 18px;
+  gap: 13px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.msg-thread-item:hover { background: var(--surface2); }
+.msg-thread-item:active { background: var(--surface3); }
+
+.msg-thread-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.msg-thread-avatar.locked { filter: grayscale(1); opacity: 0.5; }
+
+.msg-thread-body { flex: 1; min-width: 0; }
+.msg-thread-name {
+  font-size: 14px; font-weight: 500;
+  color: var(--text);
+  letter-spacing: 0.02em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.msg-thread-preview {
+  font-size: 12px; color: var(--text2);
+  margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  letter-spacing: 0.02em;
+}
+.msg-thread-meta {
+  font-family: var(--mono);
+  font-size: 10px; color: var(--text3);
+  text-align: right; flex-shrink: 0;
+}
+.msg-thread-meta .unread {
+  width: 8px; height: 8px;
+  background: var(--blue);
+  border-radius: 50%;
+  margin: 4px auto 0;
+}
+
+/* ══════════════════════════════════════
+   ファイルアプリ
+══════════════════════════════════════ */
+.file-section-header {
+  padding: 14px 18px 6px;
+  font-family: var(--mono);
+  font-size: 10px; color: var(--text3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.file-item {
+  display: flex; align-items: center;
+  padding: 11px 18px;
+  gap: 13px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.file-item:hover { background: var(--surface2); }
+.file-item.locked { opacity: 0.4; pointer-events: none; }
+
+.file-item-icon {
+  font-size: 22px; flex-shrink: 0;
+}
+.file-item-body { flex: 1; min-width: 0; }
+.file-item-name {
+  font-size: 13px; font-weight: 500;
+  color: var(--text); letter-spacing: 0.02em;
+}
+.file-item-meta {
+  font-family: var(--mono);
+  font-size: 10px; color: var(--text2);
+  margin-top: 2px;
+}
+.file-item-chevron {
+  font-size: 11px; color: var(--text3);
+}
+.file-item.locked .file-item-icon::after {
+  content: ' 🔒'; font-size: 12px;
+}
+
+/* ══════════════════════════════════════
+   マップアプリ（静的ビジュアル）
+══════════════════════════════════════ */
+#map-view {
+  background: #0a1020;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+.map-placeholder {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px;
+}
+.map-placeholder .map-emoji { font-size: 48px; opacity: 0.3; }
+.map-placeholder p { font-family: var(--mono); font-size: 11px; color: var(--text3); letter-spacing: 0.1em; }
+
+/* ══════════════════════════════════════
+   掲示板（board）
+══════════════════════════════════════ */
+.board-post {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.board-post:hover { background: var(--surface2); }
+.board-post.locked { opacity: 0.4; pointer-events: none; }
+
+.board-post-header {
+  display: flex; justify-content: space-between;
+  margin-bottom: 6px;
+}
+.board-post-author {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--text3); letter-spacing: 0.06em;
+}
+.board-post-date {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--text3);
+}
+.board-post-title {
+  font-size: 13px; font-weight: 500;
+  color: var(--text); letter-spacing: 0.02em;
+  margin-bottom: 4px;
+}
+.board-post-preview {
+  font-size: 11px; color: var(--text2);
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════
+   検索バー（ブラウザ内）
+══════════════════════════════════════ */
+#search-result {
+  padding: 14px 18px;
+  display: none;
+}
+#search-result.visible { display: block; }
+.search-result-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+}
+.search-result-box.success { border-color: rgba(90,173,122,0.4); }
+.search-result-box.fail    { border-color: rgba(200,88,88,0.3); }
+.search-result-label {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.1em; margin-bottom: 8px;
+}
+.search-result-box.success .search-result-label { color: var(--green); }
+.search-result-box.fail    .search-result-label { color: var(--red); }
+.search-result-title {
+  font-size: 14px; font-weight: 500; color: var(--text);
+  margin-bottom: 4px;
+}
+.search-result-desc {
+  font-size: 12px; color: var(--text2); line-height: 1.6;
+  letter-spacing: 0.02em;
+}
+.search-result-link {
+  display: inline-block;
+  margin-top: 10px;
+  font-family: var(--mono); font-size: 11px;
+  color: var(--gold);
+  cursor: pointer;
+  letter-spacing: 0.06em;
+}
+.search-result-link:hover { opacity: 0.7; }
+
+/* ══════════════════════════════════════
+   設定アプリ
+══════════════════════════════════════ */
+.settings-section {
+  padding: 14px 18px 4px;
+  font-family: var(--mono); font-size: 10px;
+  color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase;
+}
+.settings-row {
+  display: flex; align-items: center;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.settings-row-icon { font-size: 18px; flex-shrink: 0; }
+.settings-row-body { flex: 1; }
+.settings-row-title {
+  font-size: 14px; color: var(--text); letter-spacing: 0.02em;
+}
+.settings-row-sub {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--text2); margin-top: 2px;
+}
+.settings-row-value {
+  font-family: var(--mono); font-size: 12px; color: var(--text2);
+}
+.settings-btn {
+  width: calc(100% - 36px);
+  margin: 12px 18px 4px;
+  background: var(--red-dim);
+  border: 1px solid rgba(200,88,88,0.25);
+  border-radius: 10px;
+  padding: 12px;
+  font-family: var(--mono); font-size: 12px;
+  color: var(--red); letter-spacing: 0.06em;
+  cursor: pointer; text-align: center;
+  transition: background 0.2s;
+}
+.settings-btn:hover { background: rgba(200,88,88,0.2); }
+
+/* ══════════════════════════════════════
+   コンテンツ表示（ページビュー）
+══════════════════════════════════════ */
+#page-view {
+  position: absolute; inset: 0;
+  background: var(--surface);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  display: flex; flex-direction: column;
+  z-index: 60;
+}
+#page-view.open { transform: translateX(0); }
+
+#page-nav {
+  height: 48px;
+  display: flex; align-items: center;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--border);
+  gap: 10px; flex-shrink: 0;
+  background: var(--surface);
+}
+#page-nav-back {
+  color: var(--blue); font-size: 15px;
+  cursor: pointer; padding: 8px; margin-left: -8px;
+}
+#page-nav-back:hover { opacity: 0.7; }
+#page-nav-title {
+  flex: 1; font-size: 14px; font-weight: 500;
+  color: var(--text); letter-spacing: 0.02em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+#page-content {
+  flex: 1; overflow-y: auto;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  padding: 24px 20px 40px;
+}
+#page-content::-webkit-scrollbar { display: none; }
+
+/* ページ内コンテンツのスタイル */
+#page-content .page-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+#page-content .page-num {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--text3); letter-spacing: 0.12em;
+  margin-bottom: 8px;
+}
+#page-content .page-title {
+  font-family: var(--serif); font-size: 20px;
+  color: var(--text); line-height: 1.4;
+  letter-spacing: 0.04em;
+}
+#page-content .page-meta {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--text3); margin-top: 6px; letter-spacing: 0.08em;
+}
+#page-content .page-body {
+  font-family: var(--serif); font-size: 14px;
+  color: var(--text); line-height: 2.0;
+  letter-spacing: 0.06em;
+}
+#page-content .page-body p { margin-bottom: 1.4em; }
+#page-content .page-body .redacted {
+  background: var(--text); color: var(--text);
+  border-radius: 2px; padding: 0 2px;
+  user-select: none;
+}
+
+/* 未実装ページのプレースホルダー */
+.page-placeholder {
+  text-align: center; padding: 60px 20px;
+}
+.page-placeholder .ph-icon { font-size: 40px; opacity: 0.3; margin-bottom: 16px; }
+.page-placeholder .ph-title {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--text3); letter-spacing: 0.12em; margin-bottom: 8px;
+}
+.page-placeholder .ph-text {
+  font-size: 12px; color: var(--text2); line-height: 1.7;
+}
+
+/* ══════════════════════════════════════
+   アニメーション・トランジション
+══════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+.fade-up { animation: fadeUp 0.5s ease forwards; }
+
+/* ══════════════════════════════════════
+   スプラッシュ
+══════════════════════════════════════ */
+#splash {
+  position: absolute; inset: 0;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 999;
+  gap: 16px;
+}
+#splash .splash-title {
+  font-family: var(--serif); font-size: 18px;
+  color: var(--text); letter-spacing: 0.15em;
+  opacity: 0; animation: fadeUp 1s ease 0.5s forwards;
+}
+#splash .splash-sub {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--text3); letter-spacing: 0.2em;
+  opacity: 0; animation: fadeUp 0.8s ease 1.2s forwards;
+}
+#splash .splash-dot {
+  width: 6px; height: 6px;
+  background: var(--gold); border-radius: 50%;
+  animation: pulse 1.5s ease infinite;
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     電話本体
+══════════════════════════════════════ -->
+<div id="phone">
+
+  <!-- スプラッシュ -->
+  <div id="splash">
+    <div class="splash-dot"></div>
+    <div class="splash-title">声は壁を透して</div>
+    <div class="splash-sub">M川事件アーカイブ</div>
+  </div>
+
+  <!-- ダイナミックアイランド -->
+  <div id="island">
+    <div id="island-content"></div>
+  </div>
+
+  <!-- ステータスバー -->
+  <div id="statusbar">
+    <span class="time" id="status-time">--:--</span>
+    <div class="icons">
+      <svg width="16" height="12" viewBox="0 0 16 12">
+        <rect x="0" y="8" width="3" height="4" rx="0.5" opacity="0.4"/>
+        <rect x="4" y="5" width="3" height="7" rx="0.5" opacity="0.7"/>
+        <rect x="8" y="2" width="3" height="10" rx="0.5"/>
+        <rect x="12" y="0" width="3" height="12" rx="0.5"/>
+      </svg>
+      <svg width="22" height="11" viewBox="0 0 22 11">
+        <rect x="0.5" y="0.5" width="18" height="10" rx="2" stroke="white" stroke-width="1" fill="none" opacity="0.6"/>
+        <rect x="2" y="2" width="11" height="7" rx="1" fill="white"/>
+        <path d="M19.5 3.5 L19.5 7.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- スクリーン -->
+  <div id="screen">
+
+    <!-- ホーム画面 -->
+    <div id="home">
+      <div id="wallpaper"></div>
+
+      <!-- 時刻ウィジェット -->
+      <div id="clock-widget">
+        <div class="clock-time" id="clock-time">--:--</div>
+        <div class="clock-date" id="clock-date">----年--月--日</div>
+        <div class="clock-anomaly" id="clock-anomaly">▸ 異常なタイムスタンプを検出</div>
+      </div>
+
+      <!-- アプリグリッド -->
+      <div id="app-grid">
+        <div class="app-icon" onclick="OS.openApp('messages')">
+          <div class="app-icon-box" style="background: linear-gradient(135deg, #1a3a6b 0%, #0d1f3c 100%);">
+            💬
+            <div class="notif-badge" id="badge-messages"></div>
+          </div>
+          <span class="app-icon-label">電文</span>
+        </div>
+
+        <div class="app-icon" onclick="OS.openApp('browser')">
+          <div class="app-icon-box" style="background: linear-gradient(135deg, #1a3050 0%, #0a1828 100%);">
+            🔍
+            <div class="notif-badge" id="badge-browser"></div>
+          </div>
+          <span class="app-icon-label">検索</span>
+        </div>
+
+        <div class="app-icon" onclick="OS.openApp('files')">
+          <div class="app-icon-box" style="background: linear-gradient(135deg, #2a2010 0%, #1a1408 100%);">
+            📁
+            <div class="notif-badge" id="badge-files"></div>
+          </div>
+          <span class="app-icon-label">手記・写真</span>
+        </div>
+
+        <div class="app-icon" onclick="OS.openApp('map')">
+          <div class="app-icon-box" style="background: linear-gradient(135deg, #102820 0%, #081810 100%);">
+            🗺
+            <div class="notif-badge" id="badge-map"></div>
+          </div>
+          <span class="app-icon-label">地図</span>
+        </div>
+
+        <div class="app-icon" onclick="OS.openApp('board')">
+          <div class="app-icon-box" style="background: linear-gradient(135deg, #201030 0%, #100818 100%);">
+            📋
+            <div class="notif-badge" id="badge-board"></div>
+          </div>
+          <span class="app-icon-label">掲示板</span>
+        </div>
+
+        <div class="app-icon" onclick="OS.openApp('about')">
+          <div class="app-icon-box" style="background: linear-gradient(135deg, #201818 0%, #100c0c 100%);">
+            ℹ️
+            <div class="notif-badge" id="badge-about"></div>
+          </div>
+          <span class="app-icon-label">概要</span>
+        </div>
+
+        <div class="app-icon" onclick="OS.openApp('settings')">
+          <div class="app-icon-box" style="background: var(--surface2);">
+            ⚙️
+          </div>
+          <span class="app-icon-label">設定</span>
+        </div>
+      </div><!-- /app-grid -->
+
+      <!-- ドック -->
+      <div id="dock">
+        <div class="app-icon" onclick="OS.openApp('browser')">
+          <div class="app-icon-box" style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#1a3050,#0a1828)">🔍</div>
+          <span class="app-icon-label">検索</span>
+        </div>
+        <div class="app-icon" onclick="OS.openApp('messages')">
+          <div class="app-icon-box" style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#1a3a6b,#0d1f3c)">💬</div>
+          <span class="app-icon-label">電文</span>
+        </div>
+        <div class="app-icon" onclick="OS.openApp('board')">
+          <div class="app-icon-box" style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#201030,#100818)">📋</div>
+          <span class="app-icon-label">掲示板</span>
+        </div>
+      </div><!-- /dock -->
+    </div><!-- /home -->
+
+    <!-- ─────────────────────────────────
+         アプリ画面
+    ───────────────────────────────── -->
+    <div id="app-screen">
+      <div id="app-nav">
+        <span id="app-nav-back" onclick="OS.closeApp()">‹ ホーム</span>
+        <span id="app-nav-title"></span>
+        <span id="app-nav-action"></span>
+      </div>
+      <div id="app-content"></div>
+    </div>
+
+    <!-- ─────────────────────────────────
+         ページビュー（コンテンツ詳細）
+    ───────────────────────────────── -->
+    <div id="page-view">
+      <div id="page-nav">
+        <span id="page-nav-back" onclick="OS.closePage()">‹ 戻る</span>
+        <span id="page-nav-title"></span>
+      </div>
+      <div id="page-content"></div>
+    </div>
+
+  </div><!-- /screen -->
+
+  <!-- ホームインジケーター -->
+  <div id="home-indicator">
+    <div onclick="OS.goHome()"></div>
+  </div>
+
+</div><!-- /phone -->
+
+
+<script>
+/* ══════════════════════════════════════
+   OS UI コントローラー
+══════════════════════════════════════ */
+const OS = (() => {
+
+  let currentApp = null;
+
+  /* ─── 起動 ───────────────────────── */
+  function boot() {
+    updateClock();
+    setInterval(updateClock, 10000);
+
+    // スプラッシュ → ホーム
+    setTimeout(() => {
+      document.getElementById('splash').style.transition = 'opacity 0.8s ease';
+      document.getElementById('splash').style.opacity = '0';
+      setTimeout(() => {
+        document.getElementById('splash').style.display = 'none';
+        updateBadges();
+        // 初回：タイムスタンプ異常表示
+        setTimeout(() => {
+          document.getElementById('clock-anomaly').classList.add('visible');
+        }, 800);
+      }, 800);
+    }, 2000);
+  }
+
+  /* ─── 時計 ──────────────────────── */
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const timeStr = h + ':' + m;
+    document.getElementById('status-time').textContent = timeStr;
+    document.getElementById('clock-time').textContent  = timeStr;
+
+    const days = ['日','月','火','水','木','金','土'];
+    document.getElementById('clock-date').textContent =
+      now.getFullYear() + '年' +
+      (now.getMonth()+1) + '月' +
+      now.getDate() + '日（' + days[now.getDay()] + '）';
+  }
+
+  /* ─── バッジ更新 ─────────────────── */
+  function updateBadges() {
+    ['messages','browser','files','map','board','about'].forEach(app => {
+      const n = KoeOS.getNotifCount(app);
+      const el = document.getElementById('badge-' + app);
+      if (el) {
+        el.textContent = n > 9 ? '9+' : String(n);
+        el.classList.toggle('visible', n > 0);
+      }
+    });
+  }
+
+  /* ─── アプリ起動 ─────────────────── */
+  function openApp(appId) {
+    currentApp = appId;
+    const screen = document.getElementById('app-screen');
+    const home   = document.getElementById('home');
+    const nav    = document.getElementById('app-nav-title');
+    const content= document.getElementById('app-content');
+
+    home.classList.add('hidden');
+    screen.classList.add('open');
+
+    KoeOS.clearNotif(appId);
+    updateBadges();
+
+    const titles = {
+      messages:'電文・手紙',
+      browser: '記録検索',
+      files:   '手記・写真',
+      map:     '地図',
+      board:   '掲示板',
+      about:   'アーカイブについて',
+      settings:'設定',
+    };
+    nav.textContent = titles[appId] || appId;
+
+    // コンテンツ描画
+    content.innerHTML = '';
+    const renderer = APP_RENDERERS[appId];
+    if (renderer) renderer(content);
+
+    // ブラウザにはアドレスバーを追加
+    if (appId === 'browser') {
+      const bar = document.getElementById('app-nav');
+      bar.insertAdjacentHTML('afterend', buildBrowserBar());
+      document.getElementById('browser-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') doSearch();
+      });
+    }
+  }
+
+  /* ─── アプリを閉じる ─────────────── */
+  function closeApp() {
+    const screen = document.getElementById('app-screen');
+    const home   = document.getElementById('home');
+    screen.classList.remove('open');
+    home.classList.remove('hidden');
+    currentApp = null;
+    // ブラウザバー削除
+    const bar = document.getElementById('browser-bar-el');
+    if (bar) bar.remove();
+    updateBadges();
+  }
+
+  /* ─── ホームへ ───────────────────── */
+  function goHome() {
+    closePage();
+    closeApp();
+  }
+
+  /* ─── ページ詳細を開く ───────────── */
+  function openPage(pageId) {
+    const page = KoeOS.getPage(pageId);
+    if (!page) return;
+    if (!KoeOS.isRestored(pageId) && page.locked) return;
+
+    const pv    = document.getElementById('page-view');
+    const title = document.getElementById('page-nav-title');
+    const body  = document.getElementById('page-content');
+
+    title.textContent = page.title;
+    body.innerHTML = PAGE_CONTENT[pageId] ? PAGE_CONTENT[pageId]() : buildPlaceholder(page);
+
+    pv.classList.add('open');
+    KoeOS.markRestored(pageId);
+    KoeOS.checkPrereqUnlocks();
+    updateBadges();
+  }
+
+  /* ─── ページを閉じる ─────────────── */
+  function closePage() {
+    document.getElementById('page-view').classList.remove('open');
+  }
+
+
+  /* ══════════════════════════════════
+     ブラウザバー
+  ══════════════════════════════════ */
+  function buildBrowserBar() {
+    return `<div id="browser-bar-el" style="display:flex;align-items:center;padding:10px 14px;gap:8px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--surface);">
+      <input id="browser-input" placeholder="キーワードを入力して復元…" style="flex:1;background:var(--surface3);border:1px solid var(--border);border-radius:10px;padding:7px 12px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;letter-spacing:.03em;" />
+      <button id="browser-go" onclick="OS.doSearch()" style="background:var(--gold-dim);border:1px solid rgba(200,169,110,.3);border-radius:8px;padding:7px 14px;font-family:var(--mono);font-size:12px;color:var(--gold);cursor:pointer;letter-spacing:.05em;white-space:nowrap;">復元</button>
+    </div>
+    <div id="search-result" style="padding:12px 18px;display:none;"></div>`;
+  }
+
+  /* ─── 検索・キーワード処理 ────────── */
+  function doSearch() {
+    const input = document.getElementById('browser-input');
+    if (!input) return;
+    const keyword = input.value.trim();
+    if (!keyword) return;
+
+    const result = KoeOS.submitKeyword(keyword);
+    const resultEl = document.getElementById('search-result');
+    if (!resultEl) return;
+
+    resultEl.style.display = 'block';
+
+    if (result.alreadyUsed) {
+      resultEl.innerHTML = buildSearchResult('fail', '登録済み',
+        'このキーワードは既に使用されています。', null);
+      return;
+    }
+
+    if (result.success) {
+      const pages = result.unlocked.map(id => KoeOS.getPage(id)).filter(Boolean);
+      const titles = pages.map(p => p.title).join('、');
+      resultEl.innerHTML = buildSearchResult('success', '── 復元完了 ──',
+        `「${titles}」へのアクセスが復元されました。`,
+        result.unlocked[0]);
+      input.value = '';
+
+      // ダイナミックアイランド通知
+      showIsland(`復元完了：${titles}`);
+
+      // リストを再描画
+      setTimeout(() => {
+        const content = document.getElementById('app-content');
+        if (content) renderBrowserContent(content);
+      }, 400);
+
+    } else {
+      resultEl.innerHTML = buildSearchResult('fail', '── 一致なし ──',
+        '該当するアーカイブが見つかりません。別のキーワードを試してください。', null);
+    }
+  }
+
+  function buildSearchResult(type, label, desc, linkPageId) {
+    const link = linkPageId
+      ? `<div class="search-result-link" onclick="OS.openPage('${linkPageId}')">▸ 開く</div>`
+      : '';
+    return `<div class="search-result-box ${type}">
+      <div class="search-result-label">${label}</div>
+      <div class="search-result-desc">${desc}</div>
+      ${link}
+    </div>`;
+  }
+
+  /* ─── ダイナミックアイランド通知 ──── */
+  function showIsland(text) {
+    const island  = document.getElementById('island');
+    const content = document.getElementById('island-content');
+    content.textContent = text;
+    island.classList.add('expanded');
+    setTimeout(() => island.classList.remove('expanded'), 3500);
+  }
+
+  /* ─── プレースホルダー ───────────── */
+  function buildPlaceholder(page) {
+    return `<div class="page-placeholder">
+      <div class="ph-icon">📄</div>
+      <div class="ph-title">FILE: ${page.id.toUpperCase()}</div>
+      <div class="ph-text">このページは準備中です。<br>${page.title}</div>
+    </div>`;
+  }
+
+  /* ══════════════════════════════════
+     アプリコンテンツ描画
+  ══════════════════════════════════ */
+
+  const APP_RENDERERS = {
+    messages:  renderMessagesApp,
+    browser:   renderBrowserContent,
+    files:     renderFilesApp,
+    map:       renderMapApp,
+    board:     renderBoardApp,
+    about:     renderAboutApp,
+    settings:  renderSettingsApp,
+  };
+
+  /* ── メッセージアプリ ────────────── */
+  function renderMessagesApp(el) {
+    const pages = KoeOS.getPagesByApp('messages');
+    const threads = [
+      { id:'telegram_001', emoji:'📡', name:'電文①　暗号データ', preview:'受信者欄が「███」——', date:'1949.08', anomaly:true },
+      { id:'telegram_002', emoji:'📡', name:'電文②　№0314の意味', preview:'ふみの誕生日。三月十四日。', date:'1949.09' },
+      { id:'telegram_003', emoji:'📡', name:'電文③　声は壁を透して', preview:'文集の存在が初めて示される。', date:'1954.03' },
+      { id:'fumi_tegami',  emoji:'✉️', name:'猫塚ふみ　手紙', preview:'宛先：猫塚清治', date:'1949.??', anomaly:true },
+    ];
+
+    el.innerHTML = '<div class="msg-thread-list">' + threads.map(t => {
+      const restored = KoeOS.isRestored(t.id);
+      const page = KoeOS.getPage(t.id);
+      const isLocked = !restored && page && page.locked;
+      return `<div class="msg-thread-item ${isLocked ? 'locked' : ''}"
+        onclick="${isLocked ? '' : `OS.openPage('${t.id}')`}">
+        <div class="msg-thread-avatar ${isLocked ? 'locked' : ''}">${isLocked ? '🔒' : t.emoji}</div>
+        <div class="msg-thread-body">
+          <div class="msg-thread-name">${t.name}</div>
+          <div class="msg-thread-preview">${isLocked ? '（ロック中）' : t.preview}</div>
+        </div>
+        <div class="msg-thread-meta">
+          ${t.date || ''}
+          ${t.anomaly && !isLocked ? '<div class="unread"></div>' : ''}
+        </div>
+      </div>`;
+    }).join('') + '</div>';
+  }
+
+  /* ── ブラウザアプリ ──────────────── */
+  function renderBrowserContent(el) {
+    const spoke_progress = KoeOS.getSpokeProgress();
+    const hub = KoeOS.isRestored('hub_002');
+
+    // スポーク完了状況
+    const spokeLabels = { A:'手記', B:'写真', C:'掲示板', D:'地図', E:'電文' };
+    const spokeBar = spoke_progress.map(s => {
+      const pct = Math.round((s.done / s.total) * 100);
+      const done = s.complete;
+      return `<div style="margin-bottom:8px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+          <span style="font-family:var(--mono);font-size:10px;color:${done ? 'var(--green)' : 'var(--text2)'};">
+            ${done ? '✓' : '◦'} スポーク${s.group}：${spokeLabels[s.group]}
+          </span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--text3);">${s.done}/${s.total}</span>
+        </div>
+        <div style="height:3px;background:var(--surface3);border-radius:2px;">
+          <div style="height:3px;width:${pct}%;background:${done ? 'var(--green)' : 'var(--gold)'};border-radius:2px;transition:width .4s;"></div>
+        </div>
+      </div>`;
+    }).join('');
+
+    // 第2層コンテンツ
+    const phase2pages = KoeOS.PAGES.filter(p => p.phase === 2 && p.app === 'browser');
+    const phase2list = hub
+      ? phase2pages.map(p => {
+          const restored = KoeOS.isRestored(p.id);
+          return `<div class="file-item ${restored ? '' : 'locked'}" onclick="${restored ? `OS.openPage('${p.id}')` : ''}">
+            <div class="file-item-icon">📄</div>
+            <div class="file-item-body">
+              <div class="file-item-name">${p.title}</div>
+              <div class="file-item-meta">Phase ${p.phase} / ${restored ? '復元済み' : '未開封'}</div>
+            </div>
+            <div class="file-item-chevron">›</div>
+          </div>`;
+        }).join('')
+      : `<div style="padding:16px 18px;font-size:12px;color:var(--text3);font-family:var(--mono);letter-spacing:.06em;">
+          ── 5つのスポークを完了すると第2層が開きます ──
+        </div>`;
+
+    el.innerHTML = `
+      <div style="padding:16px 18px 8px;">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.12em;margin-bottom:12px;">復元進捗</div>
+        ${spokeBar}
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text2);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+          全体：${KoeOS.getProgressPercent()}% 復元完了
+        </div>
+      </div>
+      <div class="file-section-header">第2層：事件と運動</div>
+      ${phase2list}
+    `;
+  }
+
+  /* ── ファイルアプリ ──────────────── */
+  function renderFilesApp(el) {
+    const groups = [
+      { label:'スポークA　手記', app:'files', filter: p => p.spokeGroup === 'A' },
+      { label:'スポークB　写真', app:'files', filter: p => p.spokeGroup === 'B' },
+      { label:'第2層　人物・証拠', app:'files', filter: p => p.phase === 2 && p.app === 'files' },
+    ];
+
+    let html = '';
+    for (const g of groups) {
+      const pages = KoeOS.PAGES.filter(g.filter);
+      const icons = { A:'📓', B:'📷' };
+      html += `<div class="file-section-header">${g.label}</div>`;
+      html += pages.map(p => {
+        const restored = KoeOS.isRestored(p.id);
+        const locked   = p.locked && !restored;
+        const ico      = g.label.includes('写真') ? '📷' : g.label.includes('手記') ? '📓' : '📄';
+        return `<div class="file-item ${locked ? 'locked' : ''}" onclick="${locked ? '' : `OS.openPage('${p.id}')`}">
+          <div class="file-item-icon">${ico}</div>
+          <div class="file-item-body">
+            <div class="file-item-name">${p.title}</div>
+            <div class="file-item-meta">${locked ? '未復元' : '復元済み'} ${p.phase > 1 && !KoeOS.isRestored('hub_002') ? '/ 第2層ロック中' : ''}</div>
+          </div>
+          <div class="file-item-chevron">${locked ? '' : '›'}</div>
+        </div>`;
+      }).join('');
+    }
+    el.innerHTML = html;
+  }
+
+  /* ── 地図アプリ ──────────────────── */
+  function renderMapApp(el) {
+    const mapPages = KoeOS.PAGES.filter(p => p.app === 'map');
+    const listHtml = mapPages.map(p => {
+      const restored = KoeOS.isRestored(p.id);
+      const locked   = p.locked && !restored;
+      return `<div class="file-item ${locked ? 'locked' : ''}" onclick="${locked ? '' : `OS.openPage('${p.id}')`}">
+        <div class="file-item-icon">🗺</div>
+        <div class="file-item-body">
+          <div class="file-item-name">${p.title}</div>
+          <div class="file-item-meta">${locked ? '未復元' : '復元済み'}</div>
+        </div>
+        <div class="file-item-chevron">${locked ? '' : '›'}</div>
+      </div>`;
+    }).join('');
+
+    el.innerHTML = `
+      <div style="height:160px;background:#0a1020;position:relative;overflow:hidden;flex-shrink:0;">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
+          <div style="font-size:36px;opacity:.25;">🗺</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.12em;">芙島市 / M川周辺</div>
+        </div>
+        <div style="position:absolute;bottom:10px;right:12px;font-family:var(--mono);font-size:9px;color:var(--text3);opacity:.6;">35°17'N 140°52'E</div>
+      </div>
+      <div class="file-section-header">地図ファイル</div>
+      ${listHtml}
+    `;
+  }
+
+  /* ── 掲示板アプリ ────────────────── */
+  function renderBoardApp(el) {
+    const allBboard = KoeOS.PAGES.filter(p => p.app === 'board');
+    const posts = [
+      { id:'bbs_001', author:'投書欄', date:'昭和24年', title:'掲示板①　投書欄の声', preview:'蛸川の投書は検閲で差し止められた——' },
+      { id:'bbs_002', author:'守る会', date:'昭和26年', title:'掲示板②　守る会のビラ', preview:'一千三百名の市民が名簿に名前を連ねた。' },
+      { id:'bbs_003', author:'新聞切り抜き', date:'昭和38年', title:'掲示板③　無罪確定まで', preview:'猫塚清治は今日も存在しない——' },
+      { id:'sns',     author:'現代',  date:'現在',    title:'声の速さと重さ', preview:'葉書一通の重さ。現代との対比。' },
+    ];
+
+    el.innerHTML = posts.map(post => {
+      const restored = KoeOS.isRestored(post.id);
+      const page = KoeOS.getPage(post.id);
+      const locked = page && page.locked && !restored;
+      return `<div class="board-post ${locked ? 'locked' : ''}" onclick="${locked ? '' : `OS.openPage('${post.id}')`}">
+        <div class="board-post-header">
+          <span class="board-post-author">${post.author}</span>
+          <span class="board-post-date">${post.date}</span>
+        </div>
+        <div class="board-post-title">${post.title}</div>
+        <div class="board-post-preview">${locked ? '（復元キーワードが必要です）' : post.preview}</div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ── アーカイブ概要アプリ ────────── */
+  function renderAboutApp(el) {
+    el.innerHTML = `
+      <div style="padding:24px 20px 40px;">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.15em;margin-bottom:16px;">ARCHIVE_ABOUT</div>
+        <div style="font-family:var(--serif);font-size:18px;color:var(--text);line-height:1.4;letter-spacing:.05em;margin-bottom:20px;">声は壁を透して</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.9;letter-spacing:.04em;font-family:var(--serif);margin-bottom:24px;">
+          M川事件（架空）に関する記録アーカイブ。<br>
+          管理者：不明。最終更新：1963年9月12日。<br>
+          なぜ今日アクセスできるのかは、分からない。
+        </div>
+        <div style="border:1px solid var(--border);border-radius:12px;padding:16px;background:var(--surface2);">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.1em;margin-bottom:10px;">送信元情報</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8;">
+            送信日時：1963-09-12 09:04:00<br>
+            受信日時：${new Date().toLocaleDateString('ja-JP')} 現在<br>
+            差出人　：<span style="color:var(--red);">特定不能</span><br>
+            プロトコル：<span style="color:var(--red);">未知</span>
+          </div>
+        </div>
+        <div style="margin-top:16px;cursor:pointer;" onclick="OS.openPage('archive_about')">
+          <div style="font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.06em;">▸ 詳細を読む</div>
+        </div>
+      </div>
+    `;
+  }
+
+  /* ── 設定アプリ ──────────────────── */
+  function renderSettingsApp(el) {
+    const pct = KoeOS.getProgressPercent();
+    const restored = KoeOS.getRestoredPages().length;
+    const total = KoeOS.PAGES.filter(p => p.locked).length;
+
+    el.innerHTML = `
+      <div class="settings-section">進捗情報</div>
+      <div class="settings-row">
+        <div class="settings-row-icon">📊</div>
+        <div class="settings-row-body">
+          <div class="settings-row-title">復元率</div>
+          <div class="settings-row-sub">${restored} / ${total} ページ</div>
+        </div>
+        <div class="settings-row-value">${pct}%</div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-icon">🔑</div>
+        <div class="settings-row-body">
+          <div class="settings-row-title">使用キーワード数</div>
+        </div>
+        <div class="settings-row-value">${KoeOS.getKeywords().size}</div>
+      </div>
+
+      <div class="settings-section" style="margin-top:8px;">スポーク状況</div>
+      ${KoeOS.getSpokeProgress().map(s => `
+        <div class="settings-row">
+          <div class="settings-row-icon">${s.complete ? '✅' : '○'}</div>
+          <div class="settings-row-body">
+            <div class="settings-row-title">スポーク${s.group}</div>
+          </div>
+          <div class="settings-row-value">${s.done}/${s.total}</div>
+        </div>`).join('')}
+
+      <div class="settings-section" style="margin-top:8px;">データ</div>
+      <div class="settings-btn" onclick="OS.confirmReset()">
+        進捗をリセット（全データ削除）
+      </div>
+    `;
+  }
+
+  /* ─── リセット確認 ───────────────── */
+  function confirmReset() {
+    if (confirm('全ての進捗をリセットしますか？\nこの操作は取り消せません。')) {
+      KoeOS.resetAll();
+      goHome();
+      setTimeout(() => location.reload(), 300);
+    }
+  }
+
+
+  /* ══════════════════════════════════
+     Public
+  ══════════════════════════════════ */
+  return { boot, openApp, closeApp, goHome, openPage, closePage, doSearch, showIsland, confirmReset, updateBadges };
+})();
+
+
+/* ══════════════════════════════════════
+   ページコンテンツ定義
+   ── ここに各ページの本文を記述する ──
+══════════════════════════════════════ */
+const PAGE_CONTENT = {
+
+  archive_about: () => `
+    <div class="page-header">
+      <div class="page-num">00-01</div>
+      <div class="page-title">このアーカイブについて</div>
+      <div class="page-meta">最終更新：1963-09-12 / 管理者：不明</div>
+    </div>
+    <div class="page-body">
+      <p>このアーカイブは、管理者不明のまま公開されている。</p>
+      <p>ドメインの所有者情報は存在しない。ホスティングサービスの記録にも、契約者の名前はない。</p>
+      <p>最終更新が1963年9月12日を示している。しかし今日、あなたはここにアクセスした。</p>
+      <p>なぜ今日アクセスできるのかは、分からない。</p>
+    </div>
+  `,
+
+  soran_profile: () => `
+    <div class="page-header">
+      <div class="page-num">00-02</div>
+      <div class="page-title">蛸川小蘭とは誰か</div>
+      <div class="page-meta">記録断片 / 出典不明</div>
+    </div>
+    <div class="page-body">
+      <p>蛸川小蘭（たこがわ こらん）。1949年8月、芙島市に突然現れた。</p>
+      <p>ITエンジニアを名乗り、M川事件の調査記録を残した。以降70年以上、消息は掴めていない。</p>
+      <p>戸籍なし。住所なし。身元特定不能。</p>
+      <p>当局の記録には「<span class="redacted">████████</span>を引き続き捜索中」という一行のみが残っている。</p>
+    </div>
+  `,
+
+  /* 手記01〜04 はここに追加予定 */
+
+};
+
+
+/* ──── 起動 ──── */
+window.addEventListener('DOMContentLoaded', () => OS.boot());
+</script>
+
+</body>
+</html>
