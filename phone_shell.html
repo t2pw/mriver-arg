@@ -281,29 +281,7 @@ html,body{
 .bpage-body .red{background:var(--t1);color:var(--t1);border-radius:2px;padding:0 2px;user-select:none;}
 .bpage-body .anom{color:var(--red);font-family:var(--mono);font-size:12px;letter-spacing:.06em;}
 
-/* ─ ホーム（ブラウザトップ） ─ */
-.btop-section{padding:14px 16px 4px;font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.12em;}
-.btop-row{
-  display:flex;align-items:center;padding:11px 16px;
-  border-bottom:1px solid var(--bd);cursor:pointer;
-  transition:background .14s;gap:12px;
-}
-.btop-row:hover{background:var(--s2);}
-.btop-row.locked{opacity:.38;pointer-events:none;}
-.btop-icon{font-size:18px;flex-shrink:0;}
-.btop-body{flex:1;min-width:0;}
-.btop-name{font-size:13px;font-weight:500;color:var(--t1);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.btop-sub{font-family:var(--mono);font-size:10px;color:var(--t2);margin-top:2px;}
-.btop-chev{font-size:12px;color:var(--t3);}
 
-/* スポーク進捗バー */
-.spoke-bar{padding:14px 16px 8px;}
-.spoke-row{margin-bottom:9px;}
-.spoke-row-head{display:flex;justify-content:space-between;margin-bottom:3px;}
-.spoke-row-label{font-family:var(--mono);font-size:10px;letter-spacing:.06em;}
-.spoke-row-count{font-family:var(--mono);font-size:10px;color:var(--t3);}
-.spoke-track{height:3px;background:var(--s3);border-radius:2px;}
-.spoke-fill{height:3px;border-radius:2px;transition:width .5s ease;}
 
 /* ═══ メッセージアプリ ════════════════ */
 .mthread{
@@ -659,64 +637,36 @@ const Shell = (() => {
   }
 
   function _renderBrowserHome(bview) {
-    const spokes = KoeOS.getSpokeProgress();
-    const spokeNames = { A:'手記', B:'写真', C:'掲示板', D:'地図', E:'電文' };
-    const spokeColors = { A:'var(--gold)', B:'var(--blue)', C:'var(--green)', D:'var(--gold)', E:'var(--red)' };
+    // 復元済みページのみ、タイトルなしでリンク表示
+    const restored = KoeOS.PAGES.filter(p => KoeOS.isRestored(p.id));
 
-    // スポーク進捗
-    let spokeHtml = '<div class="spoke-bar">';
-    spokeHtml += '<div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.12em;margin-bottom:10px;">復元進捗</div>';
-    spokes.forEach(s => {
-      const pct = Math.round(s.done/s.total*100);
-      const col = s.complete ? 'var(--green)' : spokeColors[s.group];
-      spokeHtml += `<div class="spoke-row">
-        <div class="spoke-row-head">
-          <span class="spoke-row-label" style="color:${s.complete?'var(--green)':'var(--t2)'};">${s.complete?'✓':'◦'} スポーク${s.group}：${spokeNames[s.group]}</span>
-          <span class="spoke-row-count">${s.done}/${s.total}</span>
-        </div>
-        <div class="spoke-track"><div class="spoke-fill" style="width:${pct}%;background:${col};"></div></div>
+    const restoredHtml = restored.length === 0 ? '' : `
+      <div style="margin-top:32px;padding-top:20px;border-top:1px solid var(--bd);">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.12em;margin-bottom:10px;padding:0 4px;">── 復元済みアーカイブ</div>
+        ${restored.map(p => `
+          <div style="display:flex;align-items:center;padding:10px 4px;border-bottom:1px solid var(--bd);cursor:pointer;gap:10px;" onclick="Shell.bNavigate('${p.id}')">
+            <span style="font-size:16px;flex-shrink:0;">${p.icon}</span>
+            <span style="font-size:13px;color:var(--t1);letter-spacing:.02em;flex:1;">${p.title}</span>
+            <span style="font-size:12px;color:var(--t3);">›</span>
+          </div>`).join('')}
       </div>`;
-    });
-    const hub = KoeOS.isRestored('hub_002');
-    const pct2 = hub ? '解放済み' : '全スポーク完了で解放';
-    spokeHtml += `<div style="font-family:var(--mono);font-size:10px;color:${hub?'var(--green)':'var(--t3)'};margin-top:10px;padding-top:8px;border-top:1px solid var(--bd);">
-      第2層：${pct2} ／ 全体 ${KoeOS.getProgressPercent()}% 復元
-    </div>`;
-    spokeHtml += '</div>';
 
-    // ページ一覧（解放済みのもの + ロック中）
-    const groups = [
-      { label:'── 常時公開', ids:['archive_about','soran_profile'] },
-      { label:'── スポークA　手記',   ids:['kiroku_001','kiroku_002','kiroku_003','kiroku_004'] },
-      { label:'── スポークB　写真',   ids:['photo_001','photo_002','photo_003'] },
-      { label:'── スポークC　掲示板', ids:['bbs_001','bbs_002','bbs_003'] },
-      { label:'── スポークD　地図',   ids:['map_001','map_002','map_003'] },
-      { label:'── スポークE　電文',   ids:['telegram_001','telegram_002','telegram_003'] },
-      { label:'── 第2層',            ids:['koaru_record','inochi','voices','tegami','sns','momo','loop','data_trace'] },
-      { label:'── 第3層',            ids:['hidden','fumi_tegami','choice','wiki_add','wiki_skip','epilogue'] },
-    ];
-
-    let listHtml = '';
-    groups.forEach(g => {
-      const rows = g.ids.map(id => {
-        const p = KoeOS.getPage(id);
-        if(!p) return '';
-        const restored = KoeOS.isRestored(id);
-        const locked = p.locked && !restored;
-        return `<div class="btop-row ${locked?'locked':''}" onclick="${locked?'':` Shell.bNavigate('${id}')`}">
-          <div class="btop-icon">${locked?'🔒':p.icon}</div>
-          <div class="btop-body">
-            <div class="btop-name">${p.title}</div>
-            <div class="btop-sub">${locked?'復元キーワードが必要':'復元済み'}</div>
+    bview.innerHTML = `
+      <div style="padding:40px 20px 20px;display:flex;flex-direction:column;align-items:center;gap:0;">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.2em;margin-bottom:28px;">M川事件アーカイブ</div>
+        <div style="font-family:var(--serif);font-size:28px;color:var(--t1);letter-spacing:.08em;margin-bottom:8px;text-align:center;line-height:1.3;">声は壁を透して</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--t2);letter-spacing:.06em;text-align:center;line-height:1.9;margin-bottom:32px;">
+          記録されなかったものを、復元する。<br>
+          キーワードを入力してください。
+        </div>
+        <div style="width:100%;max-width:320px;background:var(--s2);border:1px solid var(--bd);border-radius:14px;padding:20px 18px;">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.15em;margin-bottom:12px;">使い方</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.9;letter-spacing:.04em;font-family:var(--serif);">
+            アーカイブ各所に散らばったキーワードを見つけ、上部の入力欄に入力してください。一致すると封鎖されたページが復元されます。
           </div>
-          <div class="btop-chev">${locked?'':'\›'}</div>
-        </div>`;
-      }).join('');
-      if(rows.replace(/\n/g,'').length > 0)
-        listHtml += `<div class="btop-section">${g.label}</div>${rows}`;
-    });
-
-    bview.innerHTML = spokeHtml + listHtml;
+        </div>
+        ${restoredHtml}
+      </div>`;
   }
 
   /* ─ ページナビゲーション（履歴スタック管理） ─ */
@@ -880,24 +830,30 @@ const Shell = (() => {
   ];
 
   function renderMessages(el) {
-    let html = '';
-    THREADS.forEach(t => {
+    const visible = THREADS.filter(t => {
+      if (!t.locked) return true;
       const page = KoeOS.getPage(t.id);
-      const restored = !page || KoeOS.isRestored(t.id);
-      const isLocked = t.locked && !restored;
-      html += `<div class="mthread ${isLocked?'locked':''}" onclick="${isLocked?'':` Shell.openThread('${t.id}')`}">
-        <div class="mthread-av">${isLocked?'🔒':t.avatar}</div>
+      return page ? KoeOS.isRestored(t.id) : true;
+    });
+
+    if (visible.length === 0) {
+      el.innerHTML = '<div class="hempty">メッセージはまだありません。<br>アーカイブを復元すると<br>ここに届きます。</div>';
+      return;
+    }
+
+    el.innerHTML = visible.map(t =>
+      `<div class="mthread" onclick="Shell.openThread('${t.id}')">
+        <div class="mthread-av">${t.avatar}</div>
         <div class="mthread-body">
           <div class="mthread-name">${t.name}</div>
-          <div class="mthread-prev">${isLocked?'（復元が必要です）':t.preview}</div>
+          <div class="mthread-prev">${t.preview}</div>
         </div>
         <div class="mthread-meta">
           ${t.date}
-          ${t.anomaly&&!isLocked?'<div class="mthread-dot"></div>':''}
+          ${t.anomaly ? '<div class="mthread-dot"></div>' : ''}
         </div>
-      </div>`;
-    });
-    el.innerHTML = html;
+      </div>`
+    ).join('');
   }
 
   function openThread(threadId) {
