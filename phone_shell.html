@@ -9,731 +9,433 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@300;400&family=IBM+Plex+Mono:wght@300;400&display=swap');
 
 :root {
-  --bg:        #0c0c0f;
-  --surface:   #13131a;
-  --surface2:  #1c1c26;
-  --surface3:  #242430;
-  --border:    rgba(255,255,255,0.08);
-  --border2:   rgba(255,255,255,0.14);
-  --text:      #e4e2dc;
-  --text2:     #8a889a;
-  --text3:     #4a4860;
-  --gold:      #c8a96e;
-  --gold-dim:  rgba(200,169,110,0.15);
-  --red:       #c85858;
-  --red-dim:   rgba(200,88,88,0.12);
-  --blue:      #5a8fd4;
-  --blue-dim:  rgba(90,143,212,0.15);
-  --green:     #5aad7a;
-  --mono:      'IBM Plex Mono', monospace;
-  --sans:      'Noto Sans JP', sans-serif;
-  --serif:     'Noto Serif JP', serif;
-  --phone-w:   390px;
-  --phone-h:   844px;
-  --r:         48px;
+  --bg:       #0c0c0f;
+  --s1:       #131318;
+  --s2:       #1b1b24;
+  --s3:       #23232f;
+  --s4:       #2c2c3a;
+  --bd:       rgba(255,255,255,0.07);
+  --bd2:      rgba(255,255,255,0.13);
+  --t1:       #e2e0da;
+  --t2:       #86849a;
+  --t3:       #46445c;
+  --gold:     #c8a96e;
+  --gold-d:   rgba(200,169,110,0.14);
+  --red:      #c85858;
+  --red-d:    rgba(200,88,88,0.12);
+  --blue:     #5a8fd4;
+  --blue-d:   rgba(90,143,212,0.14);
+  --green:    #5aad7a;
+  --mono:     'IBM Plex Mono', monospace;
+  --sans:     'Noto Sans JP', sans-serif;
+  --serif:    'Noto Serif JP', serif;
+  --pw:       390px;
+  --ph:       844px;
+  --pr:       48px;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
-html, body {
-  width: 100%; height: 100%;
-  background: #050508;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--sans);
-  overflow: hidden;
+html,body{
+  width:100%;height:100%;
+  background:#050508;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--sans);
+  overflow:hidden;
 }
 
-/* ══════════════════════════════════════
-   電話本体フレーム
-══════════════════════════════════════ */
-#phone {
-  width: var(--phone-w);
-  height: var(--phone-h);
-  background: var(--bg);
-  border-radius: var(--r);
-  border: 1px solid rgba(255,255,255,0.12);
-  box-shadow:
-    0 0 0 1px rgba(0,0,0,0.8),
-    0 40px 80px rgba(0,0,0,0.7),
-    inset 0 1px 0 rgba(255,255,255,0.08);
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+/* ══ 電話フレーム ══════════════════════ */
+#phone{
+  width:var(--pw);height:var(--ph);
+  background:var(--bg);
+  border-radius:var(--pr);
+  border:1px solid rgba(255,255,255,0.11);
+  box-shadow:0 0 0 1px rgba(0,0,0,0.8),0 40px 80px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.07);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
 }
 
 /* ダイナミックアイランド */
-#island {
-  position: absolute;
-  top: 13px; left: 50%;
-  transform: translateX(-50%);
-  width: 120px; height: 34px;
-  background: #000;
-  border-radius: 20px;
-  z-index: 200;
-  transition: width 0.4s cubic-bezier(0.16,1,0.3,1), height 0.4s cubic-bezier(0.16,1,0.3,1);
+#island{
+  position:absolute;top:13px;left:50%;transform:translateX(-50%);
+  width:120px;height:34px;
+  background:#000;border-radius:20px;
+  z-index:300;
+  transition:width .45s cubic-bezier(.16,1,.3,1),height .45s cubic-bezier(.16,1,.3,1);
+  overflow:hidden;
 }
-#island.expanded {
-  width: 260px; height: 60px;
+#island.exp{ width:320px;height:66px; }
+#island-inner{
+  display:none;
+  padding:10px 16px;
+  gap:10px;
+  align-items:center;
 }
-#island-content {
-  display: none;
-  padding: 8px 14px;
-  font-size: 11px;
-  color: var(--text);
-  font-family: var(--mono);
-  letter-spacing: 0.05em;
-  line-height: 1.5;
+#island.exp #island-inner{ display:flex; }
+#island-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--s3);border:1px solid var(--bd2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
 }
-#island.expanded #island-content { display: block; }
+#island-text{ flex:1;min-width:0; }
+#island-name{
+  font-family:var(--mono);font-size:10px;color:var(--t2);
+  letter-spacing:.08em;margin-bottom:2px;
+}
+#island-msg{
+  font-size:11px;color:var(--t1);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  letter-spacing:.03em;
+}
 
 /* ステータスバー */
-#statusbar {
-  height: 56px;
-  display: flex; align-items: flex-end; justify-content: space-between;
-  padding: 0 28px 10px;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 100;
+#sbar{
+  height:56px;display:flex;align-items:flex-end;justify-content:space-between;
+  padding:0 28px 10px;flex-shrink:0;position:relative;z-index:100;
 }
-#statusbar .time {
-  font-family: var(--mono);
-  font-size: 15px; font-weight: 400;
-  color: var(--text);
-  letter-spacing: 0.02em;
-}
-#statusbar .icons {
-  display: flex; gap: 6px; align-items: center;
-}
-#statusbar .icons svg { fill: var(--text); }
+#sbar .t{font-family:var(--mono);font-size:15px;color:var(--t1);}
+#sbar .ic{display:flex;gap:6px;align-items:center;}
+#sbar .ic svg{fill:var(--t1);}
+
+/* スクリーン */
+#screen{flex:1;position:relative;overflow:hidden;}
 
 /* ホームインジケーター */
-#home-indicator {
-  height: 34px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+#hind{
+  height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
-#home-indicator div {
-  width: 130px; height: 5px;
-  background: rgba(255,255,255,0.25);
-  border-radius: 3px;
-  cursor: pointer;
-  transition: background 0.2s;
+#hind div{
+  width:130px;height:5px;
+  background:rgba(255,255,255,0.22);border-radius:3px;
+  cursor:pointer;transition:background .2s;
 }
-#home-indicator div:hover { background: rgba(255,255,255,0.4); }
+#hind div:hover{background:rgba(255,255,255,0.38);}
 
-/* スクリーン（ステータスバーとホームバーの間） */
-#screen {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
+/* ══ ホーム画面 ═══════════════════════ */
+#home{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  transition:transform .4s cubic-bezier(.16,1,.3,1),opacity .3s;
 }
+#home.hidden{transform:scale(.93);opacity:0;pointer-events:none;}
 
-/* ══════════════════════════════════════
-   ホーム画面
-══════════════════════════════════════ */
-#home {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease;
-}
-#home.hidden { transform: scale(0.92); opacity: 0; pointer-events: none; }
-
-/* 壁紙ぼかし層（グレインテクスチャ） */
-#wallpaper {
-  position: absolute; inset: 0;
+#wallpaper{
+  position:absolute;inset:0;
   background:
-    radial-gradient(ellipse 80% 60% at 30% 20%, rgba(40,30,80,0.6) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 80% at 80% 70%, rgba(20,40,60,0.5) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 25% 20%,rgba(35,25,75,.65) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 75%,rgba(15,35,55,.55) 0%,transparent 60%),
     var(--bg);
-  z-index: 0;
+  z-index:0;
 }
-#wallpaper::after {
-  content: '';
-  position: absolute; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-  opacity: 0.8;
-}
-
-/* 時刻ウィジェット */
-#clock-widget {
-  position: relative; z-index: 1;
-  text-align: center;
-  padding: 32px 0 20px;
-}
-#clock-widget .clock-time {
-  font-family: var(--mono);
-  font-size: 64px; font-weight: 300;
-  color: var(--text);
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-#clock-widget .clock-date {
-  font-size: 13px; color: var(--text2);
-  margin-top: 6px;
-  letter-spacing: 0.06em;
-  font-family: var(--mono);
-}
-#clock-widget .clock-anomaly {
-  font-size: 10px; color: var(--red);
-  margin-top: 4px;
-  font-family: var(--mono);
-  letter-spacing: 0.1em;
-  opacity: 0;
-  transition: opacity 0.5s;
-}
-#clock-widget .clock-anomaly.visible { opacity: 1; }
-
-/* アプリグリッド */
-#app-grid {
-  position: relative; z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px 12px;
-  padding: 12px 24px;
-  flex: 1;
-  align-content: start;
+#wallpaper::after{
+  content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+  opacity:.7;
 }
 
-.app-icon {
-  display: flex; flex-direction: column;
-  align-items: center; gap: 5px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+/* 時計ウィジェット */
+#clk{
+  position:relative;z-index:1;
+  text-align:center;padding:36px 0 24px;
 }
-.app-icon:active .app-icon-box { transform: scale(0.9); }
-
-.app-icon-box {
-  width: 60px; height: 60px;
-  border-radius: 16px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 26px;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-  position: relative;
-  overflow: visible;
+#clk-time{
+  font-family:var(--mono);font-size:68px;font-weight:300;
+  color:var(--t1);letter-spacing:-.02em;line-height:1;
+  text-shadow:0 2px 20px rgba(0,0,0,.5);
 }
-.app-icon-box:hover { transform: scale(1.05); }
+#clk-date{font-family:var(--mono);font-size:13px;color:var(--t2);margin-top:6px;letter-spacing:.06em;}
+#clk-anom{
+  font-family:var(--mono);font-size:10px;color:var(--red);
+  margin-top:5px;letter-spacing:.1em;opacity:0;transition:opacity .6s;
+}
+#clk-anom.vis{opacity:1;}
 
-.app-icon-label {
-  font-size: 10px; color: var(--text);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-  text-align: center;
-  white-space: nowrap;
-  letter-spacing: 0.03em;
+/* アプリグリッド（3アプリ＋広い間隔） */
+#grid{
+  position:relative;z-index:1;
+  display:flex;justify-content:center;gap:32px;
+  padding:40px 0 20px;
+}
+
+.aico{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.aico:active .aibox{transform:scale(.88);}
+
+.aibox{
+  width:72px;height:72px;border-radius:18px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;
+  border:1px solid var(--bd);
+  transition:transform .15s;
+  position:relative;
+}
+.ailabel{
+  font-size:11px;color:var(--t1);
+  text-shadow:0 1px 4px rgba(0,0,0,.8);
+  letter-spacing:.03em;
 }
 
 /* 通知バッジ */
-.notif-badge {
-  position: absolute;
-  top: -5px; right: -5px;
-  background: var(--red);
-  color: #fff;
-  font-size: 9px; font-weight: 400;
-  font-family: var(--mono);
-  min-width: 16px; height: 16px;
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  padding: 0 3px;
-  border: 1.5px solid var(--bg);
-  display: none;
+.nbadge{
+  position:absolute;top:-5px;right:-5px;
+  background:var(--red);color:#fff;
+  font-family:var(--mono);font-size:9px;
+  min-width:17px;height:17px;border-radius:9px;
+  display:none;align-items:center;justify-content:center;
+  padding:0 3px;border:1.5px solid var(--bg);
 }
-.notif-badge.visible { display: flex; }
+.nbadge.vis{display:flex;}
 
-/* ドック */
-#dock {
-  position: relative; z-index: 1;
-  margin: 8px 16px 12px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid var(--border);
-  border-radius: 28px;
-  padding: 12px 24px;
-  display: flex; justify-content: space-around;
-  backdrop-filter: blur(20px);
+/* ═══ アプリ画面 ══════════════════════ */
+#appscr{
+  position:absolute;inset:0;
+  background:var(--s1);
+  transform:translateY(102%);
+  transition:transform .45s cubic-bezier(.16,1,.3,1);
+  display:flex;flex-direction:column;z-index:50;
 }
+#appscr.open{transform:translateY(0);}
 
-/* ══════════════════════════════════════
-   アプリ画面（共通枠）
-══════════════════════════════════════ */
-#app-screen {
-  position: absolute; inset: 0;
-  background: var(--surface);
-  transform: translateY(100%);
-  transition: transform 0.45s cubic-bezier(0.16,1,0.3,1);
-  display: flex; flex-direction: column;
-  z-index: 50;
+/* アプリナビバー */
+#anav{
+  height:54px;display:flex;align-items:center;
+  padding:0 16px;gap:10px;
+  border-bottom:1px solid var(--bd);flex-shrink:0;
+  background:var(--s1);
 }
-#app-screen.open { transform: translateY(0); }
+#anav-back{color:var(--blue);font-size:15px;cursor:pointer;padding:8px;margin-left:-8px;user-select:none;}
+#anav-back:hover{opacity:.7;}
+#anav-title{flex:1;font-size:16px;font-weight:500;color:var(--t1);text-align:center;letter-spacing:.02em;}
+#anav-r{width:40px;}
 
-/* アプリナビゲーションバー */
-#app-nav {
-  height: 52px;
-  display: flex; align-items: center;
-  padding: 0 16px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-  gap: 10px;
-  background: var(--surface);
-}
-#app-nav-back {
-  color: var(--blue);
-  font-size: 15px;
-  cursor: pointer;
-  padding: 8px;
-  margin-left: -8px;
-  user-select: none;
-}
-#app-nav-back:hover { opacity: 0.7; }
-#app-nav-title {
-  flex: 1;
-  font-size: 16px; font-weight: 500;
-  color: var(--text);
-  text-align: center;
-  letter-spacing: 0.02em;
-}
-#app-nav-action {
-  width: 32px; /* 右側スペース */
-}
+#acontent{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+#acontent::-webkit-scrollbar{display:none;}
 
-/* アプリコンテンツ領域 */
-#app-content {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+/* ═══ ブラウザ ════════════════════════ */
+#bbar{
+  display:flex;align-items:center;padding:9px 12px;gap:8px;
+  border-bottom:1px solid var(--bd);flex-shrink:0;
+  background:var(--s1);
 }
-#app-content::-webkit-scrollbar { display: none; }
+#burl{
+  flex:1;background:var(--s3);border:1px solid var(--bd);border-radius:10px;
+  padding:7px 12px;font-family:var(--mono);font-size:12px;
+  color:var(--t1);outline:none;letter-spacing:.03em;transition:border-color .2s;
+}
+#burl:focus{border-color:var(--bd2);}
+#burl::placeholder{color:var(--t3);}
+#bgo{
+  background:var(--gold-d);border:1px solid rgba(200,169,110,.28);
+  border-radius:8px;padding:7px 14px;
+  font-family:var(--mono);font-size:12px;color:var(--gold);
+  cursor:pointer;letter-spacing:.05em;white-space:nowrap;transition:background .2s;
+}
+#bgo:hover{background:rgba(200,169,110,.24);}
+/* 戻る・進むボタン */
+#bnav-btns{
+  display:flex;gap:4px;
+}
+.bnav-btn{
+  width:30px;height:30px;border-radius:8px;
+  background:var(--s3);border:1px solid var(--bd);
+  color:var(--t2);font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .15s;user-select:none;
+  flex-shrink:0;
+}
+.bnav-btn:hover{background:var(--s4);}
+.bnav-btn:disabled,.bnav-btn[disabled]{opacity:.3;pointer-events:none;}
 
-/* ══════════════════════════════════════
-   ブラウザアプリ
-══════════════════════════════════════ */
-#browser-bar {
-  display: flex; align-items: center;
-  padding: 10px 14px;
-  gap: 8px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-  background: var(--surface);
-}
-#browser-input {
-  flex: 1;
-  background: var(--surface3);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 7px 12px;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--text);
-  outline: none;
-  letter-spacing: 0.03em;
-  transition: border-color 0.2s;
-}
-#browser-input:focus { border-color: var(--border2); }
-#browser-input::placeholder { color: var(--text3); }
-#browser-go {
-  background: var(--gold-dim);
-  border: 1px solid rgba(200,169,110,0.3);
-  border-radius: 8px;
-  padding: 7px 14px;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--gold);
-  cursor: pointer;
-  letter-spacing: 0.05em;
-  transition: background 0.2s;
-  white-space: nowrap;
-}
-#browser-go:hover { background: rgba(200,169,110,0.25); }
+/* ブラウザコンテンツ枠 */
+#bview{flex:1;overflow-y:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+#bview::-webkit-scrollbar{display:none;}
 
-/* ══════════════════════════════════════
-   メッセージアプリ
-══════════════════════════════════════ */
-.msg-thread-list { padding: 0; }
+/* 検索結果ボックス */
+.sbox{
+  margin:12px 16px;border-radius:12px;padding:14px 16px;
+  background:var(--s2);border:1px solid var(--bd);
+}
+.sbox.ok{border-color:rgba(90,173,122,.35);}
+.sbox.ng{border-color:rgba(200,88,88,.28);}
+.sbox-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;margin-bottom:6px;}
+.sbox.ok .sbox-label{color:var(--green);}
+.sbox.ng .sbox-label{color:var(--red);}
+.sbox-desc{font-size:12px;color:var(--t2);line-height:1.7;letter-spacing:.02em;}
+.sbox-link{
+  display:inline-block;margin-top:10px;
+  font-family:var(--mono);font-size:11px;color:var(--gold);
+  cursor:pointer;letter-spacing:.06em;
+}
+.sbox-link:hover{opacity:.7;}
 
-.msg-thread-item {
-  display: flex; align-items: center;
-  padding: 13px 18px;
-  gap: 13px;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.msg-thread-item:hover { background: var(--surface2); }
-.msg-thread-item:active { background: var(--surface3); }
+/* ─ ブラウザページ内コンテンツ ─ */
+.bpage{padding:22px 20px 48px;}
+.bpage-num{font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.12em;margin-bottom:8px;}
+.bpage-title{font-family:var(--serif);font-size:20px;color:var(--t1);line-height:1.4;letter-spacing:.04em;margin-bottom:6px;}
+.bpage-meta{font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.07em;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--bd);}
+.bpage-body{font-family:var(--serif);font-size:14px;color:var(--t1);line-height:2.1;letter-spacing:.06em;}
+.bpage-body p{margin-bottom:1.4em;}
+.bpage-body .red{background:var(--t1);color:var(--t1);border-radius:2px;padding:0 2px;user-select:none;}
+.bpage-body .anom{color:var(--red);font-family:var(--mono);font-size:12px;letter-spacing:.06em;}
 
-.msg-thread-avatar {
-  width: 44px; height: 44px;
-  border-radius: 50%;
-  background: var(--surface3);
-  border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
-  flex-shrink: 0;
+/* ─ ホーム（ブラウザトップ） ─ */
+.btop-section{padding:14px 16px 4px;font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.12em;}
+.btop-row{
+  display:flex;align-items:center;padding:11px 16px;
+  border-bottom:1px solid var(--bd);cursor:pointer;
+  transition:background .14s;gap:12px;
 }
-.msg-thread-avatar.locked { filter: grayscale(1); opacity: 0.5; }
+.btop-row:hover{background:var(--s2);}
+.btop-row.locked{opacity:.38;pointer-events:none;}
+.btop-icon{font-size:18px;flex-shrink:0;}
+.btop-body{flex:1;min-width:0;}
+.btop-name{font-size:13px;font-weight:500;color:var(--t1);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.btop-sub{font-family:var(--mono);font-size:10px;color:var(--t2);margin-top:2px;}
+.btop-chev{font-size:12px;color:var(--t3);}
 
-.msg-thread-body { flex: 1; min-width: 0; }
-.msg-thread-name {
-  font-size: 14px; font-weight: 500;
-  color: var(--text);
-  letter-spacing: 0.02em;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.msg-thread-preview {
-  font-size: 12px; color: var(--text2);
-  margin-top: 2px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  letter-spacing: 0.02em;
-}
-.msg-thread-meta {
-  font-family: var(--mono);
-  font-size: 10px; color: var(--text3);
-  text-align: right; flex-shrink: 0;
-}
-.msg-thread-meta .unread {
-  width: 8px; height: 8px;
-  background: var(--blue);
-  border-radius: 50%;
-  margin: 4px auto 0;
-}
+/* スポーク進捗バー */
+.spoke-bar{padding:14px 16px 8px;}
+.spoke-row{margin-bottom:9px;}
+.spoke-row-head{display:flex;justify-content:space-between;margin-bottom:3px;}
+.spoke-row-label{font-family:var(--mono);font-size:10px;letter-spacing:.06em;}
+.spoke-row-count{font-family:var(--mono);font-size:10px;color:var(--t3);}
+.spoke-track{height:3px;background:var(--s3);border-radius:2px;}
+.spoke-fill{height:3px;border-radius:2px;transition:width .5s ease;}
 
-/* ══════════════════════════════════════
-   ファイルアプリ
-══════════════════════════════════════ */
-.file-section-header {
-  padding: 14px 18px 6px;
-  font-family: var(--mono);
-  font-size: 10px; color: var(--text3);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+/* ═══ メッセージアプリ ════════════════ */
+.mthread{
+  display:flex;align-items:center;padding:13px 16px;gap:12px;
+  border-bottom:1px solid var(--bd);cursor:pointer;transition:background .14s;
 }
+.mthread:hover{background:var(--s2);}
+.mthread.locked{opacity:.35;pointer-events:none;}
+.mthread-av{
+  width:46px;height:46px;border-radius:50%;
+  background:var(--s3);border:1px solid var(--bd);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.mthread-body{flex:1;min-width:0;}
+.mthread-name{font-size:14px;font-weight:500;color:var(--t1);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mthread-prev{font-size:12px;color:var(--t2);margin-top:2px;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mthread-meta{font-family:var(--mono);font-size:10px;color:var(--t3);text-align:right;flex-shrink:0;}
+.mthread-dot{width:8px;height:8px;background:var(--blue);border-radius:50%;margin:4px auto 0;}
 
-.file-item {
-  display: flex; align-items: center;
-  padding: 11px 18px;
-  gap: 13px;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  transition: background 0.15s;
+/* ─ メッセージ本文ビュー ─ */
+#msgview{
+  position:absolute;inset:0;background:var(--s1);
+  transform:translateX(102%);transition:transform .4s cubic-bezier(.16,1,.3,1);
+  display:flex;flex-direction:column;z-index:60;
 }
-.file-item:hover { background: var(--surface2); }
-.file-item.locked { opacity: 0.4; pointer-events: none; }
+#msgview.open{transform:translateX(0);}
+#mvnav{
+  height:50px;display:flex;align-items:center;
+  padding:0 14px;gap:10px;border-bottom:1px solid var(--bd);
+  flex-shrink:0;background:var(--s1);
+}
+#mvnav-back{color:var(--blue);font-size:15px;cursor:pointer;padding:8px;margin-left:-8px;}
+#mvnav-back:hover{opacity:.7;}
+#mvnav-title{flex:1;font-size:15px;font-weight:500;color:var(--t1);text-align:center;letter-spacing:.02em;}
+#mvcontent{
+  flex:1;overflow-y:auto;scrollbar-width:none;padding:16px;
+  display:flex;flex-direction:column;gap:14px;
+}
+#mvcontent::-webkit-scrollbar{display:none;}
 
-.file-item-icon {
-  font-size: 22px; flex-shrink: 0;
+.mbubble-row{display:flex;align-items:flex-end;gap:8px;max-width:84%;}
+.mbubble-row.me{align-self:flex-end;flex-direction:row-reverse;}
+.mbubble-av{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--s3);border:1px solid var(--bd);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;flex-shrink:0;
 }
-.file-item-body { flex: 1; min-width: 0; }
-.file-item-name {
-  font-size: 13px; font-weight: 500;
-  color: var(--text); letter-spacing: 0.02em;
+.mbubble{
+  background:var(--s2);border:1px solid var(--bd);
+  border-radius:18px 18px 18px 4px;
+  padding:10px 14px;font-size:13px;line-height:1.7;
+  color:var(--t1);letter-spacing:.03em;
 }
-.file-item-meta {
-  font-family: var(--mono);
-  font-size: 10px; color: var(--text2);
-  margin-top: 2px;
-}
-.file-item-chevron {
-  font-size: 11px; color: var(--text3);
-}
-.file-item.locked .file-item-icon::after {
-  content: ' 🔒'; font-size: 12px;
+.mbubble.me{background:#173060;border-color:#1e3d7a;border-radius:18px 18px 4px 18px;color:#cce0ff;}
+.mbubble.anom{background:rgba(200,80,80,.08);border-color:rgba(200,80,80,.3);}
+.mbubble-time{font-family:var(--mono);font-size:10px;color:var(--t3);padding:0 4px;margin-top:2px;}
+.mbubble-time.anom{color:var(--red);opacity:.7;}
+.mdate-sep{
+  text-align:center;font-family:var(--mono);font-size:10px;
+  color:var(--t3);letter-spacing:.08em;align-self:center;
 }
 
-/* ══════════════════════════════════════
-   マップアプリ（静的ビジュアル）
-══════════════════════════════════════ */
-#map-view {
-  background: #0a1020;
-  flex: 1;
-  position: relative;
-  overflow: hidden;
+/* ═══ 履歴アプリ ══════════════════════ */
+.hrow{
+  display:flex;align-items:center;padding:12px 16px;gap:12px;
+  border-bottom:1px solid var(--bd);cursor:pointer;transition:background .14s;
 }
-.map-placeholder {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 12px;
+.hrow:hover{background:var(--s2);}
+.hrow-icon{font-size:20px;flex-shrink:0;}
+.hrow-body{flex:1;min-width:0;}
+.hrow-title{font-size:13px;font-weight:500;color:var(--t1);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hrow-time{font-family:var(--mono);font-size:10px;color:var(--t3);margin-top:2px;}
+.hempty{padding:48px 20px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.1em;line-height:1.8;}
+.hclear{
+  margin:10px 16px;
+  background:var(--red-d);border:1px solid rgba(200,88,88,.22);
+  border-radius:10px;padding:11px;
+  font-family:var(--mono);font-size:11px;color:var(--red);
+  letter-spacing:.06em;cursor:pointer;text-align:center;transition:background .2s;
 }
-.map-placeholder .map-emoji { font-size: 48px; opacity: 0.3; }
-.map-placeholder p { font-family: var(--mono); font-size: 11px; color: var(--text3); letter-spacing: 0.1em; }
+.hclear:hover{background:rgba(200,88,88,.2);}
 
-/* ══════════════════════════════════════
-   掲示板（board）
-══════════════════════════════════════ */
-.board-post {
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.board-post:hover { background: var(--surface2); }
-.board-post.locked { opacity: 0.4; pointer-events: none; }
+/* ═══ アニメーション ══════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.45;}}
 
-.board-post-header {
-  display: flex; justify-content: space-between;
-  margin-bottom: 6px;
+/* スプラッシュ */
+#splash{
+  position:absolute;inset:0;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:999;gap:14px;
 }
-.board-post-author {
-  font-family: var(--mono); font-size: 11px;
-  color: var(--text3); letter-spacing: 0.06em;
-}
-.board-post-date {
-  font-family: var(--mono); font-size: 10px;
-  color: var(--text3);
-}
-.board-post-title {
-  font-size: 13px; font-weight: 500;
-  color: var(--text); letter-spacing: 0.02em;
-  margin-bottom: 4px;
-}
-.board-post-preview {
-  font-size: 11px; color: var(--text2);
-  letter-spacing: 0.03em;
-  line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* ══════════════════════════════════════
-   検索バー（ブラウザ内）
-══════════════════════════════════════ */
-#search-result {
-  padding: 14px 18px;
-  display: none;
-}
-#search-result.visible { display: block; }
-.search-result-box {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px;
-}
-.search-result-box.success { border-color: rgba(90,173,122,0.4); }
-.search-result-box.fail    { border-color: rgba(200,88,88,0.3); }
-.search-result-label {
-  font-family: var(--mono); font-size: 10px;
-  letter-spacing: 0.1em; margin-bottom: 8px;
-}
-.search-result-box.success .search-result-label { color: var(--green); }
-.search-result-box.fail    .search-result-label { color: var(--red); }
-.search-result-title {
-  font-size: 14px; font-weight: 500; color: var(--text);
-  margin-bottom: 4px;
-}
-.search-result-desc {
-  font-size: 12px; color: var(--text2); line-height: 1.6;
-  letter-spacing: 0.02em;
-}
-.search-result-link {
-  display: inline-block;
-  margin-top: 10px;
-  font-family: var(--mono); font-size: 11px;
-  color: var(--gold);
-  cursor: pointer;
-  letter-spacing: 0.06em;
-}
-.search-result-link:hover { opacity: 0.7; }
-
-/* ══════════════════════════════════════
-   設定アプリ
-══════════════════════════════════════ */
-.settings-section {
-  padding: 14px 18px 4px;
-  font-family: var(--mono); font-size: 10px;
-  color: var(--text3); letter-spacing: 0.12em; text-transform: uppercase;
-}
-.settings-row {
-  display: flex; align-items: center;
-  padding: 13px 18px;
-  border-bottom: 1px solid var(--border);
-  gap: 12px;
-}
-.settings-row-icon { font-size: 18px; flex-shrink: 0; }
-.settings-row-body { flex: 1; }
-.settings-row-title {
-  font-size: 14px; color: var(--text); letter-spacing: 0.02em;
-}
-.settings-row-sub {
-  font-family: var(--mono); font-size: 10px;
-  color: var(--text2); margin-top: 2px;
-}
-.settings-row-value {
-  font-family: var(--mono); font-size: 12px; color: var(--text2);
-}
-.settings-btn {
-  width: calc(100% - 36px);
-  margin: 12px 18px 4px;
-  background: var(--red-dim);
-  border: 1px solid rgba(200,88,88,0.25);
-  border-radius: 10px;
-  padding: 12px;
-  font-family: var(--mono); font-size: 12px;
-  color: var(--red); letter-spacing: 0.06em;
-  cursor: pointer; text-align: center;
-  transition: background 0.2s;
-}
-.settings-btn:hover { background: rgba(200,88,88,0.2); }
-
-/* ══════════════════════════════════════
-   コンテンツ表示（ページビュー）
-══════════════════════════════════════ */
-#page-view {
-  position: absolute; inset: 0;
-  background: var(--surface);
-  transform: translateX(100%);
-  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
-  display: flex; flex-direction: column;
-  z-index: 60;
-}
-#page-view.open { transform: translateX(0); }
-
-#page-nav {
-  height: 48px;
-  display: flex; align-items: center;
-  padding: 0 14px;
-  border-bottom: 1px solid var(--border);
-  gap: 10px; flex-shrink: 0;
-  background: var(--surface);
-}
-#page-nav-back {
-  color: var(--blue); font-size: 15px;
-  cursor: pointer; padding: 8px; margin-left: -8px;
-}
-#page-nav-back:hover { opacity: 0.7; }
-#page-nav-title {
-  flex: 1; font-size: 14px; font-weight: 500;
-  color: var(--text); letter-spacing: 0.02em;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-
-#page-content {
-  flex: 1; overflow-y: auto;
-  scrollbar-width: none; -webkit-overflow-scrolling: touch;
-  padding: 24px 20px 40px;
-}
-#page-content::-webkit-scrollbar { display: none; }
-
-/* ページ内コンテンツのスタイル */
-#page-content .page-header {
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border);
-}
-#page-content .page-num {
-  font-family: var(--mono); font-size: 10px;
-  color: var(--text3); letter-spacing: 0.12em;
-  margin-bottom: 8px;
-}
-#page-content .page-title {
-  font-family: var(--serif); font-size: 20px;
-  color: var(--text); line-height: 1.4;
-  letter-spacing: 0.04em;
-}
-#page-content .page-meta {
-  font-family: var(--mono); font-size: 10px;
-  color: var(--text3); margin-top: 6px; letter-spacing: 0.08em;
-}
-#page-content .page-body {
-  font-family: var(--serif); font-size: 14px;
-  color: var(--text); line-height: 2.0;
-  letter-spacing: 0.06em;
-}
-#page-content .page-body p { margin-bottom: 1.4em; }
-#page-content .page-body .redacted {
-  background: var(--text); color: var(--text);
-  border-radius: 2px; padding: 0 2px;
-  user-select: none;
-}
-
-/* 未実装ページのプレースホルダー */
-.page-placeholder {
-  text-align: center; padding: 60px 20px;
-}
-.page-placeholder .ph-icon { font-size: 40px; opacity: 0.3; margin-bottom: 16px; }
-.page-placeholder .ph-title {
-  font-family: var(--mono); font-size: 11px;
-  color: var(--text3); letter-spacing: 0.12em; margin-bottom: 8px;
-}
-.page-placeholder .ph-text {
-  font-size: 12px; color: var(--text2); line-height: 1.7;
-}
-
-/* ══════════════════════════════════════
-   アニメーション・トランジション
-══════════════════════════════════════ */
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(12px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-@keyframes pulse {
-  0%,100% { opacity: 1; }
-  50%      { opacity: 0.5; }
-}
-.fade-up { animation: fadeUp 0.5s ease forwards; }
-
-/* ══════════════════════════════════════
-   スプラッシュ
-══════════════════════════════════════ */
-#splash {
-  position: absolute; inset: 0;
-  background: var(--bg);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  z-index: 999;
-  gap: 16px;
-}
-#splash .splash-title {
-  font-family: var(--serif); font-size: 18px;
-  color: var(--text); letter-spacing: 0.15em;
-  opacity: 0; animation: fadeUp 1s ease 0.5s forwards;
-}
-#splash .splash-sub {
-  font-family: var(--mono); font-size: 10px;
-  color: var(--text3); letter-spacing: 0.2em;
-  opacity: 0; animation: fadeUp 0.8s ease 1.2s forwards;
-}
-#splash .splash-dot {
-  width: 6px; height: 6px;
-  background: var(--gold); border-radius: 50%;
-  animation: pulse 1.5s ease infinite;
-}
+#splash .sd{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 1.5s ease infinite;}
+#splash .st{font-family:var(--serif);font-size:17px;color:var(--t1);letter-spacing:.15em;opacity:0;animation:fadeUp 1s ease .4s forwards;}
+#splash .ss{font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.2em;opacity:0;animation:fadeUp .8s ease 1.1s forwards;}
 </style>
 </head>
 <body>
-
-<!-- ══════════════════════════════════════
-     電話本体
-══════════════════════════════════════ -->
 <div id="phone">
 
   <!-- スプラッシュ -->
   <div id="splash">
-    <div class="splash-dot"></div>
-    <div class="splash-title">声は壁を透して</div>
-    <div class="splash-sub">M川事件アーカイブ</div>
+    <div class="sd"></div>
+    <div class="st">声は壁を透して</div>
+    <div class="ss">M川事件アーカイブ</div>
   </div>
 
   <!-- ダイナミックアイランド -->
   <div id="island">
-    <div id="island-content"></div>
+    <div id="island-inner">
+      <div id="island-avatar">📡</div>
+      <div id="island-text">
+        <div id="island-name">送信者不明</div>
+        <div id="island-msg"></div>
+      </div>
+    </div>
   </div>
 
   <!-- ステータスバー -->
-  <div id="statusbar">
-    <span class="time" id="status-time">--:--</span>
-    <div class="icons">
+  <div id="sbar">
+    <span class="t" id="stime">--:--</span>
+    <div class="ic">
       <svg width="16" height="12" viewBox="0 0 16 12">
-        <rect x="0" y="8" width="3" height="4" rx="0.5" opacity="0.4"/>
-        <rect x="4" y="5" width="3" height="7" rx="0.5" opacity="0.7"/>
-        <rect x="8" y="2" width="3" height="10" rx="0.5"/>
-        <rect x="12" y="0" width="3" height="12" rx="0.5"/>
+        <rect x="0" y="8" width="3" height="4" rx=".5" opacity=".4"/>
+        <rect x="4" y="5" width="3" height="7" rx=".5" opacity=".7"/>
+        <rect x="8" y="2" width="3" height="10" rx=".5"/>
+        <rect x="12" y="0" width="3" height="12" rx=".5"/>
       </svg>
       <svg width="22" height="11" viewBox="0 0 22 11">
-        <rect x="0.5" y="0.5" width="18" height="10" rx="2" stroke="white" stroke-width="1" fill="none" opacity="0.6"/>
+        <rect x=".5" y=".5" width="18" height="10" rx="2" stroke="white" stroke-width="1" fill="none" opacity=".55"/>
         <rect x="2" y="2" width="11" height="7" rx="1" fill="white"/>
         <path d="M19.5 3.5 L19.5 7.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
@@ -743,655 +445,599 @@ html, body {
   <!-- スクリーン -->
   <div id="screen">
 
-    <!-- ホーム画面 -->
+    <!-- ホーム -->
     <div id="home">
       <div id="wallpaper"></div>
 
-      <!-- 時刻ウィジェット -->
-      <div id="clock-widget">
-        <div class="clock-time" id="clock-time">--:--</div>
-        <div class="clock-date" id="clock-date">----年--月--日</div>
-        <div class="clock-anomaly" id="clock-anomaly">▸ 異常なタイムスタンプを検出</div>
+      <div id="clk">
+        <div id="clk-time">--:--</div>
+        <div id="clk-date">----年--月--日</div>
+        <div id="clk-anom">▸ 異常なタイムスタンプを検出</div>
       </div>
 
-      <!-- アプリグリッド -->
-      <div id="app-grid">
-        <div class="app-icon" onclick="OS.openApp('messages')">
-          <div class="app-icon-box" style="background: linear-gradient(135deg, #1a3a6b 0%, #0d1f3c 100%);">
-            💬
-            <div class="notif-badge" id="badge-messages"></div>
-          </div>
-          <span class="app-icon-label">電文</span>
-        </div>
-
-        <div class="app-icon" onclick="OS.openApp('browser')">
-          <div class="app-icon-box" style="background: linear-gradient(135deg, #1a3050 0%, #0a1828 100%);">
+      <!-- 3アプリ -->
+      <div id="grid">
+        <div class="aico" onclick="Shell.open('browser')">
+          <div class="aibox" style="background:linear-gradient(135deg,#162840 0%,#0a1520 100%);">
             🔍
-            <div class="notif-badge" id="badge-browser"></div>
+            <div class="nbadge" id="b-browser"></div>
           </div>
-          <span class="app-icon-label">検索</span>
+          <span class="ailabel">ブラウザ</span>
         </div>
-
-        <div class="app-icon" onclick="OS.openApp('files')">
-          <div class="app-icon-box" style="background: linear-gradient(135deg, #2a2010 0%, #1a1408 100%);">
-            📁
-            <div class="notif-badge" id="badge-files"></div>
+        <div class="aico" onclick="Shell.open('messages')">
+          <div class="aibox" style="background:linear-gradient(135deg,#182848 0%,#0d1a30 100%);">
+            💬
+            <div class="nbadge" id="b-messages"></div>
           </div>
-          <span class="app-icon-label">手記・写真</span>
+          <span class="ailabel">メッセージ</span>
         </div>
-
-        <div class="app-icon" onclick="OS.openApp('map')">
-          <div class="app-icon-box" style="background: linear-gradient(135deg, #102820 0%, #081810 100%);">
-            🗺
-            <div class="notif-badge" id="badge-map"></div>
+        <div class="aico" onclick="Shell.open('history')">
+          <div class="aibox" style="background:linear-gradient(135deg,#1e1a10 0%,#100e08 100%);">
+            🕐
+            <div class="nbadge" id="b-history"></div>
           </div>
-          <span class="app-icon-label">地図</span>
+          <span class="ailabel">履歴</span>
         </div>
-
-        <div class="app-icon" onclick="OS.openApp('board')">
-          <div class="app-icon-box" style="background: linear-gradient(135deg, #201030 0%, #100818 100%);">
-            📋
-            <div class="notif-badge" id="badge-board"></div>
-          </div>
-          <span class="app-icon-label">掲示板</span>
-        </div>
-
-        <div class="app-icon" onclick="OS.openApp('about')">
-          <div class="app-icon-box" style="background: linear-gradient(135deg, #201818 0%, #100c0c 100%);">
-            ℹ️
-            <div class="notif-badge" id="badge-about"></div>
-          </div>
-          <span class="app-icon-label">概要</span>
-        </div>
-
-        <div class="app-icon" onclick="OS.openApp('settings')">
-          <div class="app-icon-box" style="background: var(--surface2);">
-            ⚙️
-          </div>
-          <span class="app-icon-label">設定</span>
-        </div>
-      </div><!-- /app-grid -->
-
-      <!-- ドック -->
-      <div id="dock">
-        <div class="app-icon" onclick="OS.openApp('browser')">
-          <div class="app-icon-box" style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#1a3050,#0a1828)">🔍</div>
-          <span class="app-icon-label">検索</span>
-        </div>
-        <div class="app-icon" onclick="OS.openApp('messages')">
-          <div class="app-icon-box" style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#1a3a6b,#0d1f3c)">💬</div>
-          <span class="app-icon-label">電文</span>
-        </div>
-        <div class="app-icon" onclick="OS.openApp('board')">
-          <div class="app-icon-box" style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#201030,#100818)">📋</div>
-          <span class="app-icon-label">掲示板</span>
-        </div>
-      </div><!-- /dock -->
+      </div>
     </div><!-- /home -->
 
-    <!-- ─────────────────────────────────
-         アプリ画面
-    ───────────────────────────────── -->
-    <div id="app-screen">
-      <div id="app-nav">
-        <span id="app-nav-back" onclick="OS.closeApp()">‹ ホーム</span>
-        <span id="app-nav-title"></span>
-        <span id="app-nav-action"></span>
+    <!-- ═══ アプリ画面 ═══ -->
+    <div id="appscr">
+      <div id="anav">
+        <span id="anav-back" onclick="Shell.closeApp()">‹ ホーム</span>
+        <span id="anav-title"></span>
+        <span id="anav-r"></span>
       </div>
-      <div id="app-content"></div>
+      <!-- ブラウザ固有バー（動的挿入） -->
+      <div id="acontent"></div>
     </div>
 
-    <!-- ─────────────────────────────────
-         ページビュー（コンテンツ詳細）
-    ───────────────────────────────── -->
-    <div id="page-view">
-      <div id="page-nav">
-        <span id="page-nav-back" onclick="OS.closePage()">‹ 戻る</span>
-        <span id="page-nav-title"></span>
+    <!-- ═══ メッセージ本文ビュー ═══ -->
+    <div id="msgview">
+      <div id="mvnav">
+        <span id="mvnav-back" onclick="Shell.closeMsgView()">‹ 戻る</span>
+        <span id="mvnav-title"></span>
       </div>
-      <div id="page-content"></div>
+      <div id="mvcontent"></div>
     </div>
 
   </div><!-- /screen -->
 
-  <!-- ホームインジケーター -->
-  <div id="home-indicator">
-    <div onclick="OS.goHome()"></div>
-  </div>
-
+  <div id="hind"><div onclick="Shell.goHome()"></div></div>
 </div><!-- /phone -->
 
-
 <script>
-/* ══════════════════════════════════════
-   OS UI コントローラー
-══════════════════════════════════════ */
-const OS = (() => {
+/* ═══════════════════════════════════════
+   Shell ── UI コントローラー
+═══════════════════════════════════════ */
+const Shell = (() => {
+  let curApp = null;
+  // ブラウザ履歴スタック（セッション内）
+  let bStack  = [];  // [{id, scrollY}]
+  let bPtr    = -1;  // 現在位置
 
-  let currentApp = null;
-
-  /* ─── 起動 ───────────────────────── */
+  /* ── 起動 ── */
   function boot() {
-    updateClock();
-    setInterval(updateClock, 10000);
-
-    // スプラッシュ → ホーム
+    tick(); setInterval(tick, 10000);
     setTimeout(() => {
-      document.getElementById('splash').style.transition = 'opacity 0.8s ease';
-      document.getElementById('splash').style.opacity = '0';
+      const sp = document.getElementById('splash');
+      sp.style.transition = 'opacity .8s';
+      sp.style.opacity = '0';
       setTimeout(() => {
-        document.getElementById('splash').style.display = 'none';
+        sp.style.display = 'none';
         updateBadges();
-        // 初回：タイムスタンプ異常表示
-        setTimeout(() => {
-          document.getElementById('clock-anomaly').classList.add('visible');
-        }, 800);
+        setTimeout(() => document.getElementById('clk-anom').classList.add('vis'), 900);
+        // 初回起動時：小蘭からプッシュ通知
+        if (KoeOS.isFirstLaunch()) {
+          KoeOS.markLaunched();
+          setTimeout(() => pushNotif('📡', '蛸川小蘭', 'このアーカイブを見つけてください。', 'soran_intro'), 1200);
+        }
       }, 800);
     }, 2000);
   }
 
-  /* ─── 時計 ──────────────────────── */
-  function updateClock() {
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2,'0');
-    const m = String(now.getMinutes()).padStart(2,'0');
-    const timeStr = h + ':' + m;
-    document.getElementById('status-time').textContent = timeStr;
-    document.getElementById('clock-time').textContent  = timeStr;
-
-    const days = ['日','月','火','水','木','金','土'];
-    document.getElementById('clock-date').textContent =
-      now.getFullYear() + '年' +
-      (now.getMonth()+1) + '月' +
-      now.getDate() + '日（' + days[now.getDay()] + '）';
+  /* ── 時計 ── */
+  function tick() {
+    const n = new Date();
+    const s = `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
+    document.getElementById('stime').textContent = s;
+    document.getElementById('clk-time').textContent = s;
+    const days=['日','月','火','水','木','金','土'];
+    document.getElementById('clk-date').textContent =
+      `${n.getFullYear()}年${n.getMonth()+1}月${n.getDate()}日（${days[n.getDay()]}）`;
   }
 
-  /* ─── バッジ更新 ─────────────────── */
+  /* ── バッジ更新 ── */
   function updateBadges() {
-    ['messages','browser','files','map','board','about'].forEach(app => {
-      const n = KoeOS.getNotifCount(app);
-      const el = document.getElementById('badge-' + app);
-      if (el) {
-        el.textContent = n > 9 ? '9+' : String(n);
-        el.classList.toggle('visible', n > 0);
-      }
+    ['browser','messages','history'].forEach(a => {
+      const n = KoeOS.getNotif(a);
+      const el = document.getElementById('b-'+a);
+      if(!el) return;
+      el.textContent = n>9?'9+':String(n);
+      el.classList.toggle('vis', n>0);
     });
   }
 
-  /* ─── アプリ起動 ─────────────────── */
-  function openApp(appId) {
-    currentApp = appId;
-    const screen = document.getElementById('app-screen');
-    const home   = document.getElementById('home');
-    const nav    = document.getElementById('app-nav-title');
-    const content= document.getElementById('app-content');
+  /* ── プッシュ通知（ダイナミックアイランド） ── */
+  function pushNotif(emoji, name, msg, threadId) {
+    const isl  = document.getElementById('island');
+    const av   = document.getElementById('island-avatar');
+    const nm   = document.getElementById('island-name');
+    const txt  = document.getElementById('island-msg');
+    av.textContent = emoji;
+    nm.textContent = name;
+    txt.textContent = msg;
+    isl.classList.add('exp');
+    if(threadId) {
+      isl.style.cursor = 'pointer';
+      isl.onclick = () => { Shell.open('messages'); Shell.openThread(threadId); };
+    }
+    setTimeout(() => {
+      isl.classList.remove('exp');
+      isl.style.cursor = '';
+      isl.onclick = null;
+    }, 4500);
+    KoeOS.addNotif('messages', 1);
+    updateBadges();
+  }
 
-    home.classList.add('hidden');
-    screen.classList.add('open');
-
+  /* ── アプリを開く ── */
+  function open(appId) {
+    curApp = appId;
+    document.getElementById('home').classList.add('hidden');
+    document.getElementById('appscr').classList.add('open');
     KoeOS.clearNotif(appId);
     updateBadges();
 
-    const titles = {
-      messages:'電文・手紙',
-      browser: '記録検索',
-      files:   '手記・写真',
-      map:     '地図',
-      board:   '掲示板',
-      about:   'アーカイブについて',
-      settings:'設定',
-    };
-    nav.textContent = titles[appId] || appId;
+    const titles = { browser:'ブラウザ', messages:'メッセージ', history:'履歴' };
+    document.getElementById('anav-title').textContent = titles[appId] || appId;
 
-    // コンテンツ描画
+    // ブラウザバーを動的に挿入
+    const old = document.getElementById('bbar-wrap');
+    if(old) old.remove();
+
+    const content = document.getElementById('acontent');
     content.innerHTML = '';
-    const renderer = APP_RENDERERS[appId];
-    if (renderer) renderer(content);
 
-    // ブラウザにはアドレスバーを追加
-    if (appId === 'browser') {
-      const bar = document.getElementById('app-nav');
-      bar.insertAdjacentHTML('afterend', buildBrowserBar());
-      document.getElementById('browser-input').addEventListener('keydown', e => {
-        if (e.key === 'Enter') doSearch();
-      });
-    }
+    if(appId === 'browser') renderBrowser();
+    else if(appId === 'messages') renderMessages(content);
+    else if(appId === 'history') renderHistory(content);
   }
 
-  /* ─── アプリを閉じる ─────────────── */
+  /* ── アプリを閉じる ── */
   function closeApp() {
-    const screen = document.getElementById('app-screen');
-    const home   = document.getElementById('home');
-    screen.classList.remove('open');
-    home.classList.remove('hidden');
-    currentApp = null;
-    // ブラウザバー削除
-    const bar = document.getElementById('browser-bar-el');
-    if (bar) bar.remove();
+    document.getElementById('appscr').classList.remove('open');
+    document.getElementById('home').classList.remove('hidden');
+    curApp = null;
     updateBadges();
   }
 
-  /* ─── ホームへ ───────────────────── */
-  function goHome() {
-    closePage();
-    closeApp();
+  function goHome() { closeMsgView(); closeApp(); }
+
+  /* ═══════════════════════════════════
+     ブラウザ
+  ═══════════════════════════════════ */
+  function renderBrowser(pageId) {
+    const content = document.getElementById('acontent');
+    content.innerHTML = '';
+
+    // アドレスバー + 戻る進む
+    const barHTML = `
+      <div id="bbar-wrap" style="display:flex;flex-direction:column;flex-shrink:0;">
+        <div id="bbar" style="display:flex;align-items:center;padding:9px 12px;gap:7px;border-bottom:1px solid var(--bd);background:var(--s1);">
+          <div class="bnav-btn" id="bbtn-back" onclick="Shell.bBack()" title="戻る">‹</div>
+          <div class="bnav-btn" id="bbtn-fwd"  onclick="Shell.bFwd()"  title="進む">›</div>
+          <input id="burl" placeholder="キーワードを入力して復元…" style="flex:1;background:var(--s3);border:1px solid var(--bd);border-radius:10px;padding:7px 11px;font-family:var(--mono);font-size:12px;color:var(--t1);outline:none;letter-spacing:.03em;" />
+          <button id="bgo" onclick="Shell.doSearch()" style="background:var(--gold-d);border:1px solid rgba(200,169,110,.28);border-radius:8px;padding:7px 13px;font-family:var(--mono);font-size:12px;color:var(--gold);cursor:pointer;letter-spacing:.05em;white-space:nowrap;">復元</button>
+        </div>
+        <div id="bsearch-result" style="display:none;padding:10px 14px;"></div>
+      </div>
+    `;
+
+    // ブラウザビュー本体
+    content.insertAdjacentHTML('beforeend', barHTML);
+
+    const bview = document.createElement('div');
+    bview.id = 'bview';
+    bview.style.cssText = 'flex:1;overflow-y:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;';
+    content.appendChild(bview);
+    content.style.display = 'flex';
+    content.style.flexDirection = 'column';
+    content.style.overflow = 'hidden';
+
+    // Enter キー
+    document.getElementById('burl').addEventListener('keydown', e => { if(e.key==='Enter') Shell.doSearch(); });
+
+    if(pageId) {
+      _loadPage(pageId);
+    } else {
+      _renderBrowserHome(bview);
+      bStack = [{ id: '__home', scrollY: 0 }];
+      bPtr   = 0;
+      _updateNavBtns();
+    }
   }
 
-  /* ─── ページ詳細を開く ───────────── */
-  function openPage(pageId) {
+  function _renderBrowserHome(bview) {
+    const spokes = KoeOS.getSpokeProgress();
+    const spokeNames = { A:'手記', B:'写真', C:'掲示板', D:'地図', E:'電文' };
+    const spokeColors = { A:'var(--gold)', B:'var(--blue)', C:'var(--green)', D:'var(--gold)', E:'var(--red)' };
+
+    // スポーク進捗
+    let spokeHtml = '<div class="spoke-bar">';
+    spokeHtml += '<div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.12em;margin-bottom:10px;">復元進捗</div>';
+    spokes.forEach(s => {
+      const pct = Math.round(s.done/s.total*100);
+      const col = s.complete ? 'var(--green)' : spokeColors[s.group];
+      spokeHtml += `<div class="spoke-row">
+        <div class="spoke-row-head">
+          <span class="spoke-row-label" style="color:${s.complete?'var(--green)':'var(--t2)'};">${s.complete?'✓':'◦'} スポーク${s.group}：${spokeNames[s.group]}</span>
+          <span class="spoke-row-count">${s.done}/${s.total}</span>
+        </div>
+        <div class="spoke-track"><div class="spoke-fill" style="width:${pct}%;background:${col};"></div></div>
+      </div>`;
+    });
+    const hub = KoeOS.isRestored('hub_002');
+    const pct2 = hub ? '解放済み' : '全スポーク完了で解放';
+    spokeHtml += `<div style="font-family:var(--mono);font-size:10px;color:${hub?'var(--green)':'var(--t3)'};margin-top:10px;padding-top:8px;border-top:1px solid var(--bd);">
+      第2層：${pct2} ／ 全体 ${KoeOS.getProgressPercent()}% 復元
+    </div>`;
+    spokeHtml += '</div>';
+
+    // ページ一覧（解放済みのもの + ロック中）
+    const groups = [
+      { label:'── 常時公開', ids:['archive_about','soran_profile'] },
+      { label:'── スポークA　手記',   ids:['kiroku_001','kiroku_002','kiroku_003','kiroku_004'] },
+      { label:'── スポークB　写真',   ids:['photo_001','photo_002','photo_003'] },
+      { label:'── スポークC　掲示板', ids:['bbs_001','bbs_002','bbs_003'] },
+      { label:'── スポークD　地図',   ids:['map_001','map_002','map_003'] },
+      { label:'── スポークE　電文',   ids:['telegram_001','telegram_002','telegram_003'] },
+      { label:'── 第2層',            ids:['koaru_record','inochi','voices','tegami','sns','momo','loop','data_trace'] },
+      { label:'── 第3層',            ids:['hidden','fumi_tegami','choice','wiki_add','wiki_skip','epilogue'] },
+    ];
+
+    let listHtml = '';
+    groups.forEach(g => {
+      const rows = g.ids.map(id => {
+        const p = KoeOS.getPage(id);
+        if(!p) return '';
+        const restored = KoeOS.isRestored(id);
+        const locked = p.locked && !restored;
+        return `<div class="btop-row ${locked?'locked':''}" onclick="${locked?'':` Shell.bNavigate('${id}')`}">
+          <div class="btop-icon">${locked?'🔒':p.icon}</div>
+          <div class="btop-body">
+            <div class="btop-name">${p.title}</div>
+            <div class="btop-sub">${locked?'復元キーワードが必要':'復元済み'}</div>
+          </div>
+          <div class="btop-chev">${locked?'':'\›'}</div>
+        </div>`;
+      }).join('');
+      if(rows.replace(/\n/g,'').length > 0)
+        listHtml += `<div class="btop-section">${g.label}</div>${rows}`;
+    });
+
+    bview.innerHTML = spokeHtml + listHtml;
+  }
+
+  /* ─ ページナビゲーション（履歴スタック管理） ─ */
+  function bNavigate(pageId) {
+    // 現在位置より先の履歴を切り捨て
+    if(bPtr < bStack.length-1) bStack = bStack.slice(0, bPtr+1);
+    bStack.push({ id: pageId, scrollY: 0 });
+    bPtr = bStack.length - 1;
+    _loadPage(pageId);
+    _updateNavBtns();
+  }
+
+  function bBack() {
+    if(bPtr <= 0) return;
+    // 現在のスクロール位置を保存
+    const bview = document.getElementById('bview');
+    if(bview) bStack[bPtr].scrollY = bview.scrollTop;
+    bPtr--;
+    const entry = bStack[bPtr];
+    if(entry.id === '__home') _renderBrowserHome(bview||document.getElementById('bview'));
+    else _loadPage(entry.id, entry.scrollY);
+    _updateNavBtns();
+  }
+
+  function bFwd() {
+    if(bPtr >= bStack.length-1) return;
+    bPtr++;
+    const entry = bStack[bPtr];
+    const bview = document.getElementById('bview');
+    if(entry.id === '__home') _renderBrowserHome(bview);
+    else _loadPage(entry.id, entry.scrollY);
+    _updateNavBtns();
+  }
+
+  function _updateNavBtns() {
+    const bb = document.getElementById('bbtn-back');
+    const bf = document.getElementById('bbtn-fwd');
+    if(bb) { bb.style.opacity = bPtr<=0?'.3':'1'; bb.style.pointerEvents = bPtr<=0?'none':'auto'; }
+    if(bf) { bf.style.opacity = bPtr>=bStack.length-1?'.3':'1'; bf.style.pointerEvents = bPtr>=bStack.length-1?'none':'auto'; }
+  }
+
+  function _loadPage(pageId, scrollY=0) {
+    const bview = document.getElementById('bview');
+    if(!bview) return;
+    // URLバーに表示
+    const urlEl = document.getElementById('burl');
+    if(urlEl) urlEl.value = 'archive://' + pageId;
+
+    // 閲覧履歴に追加
+    KoeOS.addHistory(pageId);
+
     const page = KoeOS.getPage(pageId);
-    if (!page) return;
-    if (!KoeOS.isRestored(pageId) && page.locked) return;
-
-    const pv    = document.getElementById('page-view');
-    const title = document.getElementById('page-nav-title');
-    const body  = document.getElementById('page-content');
-
-    title.textContent = page.title;
-    body.innerHTML = PAGE_CONTENT[pageId] ? PAGE_CONTENT[pageId]() : buildPlaceholder(page);
-
-    pv.classList.add('open');
+    if(!page) { bview.innerHTML = '<div style="padding:40px 20px;font-family:var(--mono);font-size:11px;color:var(--t3);text-align:center;">ページが見つかりません</div>'; return; }
     KoeOS.markRestored(pageId);
     KoeOS.checkPrereqUnlocks();
     updateBadges();
+
+    const html = PAGE_CONTENT[pageId] ? PAGE_CONTENT[pageId]() : _placeholder(page);
+    bview.innerHTML = html;
+    bview.scrollTop = scrollY;
   }
 
-  /* ─── ページを閉じる ─────────────── */
-  function closePage() {
-    document.getElementById('page-view').classList.remove('open');
+  function _placeholder(page) {
+    return `<div class="bpage">
+      <div class="bpage-num">準備中</div>
+      <div class="bpage-title">${page.title}</div>
+      <div class="bpage-meta">このページは近日公開予定です</div>
+      <div class="bpage-body"><p>コンテンツは順次追加されます。</p></div>
+    </div>`;
   }
 
-
-  /* ══════════════════════════════════
-     ブラウザバー
-  ══════════════════════════════════ */
-  function buildBrowserBar() {
-    return `<div id="browser-bar-el" style="display:flex;align-items:center;padding:10px 14px;gap:8px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--surface);">
-      <input id="browser-input" placeholder="キーワードを入力して復元…" style="flex:1;background:var(--surface3);border:1px solid var(--border);border-radius:10px;padding:7px 12px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;letter-spacing:.03em;" />
-      <button id="browser-go" onclick="OS.doSearch()" style="background:var(--gold-dim);border:1px solid rgba(200,169,110,.3);border-radius:8px;padding:7px 14px;font-family:var(--mono);font-size:12px;color:var(--gold);cursor:pointer;letter-spacing:.05em;white-space:nowrap;">復元</button>
-    </div>
-    <div id="search-result" style="padding:12px 18px;display:none;"></div>`;
-  }
-
-  /* ─── 検索・キーワード処理 ────────── */
+  /* ─ 検索・キーワード ─ */
   function doSearch() {
-    const input = document.getElementById('browser-input');
-    if (!input) return;
-    const keyword = input.value.trim();
-    if (!keyword) return;
+    const inp = document.getElementById('burl');
+    if(!inp) return;
+    // archive:// プレフィックスがあればナビゲーション
+    const val = inp.value.trim();
+    if(val.startsWith('archive://')) {
+      const id = val.replace('archive://','');
+      if(KoeOS.getPage(id) && KoeOS.isRestored(id)) { bNavigate(id); return; }
+    }
+    if(!val) return;
 
-    const result = KoeOS.submitKeyword(keyword);
-    const resultEl = document.getElementById('search-result');
-    if (!resultEl) return;
+    const res = KoeOS.submitKeyword(val);
+    const rbox = document.getElementById('bsearch-result');
+    if(!rbox) return;
+    rbox.style.display = 'block';
 
-    resultEl.style.display = 'block';
-
-    if (result.alreadyUsed) {
-      resultEl.innerHTML = buildSearchResult('fail', '登録済み',
-        'このキーワードは既に使用されています。', null);
+    if(res.alreadyUsed) {
+      rbox.innerHTML = `<div class="sbox ng"><div class="sbox-label">登録済み</div><div class="sbox-desc">このキーワードは既に使用されています。</div></div>`;
       return;
     }
-
-    if (result.success) {
-      const pages = result.unlocked.map(id => KoeOS.getPage(id)).filter(Boolean);
-      const titles = pages.map(p => p.title).join('、');
-      resultEl.innerHTML = buildSearchResult('success', '── 復元完了 ──',
-        `「${titles}」へのアクセスが復元されました。`,
-        result.unlocked[0]);
-      input.value = '';
-
-      // ダイナミックアイランド通知
-      showIsland(`復元完了：${titles}`);
-
+    if(res.success) {
+      const pages = res.unlocked.map(id=>KoeOS.getPage(id)).filter(Boolean);
+      const titles = pages.map(p=>p.title).join('、');
+      rbox.innerHTML = `<div class="sbox ok">
+        <div class="sbox-label">── 復元完了 ──</div>
+        <div class="sbox-desc">「${titles}」へのアクセスが復元されました。</div>
+        <div class="sbox-link" onclick="Shell.bNavigate('${res.unlocked[0]}')">▸ 開く</div>
+      </div>`;
+      inp.value = '';
+      // アイランド通知
+      pushNotif('🔓', 'アーカイブ', `復元：${titles}`, null);
       // リストを再描画
-      setTimeout(() => {
-        const content = document.getElementById('app-content');
-        if (content) renderBrowserContent(content);
-      }, 400);
-
+      setTimeout(() => { const bv = document.getElementById('bview'); if(bv&&bPtr===0) _renderBrowserHome(bv); }, 500);
     } else {
-      resultEl.innerHTML = buildSearchResult('fail', '── 一致なし ──',
-        '該当するアーカイブが見つかりません。別のキーワードを試してください。', null);
+      rbox.innerHTML = `<div class="sbox ng"><div class="sbox-label">── 一致なし ──</div><div class="sbox-desc">該当するアーカイブが見つかりません。別のキーワードを試してください。</div></div>`;
     }
+    setTimeout(() => { if(rbox) rbox.style.display='none'; }, 3500);
   }
 
-  function buildSearchResult(type, label, desc, linkPageId) {
-    const link = linkPageId
-      ? `<div class="search-result-link" onclick="OS.openPage('${linkPageId}')">▸ 開く</div>`
-      : '';
-    return `<div class="search-result-box ${type}">
-      <div class="search-result-label">${label}</div>
-      <div class="search-result-desc">${desc}</div>
-      ${link}
-    </div>`;
-  }
+  /* ═══════════════════════════════════
+     メッセージアプリ
+  ═══════════════════════════════════ */
+  const THREADS = [
+    {
+      id: 'soran_intro',
+      name: '蛸川小蘭',
+      avatar: '📡',
+      preview: 'このアーカイブを見つけてください。',
+      date: '1963.09.12',
+      anomaly: true,
+      locked: false,
+    },
+    {
+      id: 'telegram_001',
+      name: '電文①　暗号データ',
+      avatar: '📡',
+      preview: '受信者欄が「███」——',
+      date: '1949.08',
+      anomaly: true,
+      locked: true,
+    },
+    {
+      id: 'telegram_002',
+      name: '電文②　№0314の意味',
+      avatar: '📡',
+      preview: 'ふみの誕生日。三月十四日。',
+      date: '1949.09',
+      anomaly: false,
+      locked: true,
+    },
+    {
+      id: 'telegram_003',
+      name: '電文③　声は壁を透して',
+      avatar: '📖',
+      preview: '未収録の手紙があるという事実。',
+      date: '1954.03',
+      anomaly: false,
+      locked: true,
+    },
+    {
+      id: 'fumi_tegami',
+      name: '猫塚ふみ　手紙',
+      avatar: '✉️',
+      preview: '宛先：猫塚清治',
+      date: '1949.??',
+      anomaly: true,
+      locked: true,
+    },
+  ];
 
-  /* ─── ダイナミックアイランド通知 ──── */
-  function showIsland(text) {
-    const island  = document.getElementById('island');
-    const content = document.getElementById('island-content');
-    content.textContent = text;
-    island.classList.add('expanded');
-    setTimeout(() => island.classList.remove('expanded'), 3500);
-  }
-
-  /* ─── プレースホルダー ───────────── */
-  function buildPlaceholder(page) {
-    return `<div class="page-placeholder">
-      <div class="ph-icon">📄</div>
-      <div class="ph-title">FILE: ${page.id.toUpperCase()}</div>
-      <div class="ph-text">このページは準備中です。<br>${page.title}</div>
-    </div>`;
-  }
-
-  /* ══════════════════════════════════
-     アプリコンテンツ描画
-  ══════════════════════════════════ */
-
-  const APP_RENDERERS = {
-    messages:  renderMessagesApp,
-    browser:   renderBrowserContent,
-    files:     renderFilesApp,
-    map:       renderMapApp,
-    board:     renderBoardApp,
-    about:     renderAboutApp,
-    settings:  renderSettingsApp,
-  };
-
-  /* ── メッセージアプリ ────────────── */
-  function renderMessagesApp(el) {
-    const pages = KoeOS.getPagesByApp('messages');
-    const threads = [
-      { id:'telegram_001', emoji:'📡', name:'電文①　暗号データ', preview:'受信者欄が「███」——', date:'1949.08', anomaly:true },
-      { id:'telegram_002', emoji:'📡', name:'電文②　№0314の意味', preview:'ふみの誕生日。三月十四日。', date:'1949.09' },
-      { id:'telegram_003', emoji:'📡', name:'電文③　声は壁を透して', preview:'文集の存在が初めて示される。', date:'1954.03' },
-      { id:'fumi_tegami',  emoji:'✉️', name:'猫塚ふみ　手紙', preview:'宛先：猫塚清治', date:'1949.??', anomaly:true },
-    ];
-
-    el.innerHTML = '<div class="msg-thread-list">' + threads.map(t => {
-      const restored = KoeOS.isRestored(t.id);
-      const page = KoeOS.getPage(t.id);
-      const isLocked = !restored && page && page.locked;
-      return `<div class="msg-thread-item ${isLocked ? 'locked' : ''}"
-        onclick="${isLocked ? '' : `OS.openPage('${t.id}')`}">
-        <div class="msg-thread-avatar ${isLocked ? 'locked' : ''}">${isLocked ? '🔒' : t.emoji}</div>
-        <div class="msg-thread-body">
-          <div class="msg-thread-name">${t.name}</div>
-          <div class="msg-thread-preview">${isLocked ? '（ロック中）' : t.preview}</div>
-        </div>
-        <div class="msg-thread-meta">
-          ${t.date || ''}
-          ${t.anomaly && !isLocked ? '<div class="unread"></div>' : ''}
-        </div>
-      </div>`;
-    }).join('') + '</div>';
-  }
-
-  /* ── ブラウザアプリ ──────────────── */
-  function renderBrowserContent(el) {
-    const spoke_progress = KoeOS.getSpokeProgress();
-    const hub = KoeOS.isRestored('hub_002');
-
-    // スポーク完了状況
-    const spokeLabels = { A:'手記', B:'写真', C:'掲示板', D:'地図', E:'電文' };
-    const spokeBar = spoke_progress.map(s => {
-      const pct = Math.round((s.done / s.total) * 100);
-      const done = s.complete;
-      return `<div style="margin-bottom:8px;">
-        <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
-          <span style="font-family:var(--mono);font-size:10px;color:${done ? 'var(--green)' : 'var(--text2)'};">
-            ${done ? '✓' : '◦'} スポーク${s.group}：${spokeLabels[s.group]}
-          </span>
-          <span style="font-family:var(--mono);font-size:10px;color:var(--text3);">${s.done}/${s.total}</span>
-        </div>
-        <div style="height:3px;background:var(--surface3);border-radius:2px;">
-          <div style="height:3px;width:${pct}%;background:${done ? 'var(--green)' : 'var(--gold)'};border-radius:2px;transition:width .4s;"></div>
-        </div>
-      </div>`;
-    }).join('');
-
-    // 第2層コンテンツ
-    const phase2pages = KoeOS.PAGES.filter(p => p.phase === 2 && p.app === 'browser');
-    const phase2list = hub
-      ? phase2pages.map(p => {
-          const restored = KoeOS.isRestored(p.id);
-          return `<div class="file-item ${restored ? '' : 'locked'}" onclick="${restored ? `OS.openPage('${p.id}')` : ''}">
-            <div class="file-item-icon">📄</div>
-            <div class="file-item-body">
-              <div class="file-item-name">${p.title}</div>
-              <div class="file-item-meta">Phase ${p.phase} / ${restored ? '復元済み' : '未開封'}</div>
-            </div>
-            <div class="file-item-chevron">›</div>
-          </div>`;
-        }).join('')
-      : `<div style="padding:16px 18px;font-size:12px;color:var(--text3);font-family:var(--mono);letter-spacing:.06em;">
-          ── 5つのスポークを完了すると第2層が開きます ──
-        </div>`;
-
-    el.innerHTML = `
-      <div style="padding:16px 18px 8px;">
-        <div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.12em;margin-bottom:12px;">復元進捗</div>
-        ${spokeBar}
-        <div style="font-family:var(--mono);font-size:11px;color:var(--text2);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
-          全体：${KoeOS.getProgressPercent()}% 復元完了
-        </div>
-      </div>
-      <div class="file-section-header">第2層：事件と運動</div>
-      ${phase2list}
-    `;
-  }
-
-  /* ── ファイルアプリ ──────────────── */
-  function renderFilesApp(el) {
-    const groups = [
-      { label:'スポークA　手記', app:'files', filter: p => p.spokeGroup === 'A' },
-      { label:'スポークB　写真', app:'files', filter: p => p.spokeGroup === 'B' },
-      { label:'第2層　人物・証拠', app:'files', filter: p => p.phase === 2 && p.app === 'files' },
-    ];
-
+  function renderMessages(el) {
     let html = '';
-    for (const g of groups) {
-      const pages = KoeOS.PAGES.filter(g.filter);
-      const icons = { A:'📓', B:'📷' };
-      html += `<div class="file-section-header">${g.label}</div>`;
-      html += pages.map(p => {
-        const restored = KoeOS.isRestored(p.id);
-        const locked   = p.locked && !restored;
-        const ico      = g.label.includes('写真') ? '📷' : g.label.includes('手記') ? '📓' : '📄';
-        return `<div class="file-item ${locked ? 'locked' : ''}" onclick="${locked ? '' : `OS.openPage('${p.id}')`}">
-          <div class="file-item-icon">${ico}</div>
-          <div class="file-item-body">
-            <div class="file-item-name">${p.title}</div>
-            <div class="file-item-meta">${locked ? '未復元' : '復元済み'} ${p.phase > 1 && !KoeOS.isRestored('hub_002') ? '/ 第2層ロック中' : ''}</div>
-          </div>
-          <div class="file-item-chevron">${locked ? '' : '›'}</div>
-        </div>`;
-      }).join('');
-    }
+    THREADS.forEach(t => {
+      const page = KoeOS.getPage(t.id);
+      const restored = !page || KoeOS.isRestored(t.id);
+      const isLocked = t.locked && !restored;
+      html += `<div class="mthread ${isLocked?'locked':''}" onclick="${isLocked?'':` Shell.openThread('${t.id}')`}">
+        <div class="mthread-av">${isLocked?'🔒':t.avatar}</div>
+        <div class="mthread-body">
+          <div class="mthread-name">${t.name}</div>
+          <div class="mthread-prev">${isLocked?'（復元が必要です）':t.preview}</div>
+        </div>
+        <div class="mthread-meta">
+          ${t.date}
+          ${t.anomaly&&!isLocked?'<div class="mthread-dot"></div>':''}
+        </div>
+      </div>`;
+    });
     el.innerHTML = html;
   }
 
-  /* ── 地図アプリ ──────────────────── */
-  function renderMapApp(el) {
-    const mapPages = KoeOS.PAGES.filter(p => p.app === 'map');
-    const listHtml = mapPages.map(p => {
-      const restored = KoeOS.isRestored(p.id);
-      const locked   = p.locked && !restored;
-      return `<div class="file-item ${locked ? 'locked' : ''}" onclick="${locked ? '' : `OS.openPage('${p.id}')`}">
-        <div class="file-item-icon">🗺</div>
-        <div class="file-item-body">
-          <div class="file-item-name">${p.title}</div>
-          <div class="file-item-meta">${locked ? '未復元' : '復元済み'}</div>
-        </div>
-        <div class="file-item-chevron">${locked ? '' : '›'}</div>
-      </div>`;
-    }).join('');
+  function openThread(threadId) {
+    const mv    = document.getElementById('msgview');
+    const title = document.getElementById('mvnav-title');
+    const body  = document.getElementById('mvcontent');
+    const t = THREADS.find(t=>t.id===threadId);
+    title.textContent = t ? t.name : threadId;
 
-    el.innerHTML = `
-      <div style="height:160px;background:#0a1020;position:relative;overflow:hidden;flex-shrink:0;">
-        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
-          <div style="font-size:36px;opacity:.25;">🗺</div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.12em;">芙島市 / M川周辺</div>
-        </div>
-        <div style="position:absolute;bottom:10px;right:12px;font-family:var(--mono);font-size:9px;color:var(--text3);opacity:.6;">35°17'N 140°52'E</div>
-      </div>
-      <div class="file-section-header">地図ファイル</div>
-      ${listHtml}
-    `;
+    const content = MSG_THREADS[threadId] ? MSG_THREADS[threadId]() : defaultThread(t);
+    body.innerHTML = content;
+
+    mv.classList.add('open');
+    KoeOS.addHistory(threadId);
+    updateBadges();
   }
 
-  /* ── 掲示板アプリ ────────────────── */
-  function renderBoardApp(el) {
-    const allBboard = KoeOS.PAGES.filter(p => p.app === 'board');
-    const posts = [
-      { id:'bbs_001', author:'投書欄', date:'昭和24年', title:'掲示板①　投書欄の声', preview:'蛸川の投書は検閲で差し止められた——' },
-      { id:'bbs_002', author:'守る会', date:'昭和26年', title:'掲示板②　守る会のビラ', preview:'一千三百名の市民が名簿に名前を連ねた。' },
-      { id:'bbs_003', author:'新聞切り抜き', date:'昭和38年', title:'掲示板③　無罪確定まで', preview:'猫塚清治は今日も存在しない——' },
-      { id:'sns',     author:'現代',  date:'現在',    title:'声の速さと重さ', preview:'葉書一通の重さ。現代との対比。' },
-    ];
-
-    el.innerHTML = posts.map(post => {
-      const restored = KoeOS.isRestored(post.id);
-      const page = KoeOS.getPage(post.id);
-      const locked = page && page.locked && !restored;
-      return `<div class="board-post ${locked ? 'locked' : ''}" onclick="${locked ? '' : `OS.openPage('${post.id}')`}">
-        <div class="board-post-header">
-          <span class="board-post-author">${post.author}</span>
-          <span class="board-post-date">${post.date}</span>
-        </div>
-        <div class="board-post-title">${post.title}</div>
-        <div class="board-post-preview">${locked ? '（復元キーワードが必要です）' : post.preview}</div>
-      </div>`;
-    }).join('');
+  function closeMsgView() {
+    document.getElementById('msgview').classList.remove('open');
+    // メッセージ一覧を再描画
+    if(curApp === 'messages') renderMessages(document.getElementById('acontent'));
   }
 
-  /* ── アーカイブ概要アプリ ────────── */
-  function renderAboutApp(el) {
-    el.innerHTML = `
-      <div style="padding:24px 20px 40px;">
-        <div style="font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.15em;margin-bottom:16px;">ARCHIVE_ABOUT</div>
-        <div style="font-family:var(--serif);font-size:18px;color:var(--text);line-height:1.4;letter-spacing:.05em;margin-bottom:20px;">声は壁を透して</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.9;letter-spacing:.04em;font-family:var(--serif);margin-bottom:24px;">
-          M川事件（架空）に関する記録アーカイブ。<br>
-          管理者：不明。最終更新：1963年9月12日。<br>
-          なぜ今日アクセスできるのかは、分からない。
-        </div>
-        <div style="border:1px solid var(--border);border-radius:12px;padding:16px;background:var(--surface2);">
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.1em;margin-bottom:10px;">送信元情報</div>
-          <div style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8;">
-            送信日時：1963-09-12 09:04:00<br>
-            受信日時：${new Date().toLocaleDateString('ja-JP')} 現在<br>
-            差出人　：<span style="color:var(--red);">特定不能</span><br>
-            プロトコル：<span style="color:var(--red);">未知</span>
-          </div>
-        </div>
-        <div style="margin-top:16px;cursor:pointer;" onclick="OS.openPage('archive_about')">
-          <div style="font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.06em;">▸ 詳細を読む</div>
-        </div>
+  function defaultThread(t) {
+    if(!t) return '<div style="padding:40px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--t3);">スレッドが見つかりません</div>';
+    return `<div class="mdate-sep">${t.date}</div>
+    <div class="mbubble-row">
+      <div class="mbubble-av">${t.avatar}</div>
+      <div>
+        <div class="mbubble ${t.anomaly?'anom':''}">${t.preview}</div>
+        <div class="mbubble-time ${t.anomaly?'anom':''}">送信：${t.date}</div>
       </div>
-    `;
+    </div>`;
   }
 
-  /* ── 設定アプリ ──────────────────── */
-  function renderSettingsApp(el) {
-    const pct = KoeOS.getProgressPercent();
-    const restored = KoeOS.getRestoredPages().length;
-    const total = KoeOS.PAGES.filter(p => p.locked).length;
+  /* ═══════════════════════════════════
+     履歴アプリ
+  ═══════════════════════════════════ */
+  function renderHistory(el) {
+    const hist = KoeOS.getHistory();
+    if(hist.length === 0) {
+      el.innerHTML = '<div class="hempty">閲覧履歴はありません。<br>ブラウザでページを開くと<br>ここに記録されます。</div>';
+      return;
+    }
 
-    el.innerHTML = `
-      <div class="settings-section">進捗情報</div>
-      <div class="settings-row">
-        <div class="settings-row-icon">📊</div>
-        <div class="settings-row-body">
-          <div class="settings-row-title">復元率</div>
-          <div class="settings-row-sub">${restored} / ${total} ページ</div>
+    const fmt = ts => {
+      const d = new Date(ts);
+      return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    };
+
+    let html = hist.map(h => `
+      <div class="hrow" onclick="Shell.open('browser'); setTimeout(()=>Shell.bNavigate('${h.id}'),100);">
+        <div class="hrow-icon">${h.icon||'📄'}</div>
+        <div class="hrow-body">
+          <div class="hrow-title">${h.title}</div>
+          <div class="hrow-time">${fmt(h.ts)}</div>
         </div>
-        <div class="settings-row-value">${pct}%</div>
-      </div>
-      <div class="settings-row">
-        <div class="settings-row-icon">🔑</div>
-        <div class="settings-row-body">
-          <div class="settings-row-title">使用キーワード数</div>
-        </div>
-        <div class="settings-row-value">${KoeOS.getKeywords().size}</div>
-      </div>
+      </div>`).join('');
 
-      <div class="settings-section" style="margin-top:8px;">スポーク状況</div>
-      ${KoeOS.getSpokeProgress().map(s => `
-        <div class="settings-row">
-          <div class="settings-row-icon">${s.complete ? '✅' : '○'}</div>
-          <div class="settings-row-body">
-            <div class="settings-row-title">スポーク${s.group}</div>
-          </div>
-          <div class="settings-row-value">${s.done}/${s.total}</div>
-        </div>`).join('')}
-
-      <div class="settings-section" style="margin-top:8px;">データ</div>
-      <div class="settings-btn" onclick="OS.confirmReset()">
-        進捗をリセット（全データ削除）
-      </div>
-    `;
+    html += `<div class="hclear" onclick="Shell.clearHistory()">履歴をクリア</div>`;
+    el.innerHTML = html;
   }
 
-  /* ─── リセット確認 ───────────────── */
-  function confirmReset() {
-    if (confirm('全ての進捗をリセットしますか？\nこの操作は取り消せません。')) {
-      KoeOS.resetAll();
-      goHome();
-      setTimeout(() => location.reload(), 300);
+  function clearHistory() {
+    if(confirm('閲覧履歴をすべて削除しますか？')) {
+      KoeOS.clearHistory();
+      renderHistory(document.getElementById('acontent'));
     }
   }
 
-
-  /* ══════════════════════════════════
-     Public
-  ══════════════════════════════════ */
-  return { boot, openApp, closeApp, goHome, openPage, closePage, doSearch, showIsland, confirmReset, updateBadges };
+  return { boot, open, closeApp, goHome, closeMsgView, openThread,
+           bNavigate, bBack, bFwd, doSearch, clearHistory, pushNotif };
 })();
 
 
-/* ══════════════════════════════════════
-   ページコンテンツ定義
-   ── ここに各ページの本文を記述する ──
-══════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   PAGE_CONTENT ── 各ページ本文
+   ここに順次コンテンツを追加していく
+═══════════════════════════════════════ */
 const PAGE_CONTENT = {
 
-  archive_about: () => `
-    <div class="page-header">
-      <div class="page-num">00-01</div>
-      <div class="page-title">このアーカイブについて</div>
-      <div class="page-meta">最終更新：1963-09-12 / 管理者：不明</div>
-    </div>
-    <div class="page-body">
+  archive_about: () => `<div class="bpage">
+    <div class="bpage-num">00 — 01</div>
+    <div class="bpage-title">このアーカイブについて</div>
+    <div class="bpage-meta">最終更新：1963-09-12　／　管理者：不明</div>
+    <div class="bpage-body">
       <p>このアーカイブは、管理者不明のまま公開されている。</p>
       <p>ドメインの所有者情報は存在しない。ホスティングサービスの記録にも、契約者の名前はない。</p>
       <p>最終更新が1963年9月12日を示している。しかし今日、あなたはここにアクセスした。</p>
       <p>なぜ今日アクセスできるのかは、分からない。</p>
     </div>
-  `,
+  </div>`,
 
-  soran_profile: () => `
-    <div class="page-header">
-      <div class="page-num">00-02</div>
-      <div class="page-title">蛸川小蘭とは誰か</div>
-      <div class="page-meta">記録断片 / 出典不明</div>
-    </div>
-    <div class="page-body">
+  soran_profile: () => `<div class="bpage">
+    <div class="bpage-num">00 — 02</div>
+    <div class="bpage-title">蛸川小蘭とは誰か</div>
+    <div class="bpage-meta">記録断片　／　出典不明</div>
+    <div class="bpage-body">
       <p>蛸川小蘭（たこがわ こらん）。1949年8月、芙島市に突然現れた。</p>
       <p>ITエンジニアを名乗り、M川事件の調査記録を残した。以降70年以上、消息は掴めていない。</p>
       <p>戸籍なし。住所なし。身元特定不能。</p>
-      <p>当局の記録には「<span class="redacted">████████</span>を引き続き捜索中」という一行のみが残っている。</p>
+      <p>当局の記録には「<span class="red">████████</span>を引き続き捜索中」という一行のみが残っている。</p>
     </div>
-  `,
-
-  /* 手記01〜04 はここに追加予定 */
+  </div>`,
 
 };
 
+/* ═══════════════════════════════════════
+   MSG_THREADS ── メッセージ本文
+═══════════════════════════════════════ */
+const MSG_THREADS = {
 
-/* ──── 起動 ──── */
-window.addEventListener('DOMContentLoaded', () => OS.boot());
+  soran_intro: () => `
+    <div class="mdate-sep">送信日時：1963年9月12日　09:04</div>
+    <div class="mbubble-row">
+      <div class="mbubble-av">📡</div>
+      <div>
+        <div class="mbubble anom">このアーカイブを見つけてください。</div>
+        <div class="mbubble-time anom">1963-09-12 09:04 ⚠ タイムスタンプ異常</div>
+      </div>
+    </div>
+    <div class="mbubble-row" style="margin-top:6px;">
+      <div class="mbubble-av">📡</div>
+      <div>
+        <div class="mbubble anom">記録が消える前に。<br>あなたが来るのを待っていた。</div>
+        <div class="mbubble-time anom">1963-09-12 09:04</div>
+      </div>
+    </div>
+    <div class="mdate-sep" style="margin-top:20px;">── 送信者情報 ──</div>
+    <div style="margin:0 4px;background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:13px;font-family:var(--mono);font-size:11px;color:var(--t2);line-height:1.9;">
+      差出人　：<span style="color:var(--red);">特定不能</span><br>
+      プロトコル：<span style="color:var(--red);">未知</span><br>
+      受信日　：${new Date().toLocaleDateString('ja-JP')}
+    </div>
+  `,
+
+};
+
+/* ── 起動 ── */
+window.addEventListener('DOMContentLoaded', () => Shell.boot());
 </script>
-
 </body>
 </html>
