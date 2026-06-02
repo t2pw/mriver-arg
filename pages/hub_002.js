@@ -86,4 +86,40 @@ PAGE_CONTENT['hub_002'] = () => `<div class="bpage">
       <span style="font-size:10px;">── 蛸川小蘭　1963年9月11日</span>
     </p>
   </div>
+
+  <!-- 第2層キーワードヒント -->
+  <div style="
+    margin:0 0 0;
+    background:#0d0d10;
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:10px;
+    overflow:hidden;
+    font-family:var(--mono);
+  ">
+    <div style="
+      padding:9px 14px;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+      font-size:10px;color:var(--t3);letter-spacing:.12em;
+    ">── 第2層　復元キーワード</div>
+    <div style="padding:12px 14px;display:flex;flex-direction:column;gap:7px;font-size:11px;line-height:1.8;">
+      ${[
+        ['猫塚清治という人物', '34歳　／　菜園　／　清治'],
+        ['なぜ冤罪は生まれたか', '自白　／　証拠隠蔽　／　冤罪'],
+        ['声を上げた人々', '広瀬和郎　／　四面楚歌　／　書き続けた'],
+        ['声は壁を透して（文集）', '三百通　／　収録　／　守る会'],
+        ['声の速さと重さ', '葉書一通　／　重さ　／　現代'],
+        ['芙島市の現在と桃見山', '今年も　／　帰れなかった　／　桃の花'],
+        ['ループの伏線回収', '未来の誰か　／　データ送信　／　ループ'],
+        ['小蘭のデータ痕跡の全容', 'バイナリ　／　穿孔　／　電文'],
+      ].map(([title, kw]) => `
+        <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:4px 12px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03);">
+          <span style="color:var(--t2);">${title}</span>
+          <span style="color:var(--gold);font-size:10px;letter-spacing:.04em;">${kw}</span>
+        </div>
+      `).join('')}
+    </div>
+    <div style="padding:8px 14px 12px;font-size:10px;color:var(--t3);letter-spacing:.06em;">
+      ── いずれか一語を入力すると復元できます。
+    </div>
+  </div>
 </div>`;
