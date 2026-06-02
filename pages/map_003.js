@@ -1,0 +1,191 @@
+// map_003.js　地図③「蒼沼ブルーランドへ」
+// キーワード例: 蒼沼、廃墟、最後
+// 最終保管場所。小蘭がデータを隠した廃墟遊園地。
+
+(function() {
+
+  // 蒼沼ブルーランド = 高子沼グリーンランド跡地に対応
+  // 実座標：福島市高子沼付近（飯坂方面）
+  const CENTER = [37.8102, 140.5480];
+  const ZOOM   = 15;
+
+  const POINTS = [
+    {
+      lat: 37.8102, lng: 140.5480,
+      label: '蒼沼ブルーランド　正門跡',
+      note: '廃墟になるまで待った。当局の目が届かなくなるまで。──小蘭、最後の記録より。',
+      anom: false,
+      size: 12,
+    },
+    {
+      lat: 37.8118, lng: 140.5461,
+      label: '観覧車支柱　根元',
+      note: '「観覧車の根元の地面を、二十センチ掘った」──詳細は data_trace に記録。',
+      anom: false,
+      size: 10,
+    },
+    {
+      lat: 37.8089, lng: 140.5502,
+      label: '旧管理棟',
+      note: '床板の下。防水ケースに収めたメモリ。──暗号キー：N-0314。',
+      anom: true,
+      size: 10,
+    },
+    {
+      lat: 37.8075, lng: 140.5488,
+      label: '沼　東岸',
+      note: '「最後の夜、沼の水が青かった。蒼沼という名前の理由がやっと分かった」',
+      anom: false,
+      size: 10,
+    },
+    {
+      lat: 37.8110, lng: 140.5510,
+      label: '███　（座標のみ）',
+      note: '対応する記録なし。この座標だけが他のファイルと一致する。',
+      anom: true,
+      size: 10,
+    },
+  ];
+
+  PAGE_CONTENT['map_003'] = () => {
+    setTimeout(() => {
+      const init = () => {
+        const el = document.getElementById('leaflet-map-003');
+        if (!el || el._leafletInitialized) return;
+        el._leafletInitialized = true;
+
+        const map = L.map(el, {
+          center: CENTER, zoom: ZOOM,
+          zoomControl: true, attributionControl: true,
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          maxZoom: 18,
+        }).addTo(map);
+
+        POINTS.forEach(p => {
+          const color = p.anom ? '#c85858' : '#5a8fd4';
+          const glow  = p.anom ? 'rgba(200,88,88,.8)' : 'rgba(90,143,212,.6)';
+          const sz    = p.size || 10;
+
+          const icon = L.divIcon({
+            className: '',
+            html: `<div style="
+              width:${sz}px;height:${sz}px;border-radius:50%;
+              background:${color};border:2px solid #e2e0da;
+              box-shadow:0 0 8px ${glow};
+              ${p.anom ? 'animation:anom-pulse 1.4s ease infinite;' : ''}
+            "></div>`,
+            iconSize:[sz,sz], iconAnchor:[sz/2,sz/2], popupAnchor:[0,-sz/2-2],
+          });
+
+          const popup = L.popup({ className:'koe-popup', maxWidth:240 })
+            .setContent(`
+              <div style="
+                font-family:'IBM Plex Mono',monospace;font-size:11px;
+                line-height:1.8;color:${p.anom?'#c85858':'#e2e0da'};
+                background:#1a1a1f;padding:4px 2px;
+              ">
+                <div style="font-weight:bold;letter-spacing:.08em;margin-bottom:4px;">${p.label}</div>
+                <div style="margin-top:4px;font-size:10px;color:${p.anom?'#c85858':'#a0a09a'};">${p.note}</div>
+              </div>
+            `);
+
+          L.marker([p.lat, p.lng], { icon }).addTo(map).bindPopup(popup);
+        });
+
+        // 敷地全体の輪郭（矩形）
+        L.rectangle([
+          [37.8068, 140.5450],
+          [37.8130, 140.5525],
+        ], {
+          color: '#5a8fd4',
+          fillColor: '#5a8fd4',
+          fillOpacity: 0.04,
+          weight: 1,
+          dashArray: '3 5',
+          opacity: 0.35,
+        }).addTo(map);
+
+        setTimeout(() => map.invalidateSize(), 100);
+      };
+
+      if (window._leafletReady && window.L) { init(); }
+      else if (typeof ensureLeaflet === 'function') { ensureLeaflet(init); }
+      else {
+        if (!document.getElementById('_leaflet_css')) {
+          const lk = document.createElement('link');
+          lk.id='_leaflet_css'; lk.rel='stylesheet';
+          lk.href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
+          document.head.appendChild(lk);
+        }
+        if (!document.getElementById('_leaflet_js')) {
+          const ls = document.createElement('script');
+          ls.id='_leaflet_js';
+          ls.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
+          ls.onload = () => { window._leafletReady=true; init(); };
+          document.head.appendChild(ls);
+        } else {
+          document.getElementById('_leaflet_js').addEventListener('load', init);
+        }
+      }
+    }, 0);
+
+    return `<div class="bpage">
+  <div class="bpage-num">記録 No.15</div>
+  <div class="bpage-title">蒼沼ブルーランド　── 最後の場所</div>
+  <div class="bpage-meta">最終記録日：1963年9月11日（推定）　／　現在：廃墟　／　立入禁止区域</div>
+
+  <style>
+    #leaflet-map-003 {
+      width:100%;height:270px;border-radius:8px;margin:0 0 4px;
+      filter:grayscale(50%) brightness(0.62) sepia(30%);
+    }
+    .koe-popup .leaflet-popup-content-wrapper {
+      background:#1a1a1f !important;border:1px solid rgba(255,255,255,0.09) !important;
+      border-radius:8px !important;box-shadow:0 4px 16px rgba(0,0,0,.7) !important;padding:0 !important;
+    }
+    .koe-popup .leaflet-popup-content { margin:10px 12px !important; }
+    .koe-popup .leaflet-popup-tip { background:#1a1a1f !important; }
+    .koe-popup .leaflet-popup-close-button { color:#666 !important; }
+    .leaflet-control-attribution {
+      font-size:9px !important;background:rgba(0,0,0,.5) !important;color:#666 !important;
+    }
+    .leaflet-control-attribution a { color:#888 !important; }
+    @keyframes anom-pulse {
+      0%,100% { box-shadow:0 0 6px rgba(200,88,88,.7); }
+      50%      { box-shadow:0 0 14px rgba(200,88,88,1); }
+    }
+  </style>
+
+  <div class="bpage-body">
+    <p>小蘭が最後にデータを隠した場所。</p>
+    <p>廃墟になるまで待った、と記録にある。当局が捜索をやめ、この敷地に人が来なくなるまで待った。</p>
+    <p>1963年9月11日の夜、彼女は蒼沼ブルーランドに入った。翌9月12日、M川事件の無罪が確定した。</p>
+    <p>その後、小蘭の記録はない。</p>
+  </div>
+
+  <div id="leaflet-map-003"></div>
+
+  <div class="bpage-body" style="margin-top:12px;">
+    <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;">
+      ── 青いポイント：記録された保管場所。タップで詳細。<br>
+      　　点線の矩形：旧遊園地の敷地範囲（推定）。
+    </p>
+    <p class="anom">
+      正門跡から旧管理棟まで、直線距離で約35メートル。<br>
+      暗号キー N-0314 でのみ復元できるファイルが、この区画に紐付いている。
+    </p>
+    <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:1.9;">
+      「最後の夜、沼の水が青かった。<br>
+      　こんなに青い水を、私は知らなかった。<br>
+      　いつかこれを読む人へ──<br>
+      　ここまで来てくれてありがとう。」<br>
+      <span style="font-size:10px;color:var(--t3);">──小蘭、最後の記録　1963年9月11日</span>
+    </p>
+  </div>
+</div>`;
+  };
+
+})();
