@@ -468,6 +468,8 @@ html,body{
       </div>
       <!-- ブラウザ固有バー（動的挿入） -->
       <div id="acontent"></div>
+      <!-- 履歴・デバッグ用 固定フッター（動的表示） -->
+      <div id="afooter" style="display:none;flex-shrink:0;border-top:1px solid var(--bd);background:var(--s1);padding:8px 12px;gap:8px;"></div>
     </div>
 
     <!-- ═══ メッセージ本文ビュー ═══ -->
@@ -576,6 +578,11 @@ const Shell = (() => {
 
     const content = document.getElementById('acontent');
     content.innerHTML = '';
+
+    // afooterをリセット
+    const footer = document.getElementById('afooter');
+    footer.style.display = 'none';
+    footer.innerHTML = '';
 
     if(appId === 'browser') renderBrowser();
     else if(appId === 'messages') renderMessages(content);
@@ -896,6 +903,32 @@ const Shell = (() => {
   ═══════════════════════════════════ */
   function renderHistory(el) {
     const hist = KoeOS.getHistory();
+    const footer = document.getElementById('afooter');
+
+    // 固定フッター：クリアボタン（履歴がある時のみ表示）
+    if(hist.length > 0) {
+      footer.style.display = 'flex';
+      footer.innerHTML = `
+        <button onclick="Shell.clearHistory()" style="
+          flex:1;background:var(--red-d);border:1px solid rgba(200,88,88,.22);
+          border-radius:10px;padding:10px;font-family:var(--mono);font-size:11px;
+          color:var(--red);letter-spacing:.06em;cursor:pointer;text-align:center;
+        ">履歴をクリア</button>
+        <button onclick="Shell.openDebug()" style="
+          background:rgba(90,143,212,.1);border:1px solid rgba(90,143,212,.22);
+          border-radius:10px;padding:10px 14px;font-family:var(--mono);font-size:11px;
+          color:var(--blue);letter-spacing:.06em;cursor:pointer;white-space:nowrap;
+        ">DEV</button>`;
+    } else {
+      footer.style.display = 'flex';
+      footer.innerHTML = `
+        <button onclick="Shell.openDebug()" style="
+          flex:1;background:rgba(90,143,212,.1);border:1px solid rgba(90,143,212,.22);
+          border-radius:10px;padding:10px;font-family:var(--mono);font-size:11px;
+          color:var(--blue);letter-spacing:.06em;cursor:pointer;
+        ">DEV ── デバッグパネル</button>`;
+    }
+
     if(hist.length === 0) {
       el.innerHTML = '<div class="hempty">閲覧履歴はありません。<br>ブラウザでページを開くと<br>ここに記録されます。</div>';
       return;
@@ -906,7 +939,7 @@ const Shell = (() => {
       return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     };
 
-    let html = hist.map(h => `
+    el.innerHTML = hist.map(h => `
       <div class="hrow" onclick="Shell.open('browser'); setTimeout(()=>Shell.bNavigate('${h.id}'),100);">
         <div class="hrow-icon">${h.icon||'📄'}</div>
         <div class="hrow-body">
@@ -914,9 +947,6 @@ const Shell = (() => {
           <div class="hrow-time">${fmt(h.ts)}</div>
         </div>
       </div>`).join('');
-
-    html += `<div class="hclear" onclick="Shell.clearHistory()">履歴をクリア</div>`;
-    el.innerHTML = html;
   }
 
   function clearHistory() {
@@ -926,8 +956,133 @@ const Shell = (() => {
     }
   }
 
+  /* ═══════════════════════════════════
+     デバッグパネル
+  ═══════════════════════════════════ */
+  function openDebug() {
+    const content = document.getElementById('acontent');
+    const footer  = document.getElementById('afooter');
+
+    // フッター：閉じるボタン
+    footer.style.display = 'flex';
+    footer.innerHTML = `
+      <button onclick="Shell.open('history')" style="
+        flex:1;background:var(--s2);border:1px solid var(--bd);
+        border-radius:10px;padding:10px;font-family:var(--mono);font-size:11px;
+        color:var(--t2);letter-spacing:.06em;cursor:pointer;
+      ">‹ 履歴に戻る</button>`;
+
+    const pages    = KoeOS.PAGES;
+    const restored = pages.filter(p => KoeOS.isRestored(p.id));
+    const locked   = pages.filter(p => !KoeOS.isRestored(p.id));
+    const total    = pages.filter(p => p.locked).length;
+    const pct      = KoeOS.getProgressPercent();
+
+    const phaseLabel = {1:'第1層', 2:'第2層', 3:'第3層', 0:'常時公開'};
+
+    content.innerHTML = `
+      <div style="padding:16px;font-family:var(--mono);font-size:11px;color:var(--t2);line-height:1.9;">
+
+        <div style="color:var(--blue);letter-spacing:.12em;margin-bottom:14px;">── DEV PANEL</div>
+
+        <!-- 進捗 -->
+        <div style="background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:12px;">
+          <div style="color:var(--t3);letter-spacing:.1em;font-size:10px;margin-bottom:8px;">PROGRESS</div>
+          <div style="color:var(--gold);font-size:16px;margin-bottom:4px;">${pct}%</div>
+          <div style="color:var(--t3);">復元済み：${restored.length} / ${total}</div>
+        </div>
+
+        <!-- 一括操作 -->
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+          <button onclick="_devUnlockAll()" style="
+            background:rgba(200,169,110,.1);border:1px solid rgba(200,169,110,.25);
+            border-radius:8px;padding:10px;color:var(--gold);cursor:pointer;
+            font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-align:left;
+          ">▸ 全ページを一括解放</button>
+          <button onclick="_devUnlockPhase(1)" style="
+            background:var(--s2);border:1px solid var(--bd);
+            border-radius:8px;padding:10px;color:var(--t2);cursor:pointer;
+            font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-align:left;
+          ">▸ 第1層のみ解放（スポークA〜E）</button>
+          <button onclick="_devUnlockPhase(2)" style="
+            background:var(--s2);border:1px solid var(--bd);
+            border-radius:8px;padding:10px;color:var(--t2);cursor:pointer;
+            font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-align:left;
+          ">▸ 第2層まで解放</button>
+          <button onclick="_devReset()" style="
+            background:var(--red-d);border:1px solid rgba(200,88,88,.22);
+            border-radius:8px;padding:10px;color:var(--red);cursor:pointer;
+            font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-align:left;
+          ">▸ 全データをリセット（要確認）</button>
+        </div>
+
+        <!-- 解放済みページ一覧 -->
+        <div style="color:var(--t3);letter-spacing:.1em;font-size:10px;margin-bottom:6px;">RESTORED (${restored.length})</div>
+        <div style="background:var(--s2);border:1px solid var(--bd);border-radius:8px;margin-bottom:12px;overflow:hidden;">
+          ${restored.length === 0
+            ? '<div style="padding:10px 12px;color:var(--t3);font-size:10px;">なし</div>'
+            : restored.map(p => `
+              <div style="
+                display:flex;align-items:center;gap:8px;
+                padding:7px 12px;border-bottom:1px solid rgba(255,255,255,.04);
+                cursor:pointer;
+              " onclick="Shell.open('browser');setTimeout(()=>Shell.bNavigate('${p.id}'),80);">
+                <span style="flex-shrink:0;">${p.icon}</span>
+                <span style="flex:1;color:var(--t1);font-size:11px;">${p.title}</span>
+                <span style="color:var(--t3);font-size:10px;">${phaseLabel[p.phase]||''}</span>
+              </div>`).join('')
+          }
+        </div>
+
+        <!-- 未解放ページ一覧 -->
+        <div style="color:var(--t3);letter-spacing:.1em;font-size:10px;margin-bottom:6px;">LOCKED (${locked.length})</div>
+        <div style="background:var(--s2);border:1px solid var(--bd);border-radius:8px;overflow:hidden;">
+          ${locked.length === 0
+            ? '<div style="padding:10px 12px;color:var(--gold);font-size:10px;">全ページ解放済み</div>'
+            : locked.map(p => `
+              <div style="
+                display:flex;align-items:center;gap:8px;
+                padding:7px 12px;border-bottom:1px solid rgba(255,255,255,.04);
+                cursor:pointer;
+              " onclick="_devUnlockOne('${p.id}')">
+                <span style="flex-shrink:0;opacity:.4;">${p.icon}</span>
+                <span style="flex:1;color:var(--t3);font-size:11px;">${p.title}</span>
+                <span style="color:var(--blue);font-size:10px;">解放</span>
+              </div>`).join('')
+          }
+        </div>
+
+      </div>`;
+  }
+
+  // デバッグ用グローバル関数
+  window._devUnlockAll = () => {
+    KoeOS.PAGES.forEach(p => KoeOS.markRestored(p.id));
+    Shell.openDebug();
+  };
+  window._devUnlockPhase = (maxPhase) => {
+    KoeOS.PAGES.filter(p => p.phase <= maxPhase).forEach(p => KoeOS.markRestored(p.id));
+    Shell.openDebug();
+  };
+  window._devUnlockOne = (id) => {
+    KoeOS.markRestored(id);
+    // スクリプト未読み込みの場合は読み込む
+    const src = `pages/${id}.js`;
+    if (!document.querySelector(`script[data-page="${src}"]`)) {
+      loadPageScript(src).then(() => Shell.openDebug());
+    } else {
+      Shell.openDebug();
+    }
+  };
+  window._devReset = () => {
+    if(confirm('全データ（進捗・履歴・キーワード）をリセットします。よろしいですか？')) {
+      KoeOS.resetAll();
+      location.reload();
+    }
+  };
+
   return { boot, open, closeApp, goHome, closeMsgView, openThread,
-           bNavigate, bBack, bFwd, doSearch, clearHistory, pushNotif };
+           bNavigate, bBack, bFwd, doSearch, clearHistory, pushNotif, openDebug };
 })();
 
 
