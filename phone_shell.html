@@ -768,10 +768,12 @@ const Shell = (() => {
         <div class="sbox-link" onclick="Shell.bNavigate('${res.unlocked[0]}')">▸ 開く</div>
       </div>`;
       inp.value = '';
-      // アイランド通知
-      pushNotif('🔓', 'アーカイブ', `復元：${titles}`, null);
-      // リストを再描画
-      setTimeout(() => { const bv = document.getElementById('bview'); if(bv&&bPtr===0) _renderBrowserHome(bv); }, 500);
+      // 復元されたページのjsを動的ロード
+      Promise.all(res.unlocked.map(id => loadPageScript(`pages/${id}.js`))).then(() => {
+        pushNotif('🔓', 'アーカイブ', `復元：${titles}`, null);
+        const bv = document.getElementById('bview');
+        if(bv && bPtr === 0) _renderBrowserHome(bv);
+      });
     } else {
       rbox.innerHTML = `<div class="sbox ng"><div class="sbox-label">── 一致なし ──</div><div class="sbox-desc">該当するアーカイブが見つかりません。別のキーワードを試してください。</div></div>`;
     }
@@ -930,70 +932,49 @@ const Shell = (() => {
 
 
 /* ═══════════════════════════════════════
-   PAGE_CONTENT ── 各ページ本文
-   ここに順次コンテンツを追加していく
+   PAGE_CONTENT / MSG_THREADS
+   各ページは pages/*.js で個別定義
+   常時公開ページは起動時ロード
+   ロック付きページは復元時に動的ロード
 ═══════════════════════════════════════ */
-const PAGE_CONTENT = {
+const PAGE_CONTENT = {};
+const MSG_THREADS  = {};
 
-  archive_about: () => `<div class="bpage">
-    <div class="bpage-num">00 — 01</div>
-    <div class="bpage-title">このアーカイブについて</div>
-    <div class="bpage-meta">最終更新：1963-09-12　／　管理者：不明</div>
-    <div class="bpage-body">
-      <p>このアーカイブは、管理者不明のまま公開されている。</p>
-      <p>ドメインの所有者情報は存在しない。ホスティングサービスの記録にも、契約者の名前はない。</p>
-      <p>最終更新が1963年9月12日を示している。しかし今日、あなたはここにアクセスした。</p>
-      <p>なぜ今日アクセスできるのかは、分からない。</p>
-    </div>
-  </div>`,
+const ALWAYS_LOAD = [
+  'pages/archive_about.js',
+  'pages/soran_profile.js',
+  'pages/soran_intro.js',
+];
 
-  soran_profile: () => `<div class="bpage">
-    <div class="bpage-num">00 — 02</div>
-    <div class="bpage-title">蛸川小蘭とは誰か</div>
-    <div class="bpage-meta">記録断片　／　出典不明</div>
-    <div class="bpage-body">
-      <p>蛸川小蘭（たこがわ こらん）。1949年8月、芙島市に突然現れた。</p>
-      <p>ITエンジニアを名乗り、M川事件の調査記録を残した。以降70年以上、消息は掴めていない。</p>
-      <p>戸籍なし。住所なし。身元特定不能。</p>
-      <p>当局の記録には「<span class="red">████████</span>を引き続き捜索中」という一行のみが残っている。</p>
-    </div>
-  </div>`,
+function loadPageScript(src) {
+  return new Promise(resolve => {
+    if (document.querySelector(`script[data-page="${src}"]`)) { resolve(); return; }
+    const s = document.createElement('script');
+    s.src = src;
+    s.dataset.page = src;
+    s.onload = resolve;
+    s.onerror = resolve;
+    document.head.appendChild(s);
+  });
+}
 
-};
+async function loadAlwaysPages() {
+  for (const src of ALWAYS_LOAD) await loadPageScript(src);
+}
 
-/* ═══════════════════════════════════════
-   MSG_THREADS ── メッセージ本文
-═══════════════════════════════════════ */
-const MSG_THREADS = {
-
-  soran_intro: () => `
-    <div class="mdate-sep">送信日時：1963年9月12日　09:04</div>
-    <div class="mbubble-row">
-      <div class="mbubble-av">📡</div>
-      <div>
-        <div class="mbubble anom">このアーカイブを見つけてください。</div>
-        <div class="mbubble-time anom">1963-09-12 09:04 ⚠ タイムスタンプ異常</div>
-      </div>
-    </div>
-    <div class="mbubble-row" style="margin-top:6px;">
-      <div class="mbubble-av">📡</div>
-      <div>
-        <div class="mbubble anom">記録が消える前に。<br>あなたが来るのを待っていた。</div>
-        <div class="mbubble-time anom">1963-09-12 09:04</div>
-      </div>
-    </div>
-    <div class="mdate-sep" style="margin-top:20px;">── 送信者情報 ──</div>
-    <div style="margin:0 4px;background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:13px;font-family:var(--mono);font-size:11px;color:var(--t2);line-height:1.9;">
-      差出人　：<span style="color:var(--red);">特定不能</span><br>
-      プロトコル：<span style="color:var(--red);">未知</span><br>
-      受信日　：${new Date().toLocaleDateString('ja-JP')}
-    </div>
-  `,
-
-};
+async function loadRestoredPages() {
+  const restored = KoeOS.getRestored();
+  for (const id of restored) {
+    await loadPageScript(`pages/${id}.js`);
+  }
+}
 
 /* ── 起動 ── */
-window.addEventListener('DOMContentLoaded', () => Shell.boot());
+window.addEventListener('DOMContentLoaded', async () => {
+  await loadAlwaysPages();
+  await loadRestoredPages();
+  Shell.boot();
+});
 </script>
 </body>
 </html>
