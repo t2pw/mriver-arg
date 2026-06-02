@@ -1,0 +1,114 @@
+// inochi.js　第2層②「なぜ冤罪は生まれたか」
+// キーワード例: 自白、証拠隠蔽、冤罪
+// prereqs: hub_002
+
+PAGE_CONTENT['inochi'] = () => `<div class="bpage">
+  <div class="bpage-num">第2層　02</div>
+  <div class="bpage-title">なぜ冤罪は生まれたか</div>
+  <div class="bpage-meta">資料出典：裁判記録・新聞報道・守る会文書　／　記録者：蛸川小蘭</div>
+
+  <div class="bpage-body">
+    <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;">
+      ── 小蘭が14年間で集めた裁判記録の分析。当時の視点と現在の視点が混在している。
+    </p>
+    <p>
+      M川事件で二十名が逮捕された。全員が無実だった。
+      では、なぜ彼らは有罪とされたのか。
+    </p>
+    <p>
+      答えは一つではない。いくつかの力が重なって、冤罪は生まれた。
+    </p>
+  </div>
+
+  <!-- 構造分析パネル -->
+  <div style="margin:0 0 8px;display:flex;flex-direction:column;gap:8px;">
+
+    <div style="
+      background:#0d0d10;border:1px solid rgba(255,255,255,0.07);
+      border-radius:10px;overflow:hidden;font-family:var(--mono);
+    ">
+      <div style="
+        padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.05);
+        background:rgba(200,88,88,0.07);
+        color:var(--red);font-size:10px;letter-spacing:.12em;
+      ">01　自白の強要</div>
+      <div style="padding:12px 14px;font-size:12px;color:var(--t2);line-height:1.9;">
+        逮捕直後から長時間の取調べが続いた。弁護士との接見は制限された。
+        家族との連絡も断たれた。睡眠を与えない日が続いた。
+        被告の一人は後に「本当のことを言えば帰れると思った」と証言している。
+        自白は証拠として採用された。
+      </div>
+    </div>
+
+    <div style="
+      background:#0d0d10;border:1px solid rgba(255,255,255,0.07);
+      border-radius:10px;overflow:hidden;font-family:var(--mono);
+    ">
+      <div style="
+        padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.05);
+        background:rgba(200,88,88,0.07);
+        color:var(--red);font-size:10px;letter-spacing:.12em;
+      ">02　証拠の非対称</div>
+      <div style="padding:12px 14px;font-size:12px;color:var(--t2);line-height:1.9;">
+        検察が持つ証拠と、弁護側が見られる証拠は、最初から量が違った。
+        弁護団が証拠開示を求めても、「捜査上の理由」で拒否された。
+        現場の実況見分記録に不自然な修正痕があった。
+        指摘しても、採用されなかった。
+      </div>
+    </div>
+
+    <div style="
+      background:#0d0d10;border:1px solid rgba(255,255,255,0.07);
+      border-radius:10px;overflow:hidden;font-family:var(--mono);
+    ">
+      <div style="
+        padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.05);
+        background:rgba(200,88,88,0.07);
+        color:var(--red);font-size:10px;letter-spacing:.12em;
+      ">03　時代の空気</div>
+      <div style="padding:12px 14px;font-size:12px;color:var(--t2);line-height:1.9;">
+        1949年は占領期の終わり際だった。労働運動への警戒が社会全体に広がっていた。
+        「K鉄の組合員が事件を起こした」という物語は、
+        受け入れられやすい土壌があった。
+        新聞の多くが逮捕当初から有罪を前提とした書き方をした。
+      </div>
+    </div>
+
+    <div style="
+      background:#0d0d10;border:1px solid rgba(255,255,255,0.07);
+      border-radius:10px;overflow:hidden;font-family:var(--mono);
+    ">
+      <div style="
+        padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.05);
+        background:rgba(200,88,88,0.07);
+        color:var(--red);font-size:10px;letter-spacing:.12em;
+      ">04　目撃者の不在</div>
+      <div style="padding:12px 14px;font-size:12px;color:var(--t2);line-height:1.9;">
+        事件の夜、現場付近には複数の人間がいた。
+        しかし証言台に立った者はほとんどいなかった。
+        立てなかった者もいた。
+        記録から消えた者もいた。
+        <span class="anom" style="font-size:11px;">──「不審人物」の項目参照</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bpage-body" style="margin-top:16px;">
+    <p>
+      これらが重なった。どれか一つを取り除けば、結果は違ったかもしれない。
+      しかし当時の法廷は、これらを「証拠」として積み上げ、有罪とした。
+    </p>
+    <p>
+      14年後、無罪が確定した。
+      しかし誰も責任を問われなかった。
+      誰も謝罪しなかった。
+      被告たちの14年間は、戻らなかった。
+    </p>
+    <p class="anom">
+      猫塚清治は、被告にも証人にもならなかった。<br>
+      記録から消えたことで、「04」の一部になった。<br>
+      彼が証言台に立っていたら、何かが変わっていたかもしれない。
+    </p>
+  </div>
+</div>`;
