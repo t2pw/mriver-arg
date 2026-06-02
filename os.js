@@ -60,12 +60,12 @@ const KoeOS = (() => {
     { id:'data_trace',   title:'小蘭のデータ痕跡の全容', locked:true, keywords:['バイナリ','穿孔','電文'],         prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'💾' },
 
     // 第3層
-    { id:'hidden',      title:'隠しページ',            locked:true, keywords:[], prereqs:[],          phase:3, spokeGroup:null, icon:'🔮' },
-    { id:'fumi_tegami', title:'猫塚ふみの手紙',        locked:true, keywords:[], prereqs:['hidden'],   phase:3, spokeGroup:null, icon:'✉️' },
+    { id:'hidden',      title:'隠しページ',            locked:true, keywords:[], prereqs:['data_trace'], phase:3, spokeGroup:null, icon:'🔮' },
+    { id:'fumi_tegami', title:'猫塚ふみの手紙',        locked:true, keywords:[], prereqs:['hidden'],     phase:3, spokeGroup:null, icon:'✉️' },
     { id:'choice',      title:'この手紙を、記録しますか', locked:true, keywords:[], prereqs:['fumi_tegami'], phase:3, spokeGroup:null, icon:'❓' },
-    { id:'wiki_add',    title:'架空wiki（追記）',      locked:true, keywords:[], prereqs:['choice'],   phase:3, spokeGroup:null, icon:'📝' },
-    { id:'wiki_skip',   title:'架空wiki（スキップ）',  locked:true, keywords:[], prereqs:['choice'],   phase:3, spokeGroup:null, icon:'📝' },
-    { id:'epilogue',    title:'エピローグ',            locked:true, keywords:[], prereqs:[],           phase:3, spokeGroup:null, icon:'🌸' },
+    { id:'wiki_add',    title:'架空wiki（追記）',      locked:true, keywords:[], prereqs:['choice'],     phase:3, spokeGroup:null, icon:'📝' },
+    { id:'wiki_skip',   title:'架空wiki（スキップ）',  locked:true, keywords:[], prereqs:['choice'],     phase:3, spokeGroup:null, icon:'📝' },
+    { id:'epilogue',    title:'エピローグ',            locked:true, keywords:[], prereqs:['choice'],     phase:3, spokeGroup:null, icon:'🌸' },
   ];
 
   const SPOKES = ['A','B','C','D','E'];
