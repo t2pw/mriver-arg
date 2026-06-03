@@ -76,7 +76,8 @@ PAGE_CONTENT['hub_002'] = () => `<div class="bpage">
     </p>
 
     <p class="anom">
-      新しいキーワードで、8つのファイルが復元できる。
+      ここから先は、一つの記事が、次の記事の鍵を示す。<br>
+      読み進めれば、自ずと次に検索すべき語が見えてくる。
     </p>
 
     <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:2;margin-top:2em;">
@@ -87,39 +88,28 @@ PAGE_CONTENT['hub_002'] = () => `<div class="bpage">
     </p>
   </div>
 
-  <!-- 第2層キーワードヒント -->
+  <!-- 第2層への入口（連鎖の最初の一語） -->
   <div style="
     margin:0 0 0;
-    background:#0d0d10;
-    border:1px solid rgba(255,255,255,0.06);
+    background:#0d0009;
+    border:1px solid rgba(200,88,88,0.18);
     border-radius:10px;
     overflow:hidden;
     font-family:var(--mono);
   ">
     <div style="
       padding:9px 14px;
-      border-bottom:1px solid rgba(255,255,255,0.05);
-      font-size:10px;color:var(--t3);letter-spacing:.12em;
-    ">── 第2層　復元キーワード</div>
-    <div style="padding:12px 14px;display:flex;flex-direction:column;gap:7px;font-size:11px;line-height:1.8;">
-      ${[
-        ['猫塚清治という人物', '保線作業員　／　34歳　／　菜園'],
-        ['なぜ冤罪は生まれたか', '自白　／　証拠隠蔽　／　冤罪'],
-        ['声を上げた人々', '広瀬和郎　／　四面楚歌　／　広津和郎'],
-        ['声は壁を透して（文集）', '三百通　／　収録　／　守る会'],
-        ['声の速さと重さ', '葉書一通　／　重さ　／　現代'],
-        ['芙島市の現在と桃見山', '更地　／　マンション　／　記念館'],
-        ['記録の行方', '記録の行方　／　未来の誰か'],
-        ['小蘭のデータ痕跡の全容', 'バイナリ　／　穿孔　／　電文'],
-      ].map(([title, kw]) => `
-        <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:4px 12px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03);">
-          <span style="color:var(--t2);">${title}</span>
-          <span style="color:var(--gold);font-size:10px;letter-spacing:.04em;">${kw}</span>
-        </div>
-      `).join('')}
+      border-bottom:1px solid rgba(200,88,88,0.12);
+      font-size:10px;color:var(--red);letter-spacing:.12em;
+    ">── 第2層　最初のファイル</div>
+    <div style="padding:14px;font-size:12px;color:var(--t2);line-height:2.1;letter-spacing:.04em;">
+      まず、あの夜に私を逃がした男のことを書く。<br>
+      彼は被告にも証人にもならなかった。記録のどこにも、その名はない。<br>
+      当局の照合結果には、ただ一語だけが残っている——<span style="color:var(--red);">存在しない人物</span>、と。
     </div>
-    <div style="padding:8px 14px 12px;font-size:10px;color:var(--t3);letter-spacing:.06em;">
-      ── いずれか一語を入力すると復元できます。
+    <div style="padding:0 14px 14px;font-size:10px;color:var(--t3);letter-spacing:.06em;line-height:1.8;">
+      ── この語を検索することから、第2層は始まる。<br>
+      　　以降は、一つ読むごとに次の語が現れる。
     </div>
   </div>
 </div>`;

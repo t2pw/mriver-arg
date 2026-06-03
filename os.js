@@ -25,20 +25,20 @@ const KoeOS = (() => {
     // スポークA 手記
     // kiroku_001: soran_profile に「十湯温泉に逃げ込み」とある
     { id:'kiroku_001', title:'手記①　事件の夜',        locked:true, keywords:['十湯温泉','土湯温泉'],        prereqs:[],             phase:1, spokeGroup:'A', icon:'📓' },
-    // kiroku_002: kiroku_001「手の中にタコのぬいぐるみだけがあった」
-    { id:'kiroku_002', title:'手記②　十湯温泉',        locked:true, keywords:['タコのぬいぐるみ','ぬいぐるみ'], prereqs:['kiroku_001'], phase:1, spokeGroup:'A', icon:'📓' },
+    // kiroku_002: kiroku_001 冒頭「低い山がひとつ──偲山。なぜか懐かしい」
+    { id:'kiroku_002', title:'手記②　十湯温泉',        locked:true, keywords:['偲山'], prereqs:['kiroku_001'], phase:1, spokeGroup:'A', icon:'📓' },
     // kiroku_003: kiroku_002 末尾「次に書くべきは、彼のこと──猫塚清治」
     { id:'kiroku_003', title:'手記③　猫塚清治のこと',  locked:true, keywords:['猫塚清治','清治'], prereqs:['kiroku_002'], phase:1, spokeGroup:'A', icon:'📓' },
     // kiroku_004: kiroku_003 末尾「封筒に宛名を書けない／書けない手紙が始まった」
     { id:'kiroku_004', title:'手記④　書けない手紙',    locked:true, keywords:['封筒','書けない手紙'], prereqs:['kiroku_003'], phase:1, spokeGroup:'A', icon:'📓' },
 
     // スポークB 写真
-    // photo_001: kiroku_001「私は草むらに伏せた」── 草むらの高さからの低アングル写真
-    { id:'photo_001', title:'写真①　記録されなかった人物',    locked:true, keywords:['草むら'],  prereqs:[],            phase:1, spokeGroup:'B', icon:'📷' },
-    // photo_002: photo_001 末尾「撮影者自身が写り込んだのかもしれない」
-    { id:'photo_002', title:'写真②　同じ場所・70年の隔たり', locked:true, keywords:['撮影者','撮影者自身'], prereqs:['photo_001'], phase:1, spokeGroup:'B', icon:'📷' },
-    // photo_003: photo_002 末尾「七十年以上の時間がある」
-    { id:'photo_003', title:'写真③　菜園と暖簾',             locked:true, keywords:['七十年','七十年以上'], prereqs:['photo_002'], phase:1, spokeGroup:'B', icon:'📷' },
+    // photo_001: soran_profile「記録されなかった人物が草むらすれすれから写されている」
+    { id:'photo_001', title:'写真①　記録されなかった人物',    locked:true, keywords:['記録されなかった人物'],  prereqs:[],            phase:1, spokeGroup:'B', icon:'📷' },
+    // photo_002: photo_001 末尾「撮影者不詳──七十年後の一枚にも同じ符号」
+    { id:'photo_002', title:'写真②　同じ場所・70年の隔たり', locked:true, keywords:['撮影者不詳'], prereqs:['photo_001'], phase:1, spokeGroup:'B', icon:'📷' },
+    // photo_003: photo_002 末尾「痕跡は最後の一枚──暖簾のそばに」
+    { id:'photo_003', title:'写真③　菜園と暖簾',             locked:true, keywords:['暖簾'], prereqs:['photo_002'], phase:1, spokeGroup:'B', icon:'📷' },
 
     // スポークC 掲示板
     // bbs_001: soran_profile「M川事件」（松川事件は実在語フック）
@@ -72,18 +72,17 @@ const KoeOS = (() => {
     // 第2層ハブ（全スポーク完了で自動解放）
     { id:'hub_002', title:'第2層が開く', locked:true, keywords:[], prereqs:[], phase:2, spokeGroup:null, icon:'🔓' },
 
-    // 第2層（hub_002 のキーワードヒント欄と完全一致）
-    // koaru_record: 猫塚清治/清治 は kiroku_003 が消費するため、属性語で分離
-    { id:'koaru_record', title:'猫塚清治という人物',    locked:true, keywords:['保線作業員','34歳','菜園'],          prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'👤' },
-    { id:'inochi',       title:'なぜ冤罪は生まれたか',  locked:true, keywords:['自白','証拠隠蔽','冤罪'],           prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📄' },
-    { id:'voices',       title:'声を上げた人々',        locked:true, keywords:['広瀬和郎','四面楚歌','広津和郎'], prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📄' },
-    { id:'tegami',       title:'声は壁を透して（文集）', locked:true, keywords:['三百通','収録','守る会'],           prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📖' },
-    { id:'sns',          title:'声の速さと重さ',        locked:true, keywords:['葉書一通','重さ','現代'],           prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📄' },
-    // momo: 桃見山 は map スポークが消費するため、現在語で分離
-    { id:'momo',         title:'芙島市の現在と桃見山',  locked:true, keywords:['更地','マンション','記念館'],       prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'🌸' },
-    // loop: タコ は kiroku_002 が消費するため、主題語で分離
-    { id:'loop',         title:'記録の行方',            locked:true, keywords:['記録の行方','未来の誰か'],           prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'🔄' },
-    { id:'data_trace',   title:'小蘭のデータ痕跡の全容', locked:true, keywords:['バイナリ','穿孔','電文'],          prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'💾' },
+    // 第2層は連鎖：hub_002 →(存在しない人物)→ koaru_record →(冤罪)→ inochi →(四面楚歌)→ voices
+    //   →(三百通)→ tegami →(二グラム)→ sns →(帰れなかった)→ momo →(未来の誰か)→ loop →(存在の異常)→ data_trace →(prereq)→ hidden
+    //   各ページ末尾が次の重要語を提示する（第1層と同方針）
+    { id:'koaru_record', title:'猫塚清治という人物',    locked:true, keywords:['存在しない人物'],        prereqs:['hub_002'],      phase:2, spokeGroup:null, icon:'👤' },
+    { id:'inochi',       title:'なぜ冤罪は生まれたか',  locked:true, keywords:['冤罪','自白','証拠隠蔽'], prereqs:['koaru_record'], phase:2, spokeGroup:null, icon:'📄' },
+    { id:'voices',       title:'声を上げた人々',        locked:true, keywords:['四面楚歌','広瀬和郎','広津和郎'], prereqs:['inochi'], phase:2, spokeGroup:null, icon:'📄' },
+    { id:'tegami',       title:'声は壁を透して（文集）', locked:true, keywords:['三百通'],                 prereqs:['voices'],       phase:2, spokeGroup:null, icon:'📖' },
+    { id:'sns',          title:'声の速さと重さ',        locked:true, keywords:['二グラム','2グラム'],     prereqs:['tegami'],       phase:2, spokeGroup:null, icon:'📄' },
+    { id:'momo',         title:'芙島市の現在と桃見山',  locked:true, keywords:['帰れなかった'],           prereqs:['sns'],          phase:2, spokeGroup:null, icon:'🌸' },
+    { id:'loop',         title:'記録の行方',            locked:true, keywords:['未来の誰か','記録の行方'], prereqs:['momo'],         phase:2, spokeGroup:null, icon:'🔄' },
+    { id:'data_trace',   title:'小蘭のデータ痕跡の全容', locked:true, keywords:['存在の異常'],             prereqs:['loop'],         phase:2, spokeGroup:null, icon:'💾' },
 
     // 第3層
     { id:'hidden',      title:'隠しページ',             locked:true, keywords:[], prereqs:['data_trace'], phase:3, spokeGroup:null, icon:'🔮' },
