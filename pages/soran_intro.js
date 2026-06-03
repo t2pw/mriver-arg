@@ -72,7 +72,7 @@ MSG_THREADS['soran_intro'] = () => `
         タイムスタンプ：1963-09-12 09:04
       </div>
       <div
-        onclick="Shell.open('browser'); setTimeout(() => Shell.bNavigate('hidden'), 80);"
+        onclick="Shell.open('browser'); setTimeout(() => { const v=document.getElementById('bview'); if(v) v.innerHTML='<div style=\"padding:60px 20px;text-align:center;font-family:var(--mono);line-height:2.2;\"><div style=\"font-size:13px;color:var(--red);letter-spacing:.1em;\">⚠ アクセス拒否</div><div style=\"font-size:10px;color:var(--t3);margin-top:8px;letter-spacing:.08em;\">ファイルは暗号化されています<br>復号キー：N-0314<br>解読のために別の手がかりが必要です</div></div>'; }, 80);"
         style="
           display:inline-block;
           background:rgba(200,88,88,0.12);
