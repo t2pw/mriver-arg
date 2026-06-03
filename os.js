@@ -62,7 +62,7 @@ const KoeOS = (() => {
     { id:'voices',       title:'声を上げた人々',        locked:true, keywords:['広瀬和郎','四面楚歌','書き続けた','広津和郎'],                       prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📄' },
     { id:'tegami',       title:'声は壁を透して（文集）', locked:true, keywords:['守る会文集','収録できなかった','頒布のみ'],                          prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📖' },
     { id:'sns',          title:'声の速さと重さ',        locked:true, keywords:['葉書一通','2グラム','遅い声'],                                       prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📄' },
-    { id:'momo',         title:'芙島市の現在と桃見山',  locked:true, keywords:['桃の花','今年も咲いた','M川運動記念館'],                             prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'🌸' },
+    { id:'momo',         title:'芙島市の現在と桃見山',  locked:true, keywords:['桜の花','今年も咲いた','M川運動記念館'],                             prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'🌸' },
     { id:'loop',         title:'ループの伏線回収',      locked:true, keywords:['未来の誰か','タコに刻んだ','ループ'],                                prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'🔄' },
     { id:'data_trace',   title:'小蘭のデータ痕跡の全容', locked:true, keywords:['まだ開いていない扉','データ痕跡','アーカイブの構造'],                prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'💾' },
 

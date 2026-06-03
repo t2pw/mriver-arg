@@ -43,7 +43,7 @@ PAGE_CONTENT['telegram_001'] = () => {
     <div style="padding:14px;">
       <img src="images/puzzle_e_hex.jpg"
            style="width:100%;border-radius:6px;display:block;"
-           onerror="this.outerHTML='<div style=\'background:#1a1610;border:1px dashed rgba(200,169,110,0.25);border-radius:6px;height:130px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--t3);font-family:var(--mono);font-size:10px;text-align:center;line-height:1.7;\'>[ images/puzzle_e_hex.jpg ]<br><span style=\'color:var(--gold);font-size:16px;letter-spacing:.2em;\'>53　55　4A</span><br><span style=\'font-size:9px;\'>画像をここに配置</span></div>'" >
+           onerror="this.outerHTML='<div style=\'background:#1a1610;border:1px dashed rgba(200,169,110,0.25);border-radius:6px;height:130px;display:flex;align-items:center;justify-content:center;color:var(--t3);font-family:var(--mono);font-size:10px;text-align:center;\'>[画像読み込みエラー]</div>'" >
       <div style="font-family:var(--mono);font-size:10px;color:var(--t3);margin-top:10px;line-height:1.8;">
         ── 数字の羅列に見える。2桁ずつ区切られている。<br>
         　　これが何の符号なのか、調べてみる価値がある。

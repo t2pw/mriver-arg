@@ -131,6 +131,21 @@
     <p>その後、小蘭の記録はない。</p>
   </div>
 
+  <div style="margin:0 0 16px;">
+    <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.06em;margin-bottom:6px;">
+      ── 蒼沼ブルーランド　昭和50年代（営業当時）
+    </div>
+    <img src="images/photo_tsanuma_1960.jpg"
+         style="width:100%;height:200px;object-fit:cover;border-radius:6px;display:block;"
+         onerror="this.style.display='none'">
+    <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.06em;margin:10px 0 6px;">
+      ── 同地点　現在
+    </div>
+    <img src="images/photo_tsanuma_now.jpg"
+         style="width:100%;height:200px;object-fit:cover;border-radius:6px;display:block;"
+         onerror="this.style.display='none'">
+  </div>
+
   <div id="leaflet-map-003"></div>
 
   <div class="bpage-body" style="margin-top:12px;">

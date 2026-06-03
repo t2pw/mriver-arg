@@ -1,5 +1,5 @@
 // momo.js　第2層⑥「芙島市の現在と桃見山」
-// キーワード例: 今年も、帰れなかった、桃の花
+// キーワード例: 今年も、帰れなかった、桜の花
 // prereqs: hub_002
 // 役割：小蘭が帰れなかった場所。現在の芙島市。哀愁のある静かなページ。
 
@@ -34,11 +34,11 @@ PAGE_CONTENT['momo'] = () => `<div class="bpage">
       <span style="color:var(--t3);">猫塚家跡</span>
       <span style="color:var(--t1);">更地。マンションが建っている</span>
 
-      <span style="color:var(--t3);">M川駅跡</span>
-      <span style="color:var(--t1);">廃線のまま。草が深くなった</span>
+      <span style="color:var(--t3);">M川駅</span>
+      <span style="color:var(--t1);">現役。駅舎は建て替えられた</span>
 
       <span style="color:var(--t3);">十湯温泉</span>
-      <span style="color:var(--t1);">旅館は一軒残っている</span>
+      <span style="color:var(--t1);">旅館が九軒営業中</span>
 
       <span style="color:var(--t3);">蒼沼ブルーランド</span>
       <span style="color:var(--t1);">廃墟のまま。立入禁止</span>

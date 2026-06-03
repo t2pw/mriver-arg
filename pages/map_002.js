@@ -40,7 +40,7 @@
       {
         lat: 37.7260, lng: 140.5400,
         label: '観察記録　1952年3月',
-        note: '桃の花、満開。人出多し。子ども連れ。自分だけが時間の外にいる気がした。',
+        note: '桜の花、満開。人出多し。子ども連れ。自分だけが時間の外にいる気がした。',
         anom: false,
       },
       {
@@ -119,11 +119,20 @@
 
   <div class="bpage-body">
     <p>小蘭は毎年三月、桃見山に行った。行けなかった年はなかった。</p>
-    <p>帰れると思っていた、と手記に書いてある。桃の花が咲く頃には帰れると。理由は書いていない。</p>
+    <p>帰れると思っていた、と手記に書いてある。桜の花が咲く頃には帰れると。理由は書いていない。</p>
     <p>どこへ帰るつもりだったのかも、書いていない。</p>
   </div>
 
   <div id="leaflet-map-002"></div>
+
+  <div style="margin:12px 0 0;">
+    <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.06em;margin-bottom:6px;">
+      ── 桃見山　全景　昭和32年春
+    </div>
+    <img src="images/photo_hmiyama.jpg"
+         style="width:100%;border-radius:6px;display:block;"
+         onerror="this.style.display='none'">
+  </div>
 
   <div class="bpage-body" style="margin-top:12px;">
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;">
@@ -135,7 +144,7 @@
       書き直した跡がある。
     </p>
     <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:1.9;">
-      「桃の花は毎年咲く。<br>
+      「桜の花は毎年咲く。<br>
       　私が帰れなくても、咲く。<br>
       　それだけは確かだと思って、十四年間、春を待った。」<br>
       <span style="font-size:10px;color:var(--t3);">──手記断片　1963年3月</span>

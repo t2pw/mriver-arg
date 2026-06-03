@@ -13,12 +13,12 @@ PAGE_CONTENT['epilogue'] = () => {
 
   return `<div class="bpage">
   <div class="bpage-num">── エピローグ ──</div>
-  <div class="bpage-title">芙島市に、桃の花が咲いている</div>
+  <div class="bpage-title">芙島市に、桜の花が咲いている</div>
   <div class="bpage-meta">記録日時：${new Date().toLocaleDateString('ja-JP')}　／　閲覧者：あなた</div>
 
   <div class="bpage-body">
     <p>
-      芙島市に、桃の花が咲いている。
+      芙島市に、桜の花が咲いている。
     </p>
     <p>
       小蘭が14年間、三月のたびに眺めた山だ。
@@ -120,7 +120,7 @@ PAGE_CONTENT['epilogue'] = () => {
       そして、ここにも。
     </p>
     <p>
-      それでも桃の花は咲く。
+      それでも桜の花は咲く。
       小蘭が帰れなくても、咲く。
       記録されなくても、咲く。
     </p>
