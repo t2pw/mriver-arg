@@ -1,41 +1,15 @@
 // map_002.js　地図②「桃見山」
 // キーワード例: 桃見山、三月、帰れる
-// v2: imageOverlay 共通化。ensureLeaflet は map_001.js で定義済み前提。
+// v3: IMG_BOUNDS・マーカー座標を map_fushima.jpg に合わせて調整済み
 
 (function () {
 
-  const IMG_BOUNDS = [[37.680, 140.420], [37.830, 140.580]];
-  const CENTER     = [37.7085, 140.5198];
-  const ZOOM_INIT  = 13;
+  const IMG_BOUNDS = [[37.67, 140.38], [37.83, 140.60]];
+  // 桃見山（右下）を中心に表示
+  const CENTER     = [37.7224, 140.5365];
+  const ZOOM_INIT  = 12;
   const ZOOM_MIN   = 11;
   const ZOOM_MAX   = 13;
-
-  const POINTS = [
-    {
-      lat: 37.7085, lng: 140.5198,
-      label: '桃見山　展望点',
-      note: '「毎年三月、ここから山を見た。帰れると思っていた」──手記断片より。',
-      anom: false,
-    },
-    {
-      lat: 37.7121, lng: 140.5241,
-      label: '観察記録　1952年3月',
-      note: '桃の花、満開。人出多し。子ども連れ。自分だけが時間の外にいる気がした。',
-      anom: false,
-    },
-    {
-      lat: 37.7063, lng: 140.5154,
-      label: '観察記録　1957年3月',
-      note: '今年も来た。八年目。M川事件の判決がまだ出ていない。花は関係なく咲く。',
-      anom: false,
-    },
-    {
-      lat: 37.7095, lng: 140.5217,
-      label: '観察記録　1963年3月',
-      note: '最後に来た三月。この年の九月に無罪が確定した。私はその日ここにいなかった。',
-      anom: true,
-    },
-  ];
 
   function _init() {
     const el = document.getElementById('leaflet-map-002');
@@ -53,9 +27,35 @@
       maxBoundsViscosity: 1.0,
     });
 
-    L.imageOverlay('images/map_fushima.jpg', IMG_BOUNDS, {
-      opacity: 0.88,
-    }).addTo(map);
+    L.imageOverlay('images/map_fushima.jpg', IMG_BOUNDS, { opacity: 0.92 }).addTo(map);
+
+    // 桃見山の観察ポイント群（画像上の山の位置に合わせた座標）
+    const POINTS = [
+      {
+        lat: 37.7224, lng: 140.5365,
+        label: '桃見山　展望点',
+        note: '「毎年三月、ここから山を見た。帰れると思っていた」──手記断片より。',
+        anom: false,
+      },
+      {
+        lat: 37.7260, lng: 140.5400,
+        label: '観察記録　1952年3月',
+        note: '桃の花、満開。人出多し。子ども連れ。自分だけが時間の外にいる気がした。',
+        anom: false,
+      },
+      {
+        lat: 37.7190, lng: 140.5330,
+        label: '観察記録　1957年3月',
+        note: '今年も来た。八年目。M川事件の判決がまだ出ていない。花は関係なく咲く。',
+        anom: false,
+      },
+      {
+        lat: 37.7240, lng: 140.5380,
+        label: '観察記録　1963年3月',
+        note: '最後に来た三月。この年の九月に無罪が確定した。私はその日ここにいなかった。',
+        anom: true,
+      },
+    ];
 
     POINTS.forEach(p => {
       const color = p.anom ? '#c85858' : '#c8a96e';
@@ -64,7 +64,7 @@
         className: '',
         html: `<div style="
           width:10px;height:10px;border-radius:50%;
-          background:${color};border:2px solid #e2e0da;
+          background:${color};border:2px solid #1a1a1f;
           box-shadow:0 0 7px ${glow};
           ${p.anom ? 'animation:anom-pulse 1.4s ease infinite;' : ''}
         "></div>`,
@@ -82,8 +82,8 @@
       L.marker([p.lat, p.lng], { icon }).addTo(map).bindPopup(popup);
     });
 
-    // 展望点に視野範囲の円
-    L.circle([37.7085, 140.5198], {
+    // 展望点の視野範囲
+    L.circle([37.7224, 140.5365], {
       radius: 300, color: '#c8a96e', fillColor: '#c8a96e',
       fillOpacity: 0.05, weight: 1, dashArray: '4 4', opacity: 0.4,
     }).addTo(map);
@@ -103,9 +103,7 @@
   <div class="bpage-meta">観測記録：1950年〜1963年　／　記録者：蛸川小蘭　／　毎年三月</div>
 
   <style>
-    #leaflet-map-002 {
-      width:100%;height:260px;border-radius:8px;margin:0 0 4px;
-    }
+    #leaflet-map-002 { width:100%;height:260px;border-radius:8px;margin:0 0 4px; }
     .koe-popup .leaflet-popup-content-wrapper {
       background:#1a1a1f !important;border:1px solid rgba(255,255,255,0.09) !important;
       border-radius:8px !important;box-shadow:0 4px 16px rgba(0,0,0,.7) !important;padding:0 !important;

@@ -1,47 +1,15 @@
 // map_003.js　地図③「蒼沼ブルーランドへ」
 // キーワード例: 蒼沼、廃墟、最後
-// v2: imageOverlay 共通化。
+// v3: IMG_BOUNDS・マーカー座標を map_fushima.jpg に合わせて調整済み
 
 (function () {
 
-  const IMG_BOUNDS = [[37.680, 140.420], [37.830, 140.580]];
-  const CENTER     = [37.8102, 140.5480];
-  const ZOOM_INIT  = 13;
+  const IMG_BOUNDS = [[37.67, 140.38], [37.83, 140.60]];
+  // 蒼沼（右上）を中心に表示
+  const CENTER     = [37.7946, 140.5395];
+  const ZOOM_INIT  = 12;
   const ZOOM_MIN   = 11;
   const ZOOM_MAX   = 13;
-
-  const POINTS = [
-    {
-      lat: 37.8102, lng: 140.5480,
-      label: '蒼沼ブルーランド　正門跡',
-      note: '廃墟になるまで待った。当局の目が届かなくなるまで。──小蘭、最後の記録より。',
-      anom: false, size: 12, color: '#5a8fd4',
-    },
-    {
-      lat: 37.8118, lng: 140.5461,
-      label: '観覧車支柱　根元',
-      note: '「観覧車の根元の地面を、二十センチ掘った」──詳細は data_trace に記録。',
-      anom: false, size: 10, color: '#5a8fd4',
-    },
-    {
-      lat: 37.8089, lng: 140.5502,
-      label: '旧管理棟',
-      note: '床板の下。防水ケースに収めたメモリ。──暗号キー：N-0314。',
-      anom: true, size: 10, color: '#c85858',
-    },
-    {
-      lat: 37.8075, lng: 140.5488,
-      label: '沼　東岸',
-      note: '「最後の夜、沼の水が青かった。蒼沼という名前の理由がやっと分かった」',
-      anom: false, size: 10, color: '#5a8fd4',
-    },
-    {
-      lat: 37.8110, lng: 140.5510,
-      label: '███　（座標のみ）',
-      note: '対応する記録なし。この座標だけが他のファイルと一致する。',
-      anom: true, size: 10, color: '#c85858',
-    },
-  ];
 
   function _init() {
     const el = document.getElementById('leaflet-map-003');
@@ -59,9 +27,41 @@
       maxBoundsViscosity: 1.0,
     });
 
-    L.imageOverlay('images/map_fushima.jpg', IMG_BOUNDS, {
-      opacity: 0.88,
-    }).addTo(map);
+    L.imageOverlay('images/map_fushima.jpg', IMG_BOUNDS, { opacity: 0.92 }).addTo(map);
+
+    // 蒼沼周辺のポイント（画像上の湖位置に合わせた座標）
+    const POINTS = [
+      {
+        lat: 37.7946, lng: 140.5395,
+        label: '蒼沼ブルーランド　正門跡',
+        note: '廃墟になるまで待った。当局の目が届かなくなるまで。──小蘭、最後の記録より。',
+        anom: false, size: 12, color: '#5a8fd4',
+      },
+      {
+        lat: 37.7970, lng: 140.5360,
+        label: '観覧車支柱　根元',
+        note: '「観覧車の根元の地面を、二十センチ掘った」──詳細は data_trace に記録。',
+        anom: false, size: 10, color: '#5a8fd4',
+      },
+      {
+        lat: 37.7920, lng: 140.5420,
+        label: '旧管理棟',
+        note: '床板の下。防水ケースに収めたメモリ。──暗号キー：N-0314。',
+        anom: true, size: 10, color: '#c85858',
+      },
+      {
+        lat: 37.7900, lng: 140.5440,
+        label: '沼　東岸',
+        note: '「最後の夜、沼の水が青かった。蒼沼という名前の理由がやっと分かった」',
+        anom: false, size: 10, color: '#5a8fd4',
+      },
+      {
+        lat: 37.7980, lng: 140.5460,
+        label: '███　（座標のみ）',
+        note: '対応する記録なし。この座標だけが他のファイルと一致する。',
+        anom: true, size: 10, color: '#c85858',
+      },
+    ];
 
     POINTS.forEach(p => {
       const sz   = p.size || 10;
@@ -70,7 +70,7 @@
         className: '',
         html: `<div style="
           width:${sz}px;height:${sz}px;border-radius:50%;
-          background:${p.color};border:2px solid #e2e0da;
+          background:${p.color};border:2px solid #1a1a1f;
           box-shadow:0 0 8px ${glow};
           ${p.anom ? 'animation:anom-pulse 1.4s ease infinite;' : ''}
         "></div>`,
@@ -89,10 +89,11 @@
     });
 
     // 敷地輪郭
-    L.rectangle([[37.8068, 140.5450], [37.8130, 140.5525]], {
-      color: '#5a8fd4', fillColor: '#5a8fd4', fillOpacity: 0.04,
-      weight: 1, dashArray: '3 5', opacity: 0.35,
-    }).addTo(map);
+    L.rectangle(
+      [[37.7895, 140.5340], [37.7995, 140.5480]],
+      { color:'#5a8fd4', fillColor:'#5a8fd4', fillOpacity:0.04,
+        weight:1, dashArray:'3 5', opacity:0.35 }
+    ).addTo(map);
 
     setTimeout(() => map.invalidateSize(), 100);
   }
@@ -109,9 +110,7 @@
   <div class="bpage-meta">最終記録日：1963年9月11日（推定）　／　現在：廃墟　／　立入禁止区域</div>
 
   <style>
-    #leaflet-map-003 {
-      width:100%;height:270px;border-radius:8px;margin:0 0 4px;
-    }
+    #leaflet-map-003 { width:100%;height:270px;border-radius:8px;margin:0 0 4px; }
     .koe-popup .leaflet-popup-content-wrapper {
       background:#1a1a1f !important;border:1px solid rgba(255,255,255,0.09) !important;
       border-radius:8px !important;box-shadow:0 4px 16px rgba(0,0,0,.7) !important;padding:0 !important;

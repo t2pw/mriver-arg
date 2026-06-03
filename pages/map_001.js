@@ -1,13 +1,12 @@
 // map_001.js　地図①「芙島市中心部」
 // キーワード例: 座標、芙島市、埋め込み
-// v2: L.imageOverlay で架空地図画像を使用。タイルレイヤー廃止（実地名を出さない）。
+// v3: IMG_BOUNDS・マーカー座標を map_fushima.jpg の実画像に合わせて調整済み
 
 (function () {
 
-  // 架空地図画像がカバーする緯度経度の範囲
-  // 5スポット（芙島市中心〜蒼沼）がすべて収まる矩形
-  const IMG_BOUNDS = [[37.680, 140.420], [37.830, 140.580]];
-  const CENTER     = [37.752, 140.502];
+  // 画像（1448×1086px）の四隅に対応する緯度経度
+  const IMG_BOUNDS = [[37.67, 140.38], [37.83, 140.60]];
+  const CENTER     = [37.750, 140.490];
   const ZOOM_INIT  = 12;
   const ZOOM_MIN   = 11;
   const ZOOM_MAX   = 13;
@@ -35,17 +34,18 @@
     }
   }
 
+  // 座標は map_fushima.jpg のピクセル位置から逆算
   const POINTS = [
     {
-      lat: 37.7608, lng: 140.4748,
+      lat: 37.7578, lng: 140.4453,
       label: '芙島市中心部',
       note: '現在地として記録された座標。理由は不明。',
       anom: false,
     },
     {
-      lat: 37.7832, lng: 140.4621,
-      label: '偲山 山麓',
-      note: '手記②に記述あり。十湯温泉への経路上。',
+      lat: 37.7504, lng: 140.4408,
+      label: '偲山',
+      note: '手記②に記述あり。十湯温泉への経路上。市街地の南側に位置する。',
       anom: false,
     },
     {
@@ -55,13 +55,13 @@
       anom: true,
     },
     {
-      lat: 37.7501, lng: 140.4390,
+      lat: 37.7578, lng: 140.4200,
       label: '芙島大学付近',
       note: '「図書館に通い続けた」──手記③より。',
       anom: false,
     },
     {
-      lat: 37.7189, lng: 140.5334,
+      lat: 37.7400, lng: 140.5300,
       label: '送信点（推定）',
       note: 'アーカイブのデータ送信元と思われる座標。現在は住宅地。',
       anom: true,
@@ -81,18 +81,15 @@
           minZoom: ZOOM_MIN,
           maxZoom: ZOOM_MAX,
           zoomControl: true,
-          attributionControl: false,   // 架空地図なので帰属表示なし
-          maxBounds: IMG_BOUNDS,       // 画像範囲外にスクロールさせない
+          attributionControl: false,
+          maxBounds: IMG_BOUNDS,
           maxBoundsViscosity: 1.0,
         });
 
-        // ★ タイルレイヤーの代わりに架空地図画像を1枚敷く
         L.imageOverlay('images/map_fushima.jpg', IMG_BOUNDS, {
-          opacity: 0.88,
-          className: 'koe-map-img',
+          opacity: 0.92,
         }).addTo(map);
 
-        // ポイントマーカー
         POINTS.forEach(p => {
           const color = p.anom ? '#c85858' : '#c8a96e';
           const glow  = p.anom ? 'rgba(200,88,88,.8)' : 'rgba(200,169,110,.5)';
@@ -100,7 +97,7 @@
             className: '',
             html: `<div style="
               width:10px;height:10px;border-radius:50%;
-              background:${color};border:2px solid #e2e0da;
+              background:${color};border:2px solid #1a1a1f;
               box-shadow:0 0 7px ${glow};
               ${p.anom ? 'animation:anom-pulse 1.4s ease infinite;' : ''}
             "></div>`,
@@ -134,10 +131,7 @@
   </div>
 
   <style>
-    #leaflet-map-001 {
-      width:100%;height:280px;border-radius:8px;margin:0 0 4px;
-    }
-    .koe-map-img { image-rendering: auto; }
+    #leaflet-map-001 { width:100%;height:280px;border-radius:8px;margin:0 0 4px; }
     .koe-popup .leaflet-popup-content-wrapper {
       background:#1a1a1f !important;border:1px solid rgba(255,255,255,0.09) !important;
       border-radius:8px !important;box-shadow:0 4px 16px rgba(0,0,0,.7) !important;padding:0 !important;
