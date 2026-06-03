@@ -1,39 +1,40 @@
 // map_001.js　地図①「芙島市中心部」
 // キーワード例: 座標、芙島市、埋め込み
-// Leaflet.js をCDNから読み込み、PAGE_CONTENT関数内でsetTimeout(,0)により注入後に初期化
+// v2: L.imageOverlay で架空地図画像を使用。タイルレイヤー廃止（実地名を出さない）。
 
-(function() {
+(function () {
 
-  // Leaflet CSS/JSをまだ読み込んでいなければhead注入
+  // 架空地図画像がカバーする緯度経度の範囲
+  // 5スポット（芙島市中心〜蒼沼）がすべて収まる矩形
+  const IMG_BOUNDS = [[37.680, 140.420], [37.830, 140.580]];
+  const CENTER     = [37.752, 140.502];
+  const ZOOM_INIT  = 12;
+  const ZOOM_MIN   = 11;
+  const ZOOM_MAX   = 13;
+
   function ensureLeaflet(cb) {
     if (window._leafletReady) { cb(); return; }
-    if (document.getElementById('_leaflet_css')) {
-      // CSS注入済みだがJSがまだの場合
-      if (window.L) { window._leafletReady = true; cb(); return; }
-    }
-    // CSS
     if (!document.getElementById('_leaflet_css')) {
-      const link = document.createElement('link');
-      link.id   = '_leaflet_css';
-      link.rel  = 'stylesheet';
-      link.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
-      document.head.appendChild(link);
+      const lk = document.createElement('link');
+      lk.id = '_leaflet_css'; lk.rel = 'stylesheet';
+      lk.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
+      document.head.appendChild(lk);
     }
-    // JS
     if (!document.getElementById('_leaflet_js')) {
-      const s = document.createElement('script');
-      s.id  = '_leaflet_js';
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
-      s.onload = () => { window._leafletReady = true; cb(); };
-      document.head.appendChild(s);
+      const ls = document.createElement('script');
+      ls.id = '_leaflet_js';
+      ls.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
+      ls.onload = () => { window._leafletReady = true; cb(); };
+      document.head.appendChild(ls);
+    } else if (window.L) {
+      window._leafletReady = true; cb();
+    } else {
+      document.getElementById('_leaflet_js').addEventListener('load', () => {
+        window._leafletReady = true; cb();
+      });
     }
   }
 
-  // 芙島市 = 福島市に対応する架空都市。実座標は福島市中心部を使用。
-  const CENTER    = [37.7608, 140.4748];
-  const ZOOM      = 13;
-
-  // アーカイブに埋め込まれた「謎の座標」リスト
   const POINTS = [
     {
       lat: 37.7608, lng: 140.4748,
@@ -67,13 +68,7 @@
     },
   ];
 
-  // タイル：OpenStreetMap（無料・帰属表示必要）
-  // ARGの雰囲気のため、Leafletのデフォルトタイルを暗色CSSでフィルタリング
-  const TILE_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-  const TILE_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
-
   PAGE_CONTENT['map_001'] = () => {
-    // HTML注入後にLeaflet初期化（setTimeout 0でイベントループの次tick）
     setTimeout(() => {
       ensureLeaflet(() => {
         const el = document.getElementById('leaflet-map-001');
@@ -82,70 +77,48 @@
 
         const map = L.map(el, {
           center: CENTER,
-          zoom:   ZOOM,
+          zoom: ZOOM_INIT,
+          minZoom: ZOOM_MIN,
+          maxZoom: ZOOM_MAX,
           zoomControl: true,
-          attributionControl: true,
+          attributionControl: false,   // 架空地図なので帰属表示なし
+          maxBounds: IMG_BOUNDS,       // 画像範囲外にスクロールさせない
+          maxBoundsViscosity: 1.0,
         });
 
-        // タイルレイヤー（暗色フィルタはCSS側で対応）
-        L.tileLayer(TILE_URL, {
-          attribution: TILE_ATTR,
-          maxZoom: 18,
+        // ★ タイルレイヤーの代わりに架空地図画像を1枚敷く
+        L.imageOverlay('images/map_fushima.jpg', IMG_BOUNDS, {
+          opacity: 0.88,
+          className: 'koe-map-img',
         }).addTo(map);
 
-        // カスタムアイコン
-        const normalIcon = L.divIcon({
-          className: '',
-          html: `<div style="
-            width:10px;height:10px;border-radius:50%;
-            background:#c8a96e;border:2px solid #e2e0da;
-            box-shadow:0 0 6px rgba(200,169,110,.6);
-          "></div>`,
-          iconSize: [10,10],
-          iconAnchor: [5,5],
-          popupAnchor: [0,-8],
-        });
-        const anomIcon = L.divIcon({
-          className: '',
-          html: `<div style="
-            width:10px;height:10px;border-radius:50%;
-            background:#c85858;border:2px solid #e2e0da;
-            box-shadow:0 0 8px rgba(200,88,88,.8);
-            animation:anom-pulse 1.4s ease infinite;
-          "></div>`,
-          iconSize: [10,10],
-          iconAnchor: [5,5],
-          popupAnchor: [0,-8],
-        });
-
+        // ポイントマーカー
         POINTS.forEach(p => {
-          const icon = p.anom ? anomIcon : normalIcon;
-          const popup = L.popup({
-            className: 'koe-popup',
-            maxWidth: 220,
-          }).setContent(`
-            <div style="
-              font-family:'IBM Plex Mono',monospace;
-              font-size:11px;line-height:1.8;
-              color:${p.anom ? '#c85858' : '#e2e0da'};
-              background:#1a1a1f;
-              padding:4px 2px;
-            ">
-              <div style="font-weight:bold;letter-spacing:.08em;margin-bottom:4px;">
-                ${p.label}
-              </div>
-              <div style="color:#8a8880;font-size:10px;letter-spacing:.04em;">
-                ${p.lat.toFixed(4)}, ${p.lng.toFixed(4)}
-              </div>
-              <div style="margin-top:6px;font-size:10px;color:${p.anom ? '#c85858' : '#a0a09a'};">
-                ${p.note}
-              </div>
-            </div>
-          `);
+          const color = p.anom ? '#c85858' : '#c8a96e';
+          const glow  = p.anom ? 'rgba(200,88,88,.8)' : 'rgba(200,169,110,.5)';
+          const icon = L.divIcon({
+            className: '',
+            html: `<div style="
+              width:10px;height:10px;border-radius:50%;
+              background:${color};border:2px solid #e2e0da;
+              box-shadow:0 0 7px ${glow};
+              ${p.anom ? 'animation:anom-pulse 1.4s ease infinite;' : ''}
+            "></div>`,
+            iconSize: [10, 10], iconAnchor: [5, 5], popupAnchor: [0, -8],
+          });
+
+          const popup = L.popup({ className: 'koe-popup', maxWidth: 220 })
+            .setContent(`
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.8;
+                color:${p.anom ? '#c85858' : '#e2e0da'};background:#1a1a1f;padding:4px 2px;">
+                <div style="font-weight:bold;letter-spacing:.08em;margin-bottom:4px;">${p.label}</div>
+                <div style="color:#8a8880;font-size:10px;">${p.lat.toFixed(4)}, ${p.lng.toFixed(4)}</div>
+                <div style="margin-top:6px;font-size:10px;color:${p.anom ? '#c85858' : '#a0a09a'};">${p.note}</div>
+              </div>`);
+
           L.marker([p.lat, p.lng], { icon }).addTo(map).bindPopup(popup);
         });
 
-        // 地図コンテナのリサイズ対応（スマホシェル内のため）
         setTimeout(() => map.invalidateSize(), 100);
       });
     }, 0);
@@ -161,43 +134,21 @@
   </div>
 
   <style>
-    /* 地図コンテナ */
     #leaflet-map-001 {
-      width: 100%;
-      height: 280px;
-      border-radius: 8px;
-      margin: 0 0 4px;
-      filter: grayscale(40%) brightness(0.72) sepia(20%);
+      width:100%;height:280px;border-radius:8px;margin:0 0 4px;
     }
-    /* Leafletポップアップの背景を上書き */
+    .koe-map-img { image-rendering: auto; }
     .koe-popup .leaflet-popup-content-wrapper {
-      background: #1a1a1f !important;
-      border: 1px solid rgba(255,255,255,0.09) !important;
-      border-radius: 8px !important;
-      box-shadow: 0 4px 16px rgba(0,0,0,.7) !important;
-      padding: 0 !important;
+      background:#1a1a1f !important;border:1px solid rgba(255,255,255,0.09) !important;
+      border-radius:8px !important;box-shadow:0 4px 16px rgba(0,0,0,.7) !important;padding:0 !important;
     }
-    .koe-popup .leaflet-popup-content {
-      margin: 10px 12px !important;
-    }
-    .koe-popup .leaflet-popup-tip {
-      background: #1a1a1f !important;
-    }
-    .koe-popup .leaflet-popup-close-button {
-      color: #666 !important;
-    }
-    /* 赤点アニメーション */
+    .koe-popup .leaflet-popup-content { margin:10px 12px !important; }
+    .koe-popup .leaflet-popup-tip { background:#1a1a1f !important; }
+    .koe-popup .leaflet-popup-close-button { color:#666 !important; }
     @keyframes anom-pulse {
-      0%,100% { box-shadow: 0 0 6px rgba(200,88,88,.7); }
-      50%      { box-shadow: 0 0 14px rgba(200,88,88,1); }
+      0%,100% { box-shadow:0 0 6px rgba(200,88,88,.7); }
+      50%      { box-shadow:0 0 14px rgba(200,88,88,1); }
     }
-    /* Leafletロゴ・帰属を小さく */
-    .leaflet-control-attribution {
-      font-size: 9px !important;
-      background: rgba(0,0,0,.5) !important;
-      color: #666 !important;
-    }
-    .leaflet-control-attribution a { color: #888 !important; }
   </style>
 
   <div id="leaflet-map-001"></div>
