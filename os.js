@@ -170,7 +170,7 @@ const KoeOS = (() => {
 
   const _checkHub = () => {
     if (!isRestored('hub_002') && areAllSpokesComplete()) {
-      markRestored('hub_002'); addNotif('messages', 1);
+      markRestored('hub_002');   // メッセージ配信は phone_shell 側の deliverMessages が担当
     }
   };
 
@@ -188,7 +188,7 @@ const KoeOS = (() => {
         return norm.includes(nk) || nk.includes(norm);
       });
       if (hit && p.prereqs.every(pid => isRestored(pid))) {
-        markRestored(p.id); unlocked.push(p.id); addNotif('messages',1);
+        markRestored(p.id); unlocked.push(p.id);
       }
     }
     if (unlocked.length) { used.add(norm); ls.saveSet(KEYWORD_KEY,used); _checkHub(); }
@@ -203,7 +203,7 @@ const KoeOS = (() => {
       for(const p of PAGES){
         if(isRestored(p.id)||p.keywords?.length) continue;
         if(p.prereqs.length && p.prereqs.every(pid=>isRestored(pid))){
-          markRestored(p.id); addNotif('messages',1); changed=true;
+          markRestored(p.id); changed=true;
         }
       }
     }

@@ -597,6 +597,9 @@ const Shell = (() => {
     if (KoeOS.isFirstLaunch()) {
       KoeOS.markLaunched();
       setTimeout(() => pushNotif('📡', '蛸川小蘭', 'このアーカイブを見つけてください。', 'soran_intro'), 1200);
+    } else {
+      // 既存セーブの再読込：到達済みビートを無音で既配信扱いにし、再トーストを防ぐ
+      deliverMessages(false);
     }
   }
 
@@ -911,6 +914,7 @@ const Shell = (() => {
     if(!page) { bview.innerHTML = '<div style="padding:40px 20px;font-family:var(--mono);font-size:11px;color:var(--t3);text-align:center;">ページが見つかりません</div>'; return; }
     KoeOS.markRestored(pageId);
     KoeOS.checkPrereqUnlocks();
+    deliverMessages(true);
     updateBadges();
 
     const html = PAGE_CONTENT[pageId] ? PAGE_CONTENT[pageId]() : _placeholder(page);
@@ -957,7 +961,7 @@ const Shell = (() => {
       </div>`;
       inp.value = '';
       Promise.all(res.unlocked.map(id => loadPageScript(`pages/${id}.js`))).then(() => {
-        pushNotif('🔓', 'アーカイブ', `復元：${titles}`, null);
+        deliverMessages(true);
         const bv = document.getElementById('bview');
         if(bv && bPtr === 0) _renderBrowserHome(bv);
       });
@@ -970,23 +974,80 @@ const Shell = (() => {
   /* ═══════════════════════════════════
      メッセージアプリ
   ═══════════════════════════════════ */
-  const THREADS = [
-    { id:'soran_intro',  name:'蛸川小蘭',            avatar:'📡', preview:'このアーカイブを見つけてください。', date:'1963.09.12', anomaly:true,  locked:false },
-    { id:'telegram_001', name:'電文①　暗号データ',    avatar:'📡', preview:'受信者欄が「███」——',          date:'1949.08',    anomaly:true,  locked:true  },
-    { id:'telegram_002', name:'電文②　N-0816の意味',   avatar:'📡', preview:'M川事件が起きた夜。八月十六日。',  date:'1949.09',    anomaly:false, locked:true  },
-    { id:'telegram_003', name:'電文③　声は壁を透して', avatar:'📖', preview:'未収録の手紙があるという事実。',  date:'1954.03',    anomaly:false, locked:true  },
-    { id:'fumi_tegami',  name:'蛸川小蘭　手紙',        avatar:'✉️', preview:'宛先：猫塚清治',                date:'1963.09.11', anomaly:true,  locked:true  },
+  // 小蘭からの私信。各メッセージは特定ページの復元（gate）で届く。
+  // 本文を使い回さず、受信者＝あなたに二人称で語りかける物語のビート。
+  function _bub(text, anom, time) {
+    return `<div class="mbubble-row">
+      <div class="mbubble-av">📡</div>
+      <div>
+        <div class="mbubble ${anom?'anom':''}">${text}</div>
+        ${time?`<div class="mbubble-time ${anom?'anom':''}">${time}</div>`:''}
+      </div>
+    </div>`;
+  }
+
+  const STORY_MSGS = [
+    {
+      id:'msg_reader', gate:'kiroku_001', name:'蛸川小蘭', avatar:'📡',
+      date:'1949.09', anomaly:true, preview:'あなたが読んでいるのが、分かる。',
+      body:() => `<div class="mdate-sep">送信：1949年9月（推定）</div>`
+        + _bub('手記を、読んでくれたのね。')
+        + _bub('「いつかこれを読む人へ」と書いたとき、相手が誰かは分からなかった。今も分からない。それでも、ページが開かれた感触だけは、時間を越えて、こうして届く。')
+        + _bub('あなたが何者でも、最後まで読んでほしい。ここには、記録から消された人たちがいる。', true, '1949-09 ⚠ タイムスタンプ異常'),
+    },
+    {
+      id:'msg_inside', gate:'hub_002', name:'蛸川小蘭', avatar:'📡',
+      date:'1963.09.11', anomaly:true, preview:'外側は、全部見せた。',
+      body:() => `<div class="mdate-sep">送信：1963年9月11日</div>`
+        + _bub('手記も、写真も、掲示板も、地図も、電文も。全部たどってくれた。')
+        + _bub('ここまでが「外側」。事件の輪郭だけ。ここから先は、私が誰のために、何を残そうとしたのか、という話になる。')
+        + _bub('もう少しだけ、付き合ってほしい。', true, '1963-09-11'),
+    },
+    {
+      id:'msg_receiver', gate:'hidden', name:'蛸川小蘭', avatar:'📡',
+      date:'復号済み', anomaly:true, preview:'受信者は、あなただった。',
+      body:() => `<div class="mdate-sep">送信：日時不明（復号済み）</div>`
+        + _bub('受信者の欄に、私は「███」とだけ刻んだ。名前を知らないまま。')
+        + _bub('でも、これを読んでいるのがあなただと分かった今、もう黒塗りは要らない。')
+        + _bub('受信者は、あなただった。最初から。', true, '受信者照合 ── 完了'),
+    },
+    {
+      id:'msg_deliver', gate:'fumi_tegami', name:'蛸川小蘭', avatar:'✉️',
+      date:'1963.09.11', anomaly:true, preview:'一通だけ、頼みたいことがある。',
+      body:() => `<div class="mdate-sep">送信：1963年9月11日</div>`
+        + _bub('最後に、一通の手紙を残した。猫塚清治への。とうとう、出せなかった手紙を。')
+        + _bub('私にはもう、投函する時間も、届け先も、ない。')
+        + _bub('だから、あなたに頼む。この手紙を、記録してほしい。', true, '1963-09-11'),
+    },
   ];
 
+  const THREADS = [
+    { id:'soran_intro', name:'蛸川小蘭', avatar:'📡', preview:'このアーカイブを見つけてください。', date:'1963.09.12', anomaly:true, gate:null },
+    ...STORY_MSGS,
+  ];
+
+  /* 物語メッセージ配信：gate が復元された瞬間に一度だけトースト */
+  const _DELIVERED_KEY = 'koe_msgs_delivered';
+  function _getDelivered() {
+    try { return new Set(JSON.parse(localStorage.getItem(_DELIVERED_KEY)||'[]')); } catch { return new Set(); }
+  }
+  function deliverMessages(animate) {
+    const done = _getDelivered();
+    let changed = false;
+    for (const m of STORY_MSGS) {
+      if (done.has(m.id)) continue;
+      if (m.gate && !KoeOS.isRestored(m.gate)) continue;
+      done.add(m.id); changed = true;
+      if (animate) pushNotif(m.avatar, m.name, m.preview, m.id);
+    }
+    if (changed) localStorage.setItem(_DELIVERED_KEY, JSON.stringify([...done]));
+  }
+
   function renderMessages(el) {
-    const visible = THREADS.filter(t => {
-      if (!t.locked) return true;
-      const page = KoeOS.getPage(t.id);
-      return page ? KoeOS.isRestored(t.id) : true;
-    });
+    const visible = THREADS.filter(t => t.gate ? KoeOS.isRestored(t.gate) : true);
 
     if (visible.length === 0) {
-      el.innerHTML = '<div class="hempty">メッセージはまだありません。<br>アーカイブを復元すると<br>ここに届きます。</div>';
+      el.innerHTML = '<div class="hempty">メッセージはまだありません。<br>アーカイブを読み進めると<br>ここに届きます。</div>';
       return;
     }
 
@@ -1012,7 +1073,8 @@ const Shell = (() => {
     const t = THREADS.find(t=>t.id===threadId);
     title.textContent = t ? t.name : threadId;
 
-    const content = MSG_THREADS[threadId] ? MSG_THREADS[threadId]() : defaultThread(t);
+    const content = (t && t.body) ? t.body()
+                  : (MSG_THREADS[threadId] ? MSG_THREADS[threadId]() : defaultThread(t));
     body.innerHTML = content;
 
     mv.classList.add('open');
