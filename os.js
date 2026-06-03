@@ -19,8 +19,8 @@ const KoeOS = (() => {
   ────────────────────────────────────── */
   const PAGES = [
     // 最初から読める
-    { id:'archive_about', title:'このアーカイブについて', locked:false, keywords:[], prereqs:[], phase:0, spokeGroup:null, icon:'📁' },
-    { id:'soran_profile', title:'蛸川小蘭とは',          locked:false, keywords:[], prereqs:[], phase:0, spokeGroup:null, icon:'👤' },
+    { id:'archive_about', title:'このアーカイブについて', locked:false, keywords:['このアーカイブ','アーカイブについて','管理者不明'], prereqs:[], phase:0, spokeGroup:null, icon:'📁' },
+    { id:'soran_profile', title:'蛸川小蘭とは',          locked:false, keywords:['蛸川小蘭','小蘭','アーカイブの管理者'], prereqs:[], phase:0, spokeGroup:null, icon:'👤' },
 
     // スポークA 手記
     { id:'kiroku_001', title:'手記①　事件の夜',        locked:true, keywords:['タコのぬいぐるみ','T北本線','草むらに伏せた','松川','東北本線'],        prereqs:[],             phase:1, spokeGroup:'A', icon:'📓' },
