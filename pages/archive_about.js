@@ -11,4 +11,18 @@ PAGE_CONTENT['archive_about'] = () => `<div class="bpage">
     <p>分かっているのは、このアーカイブが「誰かに読まれること」を前提として設計されているということだけだ。索引がある。検索がある。そして、封鎖されたページがある。</p>
     <p>封鎖を解く方法も、どこかに隠されているはずだ。</p>
   </div>
+
+  <div style="
+    margin:24px 0 0;
+    padding:12px 14px;
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:8px;
+    font-family:var(--mono);
+    font-size:9px;
+    color:var(--t3);
+    letter-spacing:.05em;
+    line-height:1.8;
+  ">
+    本作はフィクションです。登場する事件・地名・人物・団体は実在のものとは関係ありません。
+  </div>
 </div>`;
