@@ -24,7 +24,7 @@ const KoeOS = (() => {
 
     // スポークA 手記
     // kiroku_001: soran_profile に「十湯温泉に逃げ込み」とある
-    { id:'kiroku_001', title:'手記①　事件の夜',        locked:true, keywords:['十湯温泉'],        prereqs:[],             phase:1, spokeGroup:'A', icon:'📓' },
+    { id:'kiroku_001', title:'手記①　事件の夜',        locked:true, keywords:['十湯温泉','土湯温泉'],        prereqs:[],             phase:1, spokeGroup:'A', icon:'📓' },
     // kiroku_002: kiroku_001「手の中にタコのぬいぐるみだけがあった」
     { id:'kiroku_002', title:'手記②　十湯温泉',        locked:true, keywords:['いつかこれを読む人へ','タコのぬいぐるみ','ぬいぐるみ'], prereqs:['kiroku_001'], phase:1, spokeGroup:'A', icon:'📓' },
     // kiroku_003: kiroku_002「主人は首を横に振った」「偲山が見えた」
@@ -75,7 +75,7 @@ const KoeOS = (() => {
     // 第2層（hub_002 のキーワードヒント欄と完全一致）
     { id:'koaru_record', title:'猫塚清治という人物',    locked:true, keywords:['猫塚清治','34歳','菜園'],          prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'👤' },
     { id:'inochi',       title:'なぜ冤罪は生まれたか',  locked:true, keywords:['自白','証拠隠蔽','冤罪'],           prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📄' },
-    { id:'voices',       title:'声を上げた人々',        locked:true, keywords:['広瀬和郎','四面楚歌','書き続けた'], prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📄' },
+    { id:'voices',       title:'声を上げた人々',        locked:true, keywords:['広瀬和郎','四面楚歌','書き続けた','広津和郎'], prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📄' },
     { id:'tegami',       title:'声は壁を透して（文集）', locked:true, keywords:['三百通','収録','守る会'],           prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📖' },
     { id:'sns',          title:'声の速さと重さ',        locked:true, keywords:['葉書一通','重さ','現代'],           prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📄' },
     { id:'momo',         title:'芙島市の現在と桃見山',  locked:true, keywords:['今年も','帰れなかった','桜の花'],   prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'🌸' },
