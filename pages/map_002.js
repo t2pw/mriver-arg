@@ -11,6 +11,29 @@
   const ZOOM_MIN   = 11;
   const ZOOM_MAX   = 13;
 
+  function ensureLeaflet(cb) {
+    if (window._leafletReady) { cb(); return; }
+    if (!document.getElementById('_leaflet_css')) {
+      const lk = document.createElement('link');
+      lk.id = '_leaflet_css'; lk.rel = 'stylesheet';
+      lk.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
+      document.head.appendChild(lk);
+    }
+    if (!document.getElementById('_leaflet_js')) {
+      const ls = document.createElement('script');
+      ls.id = '_leaflet_js';
+      ls.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
+      ls.onload = () => { window._leafletReady = true; cb(); };
+      document.head.appendChild(ls);
+    } else if (window.L) {
+      window._leafletReady = true; cb();
+    } else {
+      document.getElementById('_leaflet_js').addEventListener('load', () => {
+        window._leafletReady = true; cb();
+      });
+    }
+  }
+
   function _init() {
     const el = document.getElementById('leaflet-map-002');
     if (!el || el._leafletInitialized) return;
@@ -92,10 +115,7 @@
   }
 
   PAGE_CONTENT['map_002'] = () => {
-    setTimeout(() => {
-      if (window._leafletReady && window.L) { _init(); }
-      else if (typeof ensureLeaflet === 'function') { ensureLeaflet(_init); }
-    }, 0);
+    setTimeout(() => ensureLeaflet(_init), 0);
 
     return `<div class="bpage">
   <div class="bpage-num">記録 No.14</div>
