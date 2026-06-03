@@ -51,6 +51,14 @@ MSG_THREADS['soran_intro'] = () => `
     </div>
   </div>
 
+  <div class="mbubble-row" style="margin-top:6px;">
+    <div class="mbubble-av">📡</div>
+    <div>
+      <div class="mbubble anom">データ層に、座標が埋め込まれている。<br>五つの座標が、それぞれ別の記録を指している。</div>
+      <div class="mbubble-time anom">1963-09-12 09:04</div>
+    </div>
+  </div>
+
   <div class="mdate-sep" style="margin-top:20px;">── 添付ファイル ──</div>
   <div style="margin:0 4px;">
     <div style="

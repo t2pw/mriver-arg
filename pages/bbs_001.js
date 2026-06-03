@@ -64,6 +64,13 @@ PAGE_CONTENT['bbs_001'] = () => `<div class="bpage">
       ── 差出人：蛸川　██　からの投書一通、昭和二十七年二月二十日付、掲載前に差し止め。原紙は当局が回収。
     </p>
 
+    <hr style="border:none;border-top:1px solid #2a2a2a;margin:1.4em 0;">
+
+    <p style="font-size:11px;color:#888;letter-spacing:1px;">── 次号予告</p>
+    <p>
+      投書だけでは、声は届かない。守る会は来春より、被告の無実を訴える署名運動を始めます。一人の名前が、次の名前を呼ぶ。この街の声を、確かな記録として残すために。
+    </p>
+
     <p style="font-size:11px;color:#666;margin-top:2em;letter-spacing:1px;">
       ※本紙は守る会が自主制作・頒布するものです。
     </p>

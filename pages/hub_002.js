@@ -103,13 +103,13 @@ PAGE_CONTENT['hub_002'] = () => `<div class="bpage">
     ">── 第2層　復元キーワード</div>
     <div style="padding:12px 14px;display:flex;flex-direction:column;gap:7px;font-size:11px;line-height:1.8;">
       ${[
-        ['猫塚清治という人物', '34歳　／　菜園　／　清治'],
+        ['猫塚清治という人物', '保線作業員　／　34歳　／　菜園'],
         ['なぜ冤罪は生まれたか', '自白　／　証拠隠蔽　／　冤罪'],
         ['声を上げた人々', '広瀬和郎　／　四面楚歌　／　広津和郎'],
         ['声は壁を透して（文集）', '三百通　／　収録　／　守る会'],
         ['声の速さと重さ', '葉書一通　／　重さ　／　現代'],
-        ['芙島市の現在と桃見山', '更地　／　廃墟　／　記念館'],
-        ['記録の行方', '記録の行方　／　タコ　／　回線'],
+        ['芙島市の現在と桃見山', '更地　／　マンション　／　記念館'],
+        ['記録の行方', '記録の行方　／　未来の誰か'],
         ['小蘭のデータ痕跡の全容', 'バイナリ　／　穿孔　／　電文'],
       ].map(([title, kw]) => `
         <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:4px 12px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03);">
