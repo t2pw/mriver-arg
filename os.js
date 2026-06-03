@@ -1,6 +1,6 @@
 /**
- * os.js ── 「声は壁を透して」OS層 v2
- * 進捗管理 / キーワード認証 / アンロック / 履歴管理
+ * os.js ── 「声は壁を透して」OS層 v3
+ * 進捗管理 / キーワード認証 / アンロック / 履歴管理 / 解析アプリのインストール管理
  */
 'use strict';
 
@@ -11,6 +11,7 @@ const KoeOS = (() => {
   const HISTORY_KEY  = 'koe_history';   // 閲覧履歴
   const NOTIF_KEY    = 'koe_notif';
   const LAUNCHED_KEY = 'koe_launched';
+  const INSTALLED_KEY= 'koe_installed_apps';  // ★v3 解析アプリのインストール状態
 
   /* ──────────────────────────────────────
      ページ定義テーブル
@@ -43,7 +44,7 @@ const KoeOS = (() => {
 
     // スポークE 電文
     { id:'telegram_001', title:'電文①　暗号データ',        locked:true, keywords:['███','受信者','暗号'],              prereqs:[],                phase:1, spokeGroup:'E', icon:'📡' },
-    { id:'telegram_002', title:'電文②　№0314の意味',       locked:true, keywords:['0314','三月十四日','誕生日'],        prereqs:['telegram_001'],  phase:1, spokeGroup:'E', icon:'📡' },
+    { id:'telegram_002', title:'電文②　№0314の意味',       locked:true, keywords:['0314','N-0314','三月十四日','さんがつじゅうよっか'],  prereqs:['telegram_001'],  phase:1, spokeGroup:'E', icon:'📡' },
     { id:'telegram_003', title:'電文③　声は壁を透して',    locked:true, keywords:['声は壁を透して','未収録','文集'],    prereqs:['telegram_002'],  phase:1, spokeGroup:'E', icon:'📡' },
 
     // 第2層ハブ（全スポーク完了で自動解放）
@@ -70,6 +71,15 @@ const KoeOS = (() => {
 
   const SPOKES = ['A','B','C','D','E'];
 
+  /* ──────────────────────────────────────
+     ★v3 解析アプリ定義テーブル
+  ────────────────────────────────────── */
+  const TOOL_APPS = [
+    { id:'hexconv', name:'16進変換器',     icon:'🔢', spoke:'E', desc:'16進数をカタカナに変換する解析ツール。' },
+    { id:'morse',   name:'モールス読取機', icon:'📻', spoke:'E', desc:'穿孔パターンをモールス符号として数字に変換する。' },
+    // 今後：binary（C）、coord（D）など
+  ];
+
   /* ── localStorage ── */
   const ls = {
     getSet:  k => { try { return new Set(JSON.parse(localStorage.getItem(k)||'[]')); } catch { return new Set(); } },
@@ -88,6 +98,16 @@ const KoeOS = (() => {
     if (s.has(id)) return false;
     s.add(id); ls.saveSet(STORAGE_KEY, s); return true;
   };
+
+  /* ── ★v3 インストール管理 ── */
+  const getInstalled = () => ls.getSet(INSTALLED_KEY);
+  const isInstalled  = id => getInstalled().has(id);
+  const installApp   = id => {
+    const s = getInstalled();
+    if (s.has(id)) return false;
+    s.add(id); ls.saveSet(INSTALLED_KEY, s); return true;
+  };
+  const getToolApp   = id => TOOL_APPS.find(a => a.id === id);
 
   /* ── 履歴 ── */
   const getHistory = () => {
@@ -174,11 +194,11 @@ const KoeOS = (() => {
   /* ── 起動済みフラグ ── */
   const isFirstLaunch = () => !localStorage.getItem(LAUNCHED_KEY);
   const markLaunched  = () => localStorage.setItem(LAUNCHED_KEY,'1');
-  const resetAll = () => [STORAGE_KEY,KEYWORD_KEY,HISTORY_KEY,NOTIF_KEY,LAUNCHED_KEY]
+  const resetAll = () => [STORAGE_KEY,KEYWORD_KEY,HISTORY_KEY,NOTIF_KEY,LAUNCHED_KEY,INSTALLED_KEY]
     .forEach(k=>localStorage.removeItem(k));
 
   return {
-    PAGES, SPOKES,
+    PAGES, SPOKES, TOOL_APPS,
     isRestored, markRestored, getRestored,
     getProgressPercent, getSpokeProgress,
     submitKeyword, checkPrereqUnlocks, getKeywords,
@@ -186,6 +206,7 @@ const KoeOS = (() => {
     getHistory, addHistory, clearHistory,
     isFirstLaunch, markLaunched, resetAll,
     isSpokeComplete, areAllSpokesComplete, getSpokePages,
+    getInstalled, isInstalled, installApp, getToolApp,
     getPage: id => PAGES.find(p=>p.id===id),
   };
 })();
