@@ -19,32 +19,32 @@ const KoeOS = (() => {
   ────────────────────────────────────── */
   const PAGES = [
     // 最初から読める
-    { id:'archive_about', title:'このアーカイブについて', locked:false, keywords:['このアーカイブ','アーカイブについて','管理者不明'], prereqs:[], phase:0, spokeGroup:null, icon:'📁' },
-    { id:'soran_profile', title:'蛸川小蘭とは',          locked:false, keywords:['蛸川小蘭','小蘭','アーカイブの管理者'], prereqs:[], phase:0, spokeGroup:null, icon:'👤' },
+    { id:'archive_about', title:'このアーカイブについて', locked:false, keywords:['','',''], prereqs:[], phase:0, spokeGroup:null, icon:'📁' },
+    { id:'soran_profile', title:'蛸川小蘭とは',          locked:false, keywords:['蛸川小蘭','小蘭','蛸川'], prereqs:[], phase:0, spokeGroup:null, icon:'👤' },
 
     // スポークA 手記
-    { id:'kiroku_001', title:'手記①　事件の夜',        locked:true, keywords:['タコのぬいぐるみ','T北本線','草むらに伏せた','松川','東北本線'],        prereqs:[],             phase:1, spokeGroup:'A', icon:'📓' },
-    { id:'kiroku_002', title:'手記②　十湯温泉',        locked:true, keywords:['首を横に振った','偲山','十湯','土湯','信夫山'],                          prereqs:['kiroku_001'], phase:1, spokeGroup:'A', icon:'📓' },
-    { id:'kiroku_003', title:'手記③　猫塚清治のこと',  locked:true, keywords:['保線作業員','不審人物','被告リスト','松川事件','国鉄'],                  prereqs:['kiroku_002'], phase:1, spokeGroup:'A', icon:'📓' },
-    { id:'kiroku_004', title:'手記④　ふみの声',        locked:true, keywords:['投函しなかった','引き出しの奥','宛先を書いた'],                          prereqs:['kiroku_003'], phase:1, spokeGroup:'A', icon:'📓' },
+    { id:'kiroku_001', title:'手記①　事件の夜',        locked:true, keywords:['十湯温泉','土湯温泉'],        prereqs:[],             phase:1, spokeGroup:'A', icon:'📓' },
+    { id:'kiroku_002', title:'手記②　十湯温泉',        locked:true, keywords:['K鉄','国鉄'],                          prereqs:['kiroku_001'], phase:1, spokeGroup:'A', icon:'📓' },
+    { id:'kiroku_003', title:'手記③　猫塚清治のこと',  locked:true, keywords:['偲山','信夫山'],                  prereqs:['kiroku_002'], phase:1, spokeGroup:'A', icon:'📓' },
+    { id:'kiroku_004', title:'手記④　ふみの声',        locked:true, keywords:['猫塚','猫塚清治'],                          prereqs:['kiroku_003'], phase:1, spokeGroup:'A', icon:'📓' },
 
     // スポークB 写真
-    { id:'photo_001', title:'写真①　記録されなかった人物',    locked:true, keywords:['ここにいた','裏面','出所不明'],                                prereqs:[],            phase:1, spokeGroup:'B', icon:'📷' },
-    { id:'photo_002', title:'写真②　同じ場所・70年の隔たり', locked:true, keywords:['M川駅','七十年','不可能な時間','松川駅'],                       prereqs:['photo_001'], phase:1, spokeGroup:'B', icon:'📷' },
-    { id:'photo_003', title:'写真③　菜園と暖簾',             locked:true, keywords:['暖簾','後ろ姿','茅葺き','酒飯'],                               prereqs:['photo_002'], phase:1, spokeGroup:'B', icon:'📷' },
+    { id:'photo_001', title:'写真①　記録されなかった人物',    locked:true, keywords:['猫塚','猫塚清治'],                                prereqs:[],            phase:1, spokeGroup:'B', icon:'📷' },
+    { id:'photo_002', title:'写真②　同じ場所・70年の隔たり', locked:true, keywords:['昭和24年8月16日','昭和２４年８月１６日','昭和二十四年八月十六日'],                       prereqs:['photo_001'], phase:1, spokeGroup:'B', icon:'📷' },
+    { id:'photo_003', title:'写真③　菜園と暖簾',             locked:true, keywords:['M川駅','松川駅'],                               prereqs:['photo_002'], phase:1, spokeGroup:'B', icon:'📷' },
 
     // スポークC 掲示板
-    { id:'bbs_001', title:'掲示板①　投書欄の声',     locked:true, keywords:['差し止め','検閲','差出人のない封筒','松川'],                            prereqs:[],           phase:1, spokeGroup:'C', icon:'📋' },
-    { id:'bbs_002', title:'掲示板②　守る会のビラ',   locked:true, keywords:['一千三百','住所不詳','松川運動'],                                       prereqs:['bbs_001'],  phase:1, spokeGroup:'C', icon:'📋' },
-    { id:'bbs_003', title:'掲示板③　無罪確定まで',   locked:true, keywords:['猫塚清治は今日も存在しない','仙台高裁','無罪判決'],                    prereqs:['bbs_002'],  phase:1, spokeGroup:'C', icon:'📋' },
+    { id:'bbs_001', title:'掲示板①　投書欄の声',     locked:true, keywords:['芙島市','福島市'],                            prereqs:[],           phase:1, spokeGroup:'C', icon:'📋' },
+    { id:'bbs_002', title:'掲示板②　守る会のビラ',   locked:true, keywords:['守る会','M川事件を守る会','松川事件を守る会'],                                       prereqs:['bbs_001'],  phase:1, spokeGroup:'C', icon:'📋' },
+    { id:'bbs_003', title:'掲示板③　無罪確定まで',   locked:true, keywords:['自白','強要','自白強要','冤罪'],                    prereqs:['bbs_002'],  phase:1, spokeGroup:'C', icon:'📋' },
 
     // スポークD 地図
-    { id:'map_001', title:'地図①　芙島市中心部',         locked:true, keywords:['五つの座標','黒塗り','福島市'],                                    prereqs:[],           phase:1, spokeGroup:'D', icon:'🗺' },
-    { id:'map_002', title:'地図②　桃見山',               locked:true, keywords:['帰れると思っていた','桃見山','毎年三月','花見山'],                  prereqs:['map_001'],  phase:1, spokeGroup:'D', icon:'🗺' },
-    { id:'map_003', title:'地図③　蒼沼ブルーランドへ',   locked:true, keywords:['廃墟になるまで待った','蒼沼ブルーランド','観覧車','高子沼'],         prereqs:['map_002'],  phase:1, spokeGroup:'D', icon:'🗺' },
+    { id:'map_001', title:'地図①　芙島市中心部',         locked:true, keywords:['猫塚清治は今日も存在しない'],                                    prereqs:[],           phase:1, spokeGroup:'D', icon:'🗺' },
+    { id:'map_002', title:'地図②　桃見山',               locked:true, keywords:['N-0314','花見山'],                  prereqs:['map_001'],  phase:1, spokeGroup:'D', icon:'🗺' },
+    { id:'map_003', title:'地図③　蒼沼ブルーランドへ',   locked:true, keywords:['遊園地','蒼沼ブルーランド','高子沼グリーンランド'],         prereqs:['map_002'],  phase:1, spokeGroup:'D', icon:'🗺' },
 
     // スポークE 電文
-    { id:'telegram_001', title:'電文①　暗号データ',        locked:true, keywords:['受信者欄','二重に暗号化','電文ヘッダ'],                          prereqs:[],                phase:1, spokeGroup:'E', icon:'📡' },
+    { id:'telegram_001', title:'電文①　暗号データ',        locked:true, keywords:['暗号キー'],                          prereqs:[],                phase:1, spokeGroup:'E', icon:'📡' },
     { id:'telegram_002', title:'電文②　№0314の意味',       locked:true, keywords:['0314','N-0314','三月十四日','さんがつじゅうよっか','ふみの誕生日'], prereqs:['telegram_001'], phase:1, spokeGroup:'E', icon:'📡' },
     { id:'telegram_003', title:'電文③　声は壁を透して',    locked:true, keywords:['声は壁を透して','三百通','未収録の手紙','愛情は壁を透して'],      prereqs:['telegram_002'],  phase:1, spokeGroup:'E', icon:'📡' },
 
