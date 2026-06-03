@@ -1,17 +1,14 @@
 // wiki_skip.js　結末③「架空wiki（スキップ）」
 // prereqs: choice
-// 役割：記録しない選択をしたプレイヤーへ。
-//       「記録されなかったものは存在しなかったことになる」と告げ、もう一度問う。
 
 PAGE_CONTENT['wiki_skip'] = () => {
   setTimeout(() => {
-    const btnBack  = document.getElementById('skip-btn-back');
-    const btnSkip  = document.getElementById('skip-btn-skip');
+    const btnBack = document.getElementById('skip-btn-back');
+    const btnSkip = document.getElementById('skip-btn-skip');
     if (!btnBack || !btnSkip) return;
 
     btnBack.addEventListener('click', () => Shell.bNavigate('wiki_add'));
     btnSkip.addEventListener('click', () => {
-      // 記録しない選択を保存
       try { localStorage.setItem('koe_fumi_note', ''); } catch {}
       Shell.bNavigate('epilogue');
     });
@@ -26,44 +23,34 @@ PAGE_CONTENT['wiki_skip'] = () => {
 
   <div class="bpage-body" style="margin-top:24px;">
     <p>
-      記録されなかったものは、存在しなかったことになる。
+      清治は被告名簿にいなかった。
+      逮捕された二十名にも、無罪になった二十名にも、彼の名前はない。
+      記録から除外されたことで、彼は存在しなかったことになった。
     </p>
     <p>
-      猫塚清治がそうだった。
-      記録から消えたことで、事件の証言台に立てなかった。
-      無罪になった二十名の中に、彼はいなかった。
-    </p>
-    <p>
-      ふみの手紙がそうだった。
-      宛先が「記録上存在しない人物」だったために、
-      文集に収録できなかった。
-      三百通の声の中に、彼女の声はない。
+      小蘭も同じだ。
+      戸籍がない。公式記録がない。
+      清治がいなければ、小蘭はあの夜を越えられなかった。
+      小蘭が記録しなければ、清治は消えたままになる。
     </p>
 
     <hr style="border:none;border-top:1px solid #222;margin:1.8em 0;">
 
     <p>
-      あなたが記録しなければ、
-      この手紙はここで終わる。
+      あなたが記録しなければ、ふたりはここで終わる。
     </p>
     <p>
       それはあなたの選択だ。
-      小蘭も、強制はしない。
-      ふみも、強制はできない。
-    </p>
-    <p>
       ただ一つだけ伝えておく。
     </p>
 
     <p class="anom" style="padding:14px;background:#0d0d10;border-radius:8px;border:1px solid rgba(200,88,88,0.15);line-height:2.1;">
-      小蘭がアーカイブを作ったのは、<br>
-      記録されなかったものを、記録するためだった。<br>
-      受信者欄に「あなた」と書いたのは、<br>
-      あなたに記録してほしかったからかもしれない。
+      清治が存在しなければ、小蘭も存在しない。<br>
+      小蘭が存在しなければ、清治も存在しない。<br>
+      ふたりは、記録されて初めてここにいる。
     </p>
   </div>
 
-  <!-- もう一度問う -->
   <div style="margin:24px 0 0;display:flex;flex-direction:column;gap:10px;">
 
     <div
@@ -84,7 +71,7 @@ PAGE_CONTENT['wiki_skip'] = () => {
         ▸ やはり、記録する
       </div>
       <div style="color:var(--t3);font-size:11px;letter-spacing:.04em;">
-        一言だけ、残す。
+        ふたりの存在を確定させる。
       </div>
     </div>
 

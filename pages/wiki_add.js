@@ -1,59 +1,30 @@
 // wiki_add.js　結末②「架空wiki（追記）」
 // prereqs: choice
-// 役割：プレイヤーが架空文集の未収録欄に一言追記する。
-//       50字以内。localStorageに保存。→ epilogueで読み出して表示。
 
 PAGE_CONTENT['wiki_add'] = () => {
 
-  // 過去に記録済みかチェック
-  const saved = (() => {
-    try { return localStorage.getItem('koe_fumi_note') || ''; } catch { return ''; }
-  })();
-
   setTimeout(() => {
-    const textarea = document.getElementById('fumi-note-input');
-    const counter  = document.getElementById('fumi-note-count');
-    const btn      = document.getElementById('fumi-note-submit');
-    if (!textarea) return;
-
-    // 既存の記録があれば表示
-    if (saved) textarea.value = saved;
-
-    textarea.addEventListener('input', () => {
-      const len = textarea.value.length;
-      counter.textContent = len + ' / 50';
-      counter.style.color = len > 50 ? 'var(--red)' : 'var(--t3)';
-      btn.disabled = len === 0 || len > 50;
-      btn.style.opacity = (len === 0 || len > 50) ? '.4' : '1';
-    });
-
-    // 初期状態
-    counter.textContent = (saved.length || 0) + ' / 50';
-    btn.disabled = saved.length === 0;
-    btn.style.opacity = saved.length === 0 ? '.4' : '1';
-
+    const btn = document.getElementById('wiki-confirm-btn');
+    if (!btn) return;
     btn.addEventListener('click', () => {
-      const val = textarea.value.trim();
-      if (!val || val.length > 50) return;
-      try { localStorage.setItem('koe_fumi_note', val); } catch {}
+      try { localStorage.setItem('koe_fumi_note', '1'); } catch {}
       Shell.bNavigate('epilogue');
     });
   }, 0);
 
   return `<div class="bpage">
   <div class="bpage-num">架空wiki</div>
-  <div class="bpage-title">声は壁を透して</div>
+  <div class="bpage-title">猫塚清治</div>
   <div class="bpage-meta">
-    出典：M川事件被告を守る会（1954年）　／　編集：このアーカイブの閲覧者
+    出典：M川事件アーカイブ（蛸川小蘭編纂）　／　編集：このアーカイブの閲覧者
   </div>
 
   <div class="bpage-body">
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;">
-      ── 架空文集「声は壁を透して」の項目。
+      ── 記録から除外された人物の項目。あなたが編集ボタンを押すことで、確定される。
     </p>
   </div>
 
-  <!-- wiki本文 -->
   <div style="
     margin:0 0 16px;
     background:#0d0d10;
@@ -68,90 +39,66 @@ PAGE_CONTENT['wiki_add'] = () => {
     <div style="
       padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.05);
       font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.1em;
-    ">── 文集概要</div>
+    ">── 人物</div>
     <div style="padding:14px 16px;">
-      昭和二十九年（1954年）秋、M川事件被告を守る会が発行した非売品の文集。
-      被告・家族・支援者からの手紙約三百通を収録。
-      「声は壁を透して届く」という言葉から題名が付けられた。
+      <strong style="color:var(--t1);">猫塚清治</strong>（ねこつか・きよはる）<br>
+      T北本線M川駅付近の保線作業員。昭和二十四年八月十六日夜、事件現場に居合わせた。
     </div>
 
     <div style="
       padding:10px 14px;border-top:1px solid rgba(255,255,255,0.05);
       border-bottom:1px solid rgba(255,255,255,0.05);
       font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.1em;
-    ">── 収録内容</div>
+    ">── M川事件との関係</div>
     <div style="padding:14px 16px;color:var(--t2);">
-      被告二十名の獄中書簡。家族からの返書。支援者・市民からの手紙。
-      弁護団への書簡。子どもたちが父親に宛てた手紙。
+      逮捕された二十名の名簿には記載されていない。
+      しかし事件後、消息を絶った。公式記録への記載は一切ない。
+      当局にとって都合の悪い証言を持っていたとみられる。
+      事件当夜に身元不明の人物を現場から逃がしたことが、拘束の一因とされる。
     </div>
 
     <div style="
       padding:10px 14px;border-top:1px solid rgba(255,255,255,0.05);
       border-bottom:1px solid rgba(255,255,255,0.05);
       font-family:var(--mono);font-size:10px;color:var(--red);letter-spacing:.1em;
-    ">── 未収録の手紙（猫塚ふみ）</div>
-    <div style="padding:14px 16px;">
-      <p style="color:var(--t2);margin-bottom:1em;">
-        差出人：猫塚ふみ　／　宛先：猫塚清治<br>
-        収録されなかった理由：宛先の人物が記録上存在しないため。
-      </p>
-      <p style="color:var(--t3);font-family:var(--mono);font-size:11px;margin-bottom:.6em;">
-        ── この手紙について、記録しておくべきことを一言残してください。
-      </p>
-
-      <!-- 入力欄 -->
-      <textarea
-        id="fumi-note-input"
-        maxlength="50"
-        placeholder="50字以内"
-        style="
-          width:100%;box-sizing:border-box;
-          background:#070709;
-          border:1px solid rgba(255,255,255,0.12);
-          border-radius:8px;
-          padding:10px 12px;
-          font-family:var(--serif);
-          font-size:13px;
-          color:var(--t1);
-          line-height:1.9;
-          letter-spacing:.05em;
-          resize:none;
-          height:80px;
-          outline:none;
-        "
-      >${saved}</textarea>
-
-      <div style="
-        display:flex;align-items:center;justify-content:space-between;
-        margin-top:8px;
-      ">
-        <span id="fumi-note-count" style="
-          font-family:var(--mono);font-size:10px;color:var(--t3);
-        ">${saved.length} / 50</span>
-        <div
-          id="fumi-note-submit"
-          style="
-            background:rgba(200,169,110,0.14);
-            border:1px solid rgba(200,169,110,0.3);
-            border-radius:7px;
-            padding:7px 16px;
-            font-family:var(--mono);
-            font-size:11px;
-            color:var(--gold);
-            cursor:pointer;
-            letter-spacing:.08em;
-            opacity:${saved.length > 0 ? '1' : '.4'};
-          "
-        >記録する　▸</div>
-      </div>
+    ">── 記録者</div>
+    <div style="padding:14px 16px;color:var(--t2);">
+      蛸川小蘭。14年間にわたり清治の存在を記録し続けた。
+      戸籍を持たない人物であり、彼女自身も公式記録には存在しない。
+      1963年9月12日を最後に、消息不明。
     </div>
   </div>
 
   <div class="bpage-body">
-    <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;line-height:1.9;">
-      ── あなたが書いた言葉は、このアーカイブに残ります。<br>
-      　　エピローグで確認できます。
+    <p style="font-size:12px;color:var(--t2);line-height:2;">
+      清治が存在したから、小蘭はあの夜を生き延びた。<br>
+      小蘭が記録したから、清治は存在したことになる。<br>
+      <span style="color:var(--t1);">あなたが記録を確定することで、ふたりはここにいる。</span>
     </p>
+  </div>
+
+  <div
+    id="wiki-confirm-btn"
+    style="
+      margin:0 0 16px;
+      background:rgba(200,169,110,0.1);
+      border:1px solid rgba(200,169,110,0.35);
+      border-radius:12px;
+      padding:18px;
+      cursor:pointer;
+      font-family:var(--mono);
+      text-align:center;
+      transition:background .15s;
+    "
+    onmouseenter="this.style.background='rgba(200,169,110,0.18)'"
+    onmouseleave="this.style.background='rgba(200,169,110,0.1)'"
+  >
+    <div style="color:var(--gold);font-size:13px;letter-spacing:.12em;margin-bottom:4px;">
+      ▸ 編集を確定する
+    </div>
+    <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">
+      この記録を、アーカイブに残す。
+    </div>
   </div>
 </div>`;
 };

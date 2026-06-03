@@ -1,15 +1,13 @@
 // epilogue.js　結末④「エピローグ」
 // prereqs: []（wiki_add / wiki_skip どちらからも bNavigate で到達）
-// 役割：共通エピローグ。localStorage から fumi_note を読み出して分岐表示。
-//       「あなたが書いた言葉が残っている」 / 「記録されなかった」で終わり方が変わる。
 
 PAGE_CONTENT['epilogue'] = () => {
 
-  const note = (() => {
-    try { return localStorage.getItem('koe_fumi_note') || null; } catch { return null; }
+  const flag = (() => {
+    try { return localStorage.getItem('koe_fumi_note') || ''; } catch { return ''; }
   })();
 
-  const recorded = note !== null && note.trim().length > 0;
+  const recorded = flag.trim().length > 0;
 
   return `<div class="bpage">
   <div class="bpage-num">── エピローグ ──</div>
@@ -22,27 +20,19 @@ PAGE_CONTENT['epilogue'] = () => {
     </p>
     <p>
       小蘭が14年間、三月のたびに眺めた山だ。
-      彼女が帰れると思っていた場所かどうかは、分からない。
-      でも帰れなかった。
+      清治と来たかった場所かどうかは、分からない。
+      来られなかった。
     </p>
     <p>
       小蘭は1963年9月12日の後、消えた。
-      記録に名前はない。
-      戸籍もない。
+      戸籍もない。記録もない。
       どこへ行ったのかも、なぜ消えたのかも、分からない。
-    </p>
-    <p>
-      でも記録は届いた。
-    </p>
-    <p>
-      あなたのところに。
     </p>
   </div>
 
   <hr style="border:none;border-top:1px solid #222;margin:0 0 1.6em;">
 
   ${recorded ? `
-  <!-- 記録した場合 -->
   <div style="
     margin:0 0 20px;
     background:#0c0b08;
@@ -55,16 +45,18 @@ PAGE_CONTENT['epilogue'] = () => {
       border-bottom:1px solid rgba(200,169,110,0.1);
       font-family:var(--mono);font-size:10px;
       color:var(--gold);letter-spacing:.12em;
-    ">── 架空文集「声は壁を透して」　未収録の手紙（猫塚ふみ）</div>
+    ">── 記録確定　猫塚清治・蛸川小蘭</div>
     <div style="
       padding:18px 18px;
       font-family:var(--serif);
-      font-size:14px;
+      font-size:13px;
       color:var(--t1);
       line-height:2.3;
-      letter-spacing:.07em;
+      letter-spacing:.05em;
     ">
-      ${note.replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+      清治が存在したから、小蘭はあの夜を生き延びた。<br>
+      小蘭が記録したから、清治は存在したことになる。<br>
+      あなたが記録したから、ふたりはここにいる。
     </div>
     <div style="
       padding:8px 14px 12px;
@@ -75,16 +67,12 @@ PAGE_CONTENT['epilogue'] = () => {
 
   <div class="bpage-body">
     <p>
-      あなたが書いた言葉が、ここに残っている。
+      記録は届いた。あなたのところに。
     </p>
     <p>
-      ふみは知らない。
-      清治も知らない。
-      小蘭も、あなたが何を書いたかは知らない。
-    </p>
-    <p>
-      それでもあなたは記録した。
-      記録されなかったものを、記録した。
+      清治の名前が、ここに残った。
+      小蘭の14年間が、ここに残った。
+      ふたりは記録されて、存在する。
     </p>
     <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:2;">
       「いつかこれを読む人へ。<br>
@@ -96,7 +84,6 @@ PAGE_CONTENT['epilogue'] = () => {
     </p>
   </div>
   ` : `
-  <!-- 記録しなかった場合 -->
   <div style="
     margin:0 0 20px;
     background:#0d0d10;
@@ -106,22 +93,21 @@ PAGE_CONTENT['epilogue'] = () => {
     font-family:var(--mono);font-size:11px;
     color:var(--t3);line-height:2;letter-spacing:.06em;
   ">
-    架空文集「声は壁を透して」<br>
-    未収録の手紙（猫塚ふみ）<br><br>
-    <span style="color:var(--t3);opacity:.5;">── 記録なし</span>
+    猫塚清治　── 記録なし<br>
+    蛸川小蘭　── 記録なし
   </div>
 
   <div class="bpage-body">
     <p>
-      ふみの手紙は、記録されなかった。
+      清治の名前は、どこにも残らない。
     </p>
     <p>
-      文集にも。郵便記録にも。歴史にも。
-      そして、ここにも。
+      清治がいなければ、あの夜の小蘭もいなかった。
+      小蘭がいなければ、この記録もなかった。
+      ふたりの14年間は、どこにも残らない。
     </p>
     <p>
       それでも桜の花は咲く。
-      小蘭が帰れなくても、咲く。
       記録されなくても、咲く。
     </p>
     <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:2;">
