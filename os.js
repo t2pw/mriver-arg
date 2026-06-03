@@ -26,35 +26,39 @@ const KoeOS = (() => {
     // kiroku_001: soran_profile に「十湯温泉に逃げ込み」とある
     { id:'kiroku_001', title:'手記①　事件の夜',        locked:true, keywords:['十湯温泉','土湯温泉'],        prereqs:[],             phase:1, spokeGroup:'A', icon:'📓' },
     // kiroku_002: kiroku_001「手の中にタコのぬいぐるみだけがあった」
-    { id:'kiroku_002', title:'手記②　十湯温泉',        locked:true, keywords:['いつかこれを読む人へ','タコのぬいぐるみ','ぬいぐるみ'], prereqs:['kiroku_001'], phase:1, spokeGroup:'A', icon:'📓' },
-    // kiroku_003: kiroku_002「主人は首を横に振った」「偲山が見えた」
-    { id:'kiroku_003', title:'手記③　猫塚清治のこと',  locked:true, keywords:['偲山','主人は首を横に振った','首を横に振った'], prereqs:['kiroku_002'], phase:1, spokeGroup:'A', icon:'📓' },
-    // kiroku_004: kiroku_003「不審人物を引き続き捜索中」「記録から消された側にいる」
-    { id:'kiroku_004', title:'手記④　書けない手紙',    locked:true, keywords:['不審人物を引き続き捜索中','捜索中','記録から消された'], prereqs:['kiroku_003'], phase:1, spokeGroup:'A', icon:'📓' },
+    { id:'kiroku_002', title:'手記②　十湯温泉',        locked:true, keywords:['ぬいぐるみ','タコ','保線作業員'], prereqs:['kiroku_001'], phase:1, spokeGroup:'A', icon:'📓' },
+    // kiroku_003: kiroku_002「偲山が見えた」「帳面に書き込んだ」「警察官が来た」
+    { id:'kiroku_003', title:'手記③　猫塚清治のこと',  locked:true, keywords:['偲山','帳面','警察官'], prereqs:['kiroku_002'], phase:1, spokeGroup:'A', icon:'📓' },
+    // kiroku_004: kiroku_003「被告リスト」「証人リスト」「捜索」
+    { id:'kiroku_004', title:'手記④　書けない手紙',    locked:true, keywords:['被告リスト','証人リスト','捜索'], prereqs:['kiroku_003'], phase:1, spokeGroup:'A', icon:'📓' },
 
     // スポークB 写真
     // photo_001: kiroku_001「草むらに伏せた」「懐中電灯の光」
-    { id:'photo_001', title:'写真①　記録されなかった人物',    locked:true, keywords:['懐中電灯','草むら','草むらに伏せた'],  prereqs:[],            phase:1, spokeGroup:'B', icon:'📷' },
-    // photo_002: photo_001 裏面メモ「この人はここにいた」「記録にはいない」
-    { id:'photo_002', title:'写真②　同じ場所・70年の隔たり', locked:true, keywords:['この人はここにいた','ここにいた','記録にはいない'], prereqs:['photo_001'], phase:1, spokeGroup:'B', icon:'📷' },
-    // photo_003: photo_002「一人の人間には不可能な時間」「七十年以上」
-    { id:'photo_003', title:'写真③　菜園と暖簾',             locked:true, keywords:['一人の人間には不可能','不可能な時間','七十年'], prereqs:['photo_002'], phase:1, spokeGroup:'B', icon:'📷' },
+    // photo_001: kiroku_001「懐中電灯」「草むら」「砂利の上に倒れていた」
+    { id:'photo_001', title:'写真①　記録されなかった人物',    locked:true, keywords:['懐中電灯','草むら','砂利'],  prereqs:[],            phase:1, spokeGroup:'B', icon:'📷' },
+    // photo_002: photo_001「裏面のメモ」「作業服」「撮影者」
+    { id:'photo_002', title:'写真②　同じ場所・70年の隔たり', locked:true, keywords:['裏面','作業服','撮影者'], prereqs:['photo_001'], phase:1, spokeGroup:'B', icon:'📷' },
+    // photo_003: photo_002「七十年」「M川駅」「駅舎」
+    { id:'photo_003', title:'写真③　菜園と暖簾',             locked:true, keywords:['七十年','M川駅','駅舎'], prereqs:['photo_002'], phase:1, spokeGroup:'B', icon:'📷' },
 
     // スポークC 掲示板
     // bbs_001: soran_profile「M川事件」/ archive_about「1963年9月12日」
     { id:'bbs_001', title:'掲示板①　投書欄の声',     locked:true, keywords:['M川事件','K鉄','1963年9月12日'],    prereqs:[],           phase:1, spokeGroup:'C', icon:'📋' },
     // bbs_002: bbs_001「掲載前に差し止め」「原紙は当局が回収」
-    { id:'bbs_002', title:'掲示板②　守る会のビラ',   locked:true, keywords:['差し止め','掲載前に差し止め','原紙は当局が回収'], prereqs:['bbs_001'],  phase:1, spokeGroup:'C', icon:'📋' },
-    // bbs_003: bbs_002「一千三百の声を、東京へ」「住所不詳」
-    { id:'bbs_003', title:'掲示板③　無罪確定まで',   locked:true, keywords:['一千三百','一千三百の声','住所不詳'], prereqs:['bbs_002'],  phase:1, spokeGroup:'C', icon:'📋' },
+    // bbs_002: bbs_001「差し止め」「封筒」「投書」
+    { id:'bbs_002', title:'掲示板②　守る会のビラ',   locked:true, keywords:['差し止め','封筒','投書'], prereqs:['bbs_001'],  phase:1, spokeGroup:'C', icon:'📋' },
+    // bbs_003: bbs_002「一千三百」「住所不詳」「署名」
+    { id:'bbs_003', title:'掲示板③　無罪確定まで',   locked:true, keywords:['一千三百','住所不詳','署名'], prereqs:['bbs_002'],  phase:1, spokeGroup:'C', icon:'📋' },
 
     // スポークD 地図（謎解きスポーク）
     // map_001: soran_intro メッセージ「記録が消える前に。あなたが来るのを待っていた。」
-    { id:'map_001', title:'地図①　芙島市中心部',         locked:true, keywords:['記録が消える前に','消える前に'], prereqs:[],           phase:1, spokeGroup:'D', icon:'🗺' },
+    // map_001: soran_intro「特定不能」「タイムスタンプ異常」「受信日」
+    { id:'map_001', title:'地図①　芙島市中心部',         locked:true, keywords:['特定不能','タイムスタンプ','受信日'], prereqs:[],           phase:1, spokeGroup:'D', icon:'🗺' },
     // map_002: map_001 謎解き答え ── 異常マーカーのpopup「記録番号：N-0816」
     { id:'map_002', title:'地図②　桃見山',               locked:true, keywords:['N-0816','記録番号'],           prereqs:['map_001'],  phase:1, spokeGroup:'D', icon:'🗺' },
     // map_003: map_002 謎解き答え ── 1963年3月の異常マーカー「私はその日ここにいなかった」「書き直した跡がある」
-    { id:'map_003', title:'地図③　蒼沼ブルーランドへ',   locked:true, keywords:['私はその日ここにいなかった','ここにいなかった','書き直した跡'], prereqs:['map_002'],  phase:1, spokeGroup:'D', icon:'🗺' },
+    // map_003: map_002「桃見山」「観測記録」「書き直し」
+    { id:'map_003', title:'地図③　蒼沼ブルーランドへ',   locked:true, keywords:['桃見山','観測記録','書き直し'], prereqs:['map_002'],  phase:1, spokeGroup:'D', icon:'🗺' },
 
     // スポークE 電文（謎解きスポーク）
     // telegram_001: soran_intro 添付ファイルに「暗号化：N-0816」「復号キー：N-0816」
@@ -62,7 +66,8 @@ const KoeOS = (() => {
     // telegram_002: telegram_001 謎解き答え ── hexconv＋モールス両方の解答「0816」
     { id:'telegram_002', title:'電文②　N-0816の意味',   locked:true, keywords:['0816','N-0816','八月十六日','はちがつじゅうろくにち'], prereqs:['telegram_001'], phase:1, spokeGroup:'E', icon:'📡' },
     // telegram_003: telegram_002「あの夜の日付だった」「草むらで手首を掴んだ手」「引っ張っていった」
-    { id:'telegram_003', title:'電文③　声は壁を透して', locked:true, keywords:['あの夜の日付','草むらで手首','引っ張っていった'], prereqs:['telegram_002'],  phase:1, spokeGroup:'E', icon:'📡' },
+    // telegram_003: telegram_002「手首」「日付」「受信者欄」
+    { id:'telegram_003', title:'電文③　声は壁を透して', locked:true, keywords:['手首','日付','受信者欄'], prereqs:['telegram_002'],  phase:1, spokeGroup:'E', icon:'📡' },
 
     // ツール配布サイト（スポーク進捗には数えない / telegram_001 の kwTag クリックで検索）
     { id:'freesoft', title:"T.Watanabe's Tools Page", locked:true,
@@ -75,11 +80,11 @@ const KoeOS = (() => {
     // 第2層（hub_002 のキーワードヒント欄と完全一致）
     { id:'koaru_record', title:'猫塚清治という人物',    locked:true, keywords:['猫塚清治','34歳','菜園'],          prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'👤' },
     { id:'inochi',       title:'なぜ冤罪は生まれたか',  locked:true, keywords:['自白','証拠隠蔽','冤罪'],           prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📄' },
-    { id:'voices',       title:'声を上げた人々',        locked:true, keywords:['広瀬和郎','四面楚歌','書き続けた','広津和郎'], prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📄' },
+    { id:'voices',       title:'声を上げた人々',        locked:true, keywords:['広瀬和郎','四面楚歌','広津和郎'], prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📄' },
     { id:'tegami',       title:'声は壁を透して（文集）', locked:true, keywords:['三百通','収録','守る会'],           prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📖' },
     { id:'sns',          title:'声の速さと重さ',        locked:true, keywords:['葉書一通','重さ','現代'],           prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📄' },
-    { id:'momo',         title:'芙島市の現在と桃見山',  locked:true, keywords:['今年も','帰れなかった','桜の花'],   prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'🌸' },
-    { id:'loop',         title:'記録の行方',            locked:true, keywords:['未来の誰か','タコに刻んだ','記録の行方'], prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'🔄' },
+    { id:'momo',         title:'芙島市の現在と桃見山',  locked:true, keywords:['更地','廃墟','記念館'],             prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'🌸' },
+    { id:'loop',         title:'記録の行方',            locked:true, keywords:['記録の行方','タコ','回線'],           prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'🔄' },
     { id:'data_trace',   title:'小蘭のデータ痕跡の全容', locked:true, keywords:['バイナリ','穿孔','電文'],          prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'💾' },
 
     // 第3層
