@@ -12,7 +12,7 @@ PAGE_CONTENT['choice'] = () => `<div class="bpage">
 
   <div class="bpage-body" style="margin-top:24px;">
     <p>
-      猫塚ふみの手紙は、どこにも記録されていない。
+      蛸川小蘭の手紙は、どこにも記録されていない。
     </p>
     <p>
       文集に収録されなかった。
@@ -20,9 +20,9 @@ PAGE_CONTENT['choice'] = () => `<div class="bpage">
       歴史の中に、存在しない。
     </p>
     <p>
-      小蘭はその手紙を書いた。
-      ふみの代わりに。
-      14年間かけて。
+      小蘭はその手紙を14年間かけて書いた。
+      一度も投函できないまま、
+      アーカイブの最後に格納した。
     </p>
     <p>
       そしてあなたに届けた。
@@ -53,8 +53,8 @@ PAGE_CONTENT['choice'] = () => `<div class="bpage">
         ▸ 記録する
       </div>
       <div style="color:var(--t2);font-size:11px;line-height:1.8;letter-spacing:.04em;">
-        架空文集「声は壁を透して」の<br>
-        未収録の手紙（猫塚ふみ）欄に、一言を残す。
+        猫塚清治と蛸川小蘭の存在を、<br>
+        アーカイブに確定させる。
       </div>
     </div>
 

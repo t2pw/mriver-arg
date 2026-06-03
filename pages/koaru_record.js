@@ -43,7 +43,7 @@ PAGE_CONTENT['koaru_record'] = () => `<div class="bpage">
       <span style="color:var(--t1);">芙島市郊外　（番地：記録なし）</span>
 
       <span style="color:var(--t3);">家族</span>
-      <span style="color:var(--t1);">妻：猫塚ふみ</span>
+      <span style="color:var(--t1);">記録なし</span>
 
       <span style="color:var(--t3);">記録上</span>
       <span class="anom">存在しない</span>
@@ -72,8 +72,7 @@ PAGE_CONTENT['koaru_record'] = () => `<div class="bpage">
     <p>
       芙島市の郊外に家があった。菜園があった。
       春には大根を植えて、秋には白菜を収穫した。
-      妻のふみが手伝っていた。
-      小さな畑だったが、二人には十分だった。
+      一人で管理していた畑だったが、手入れの行き届いた庭だった。
     </p>
     <p>
       事件の夜、彼は現場付近にいた。

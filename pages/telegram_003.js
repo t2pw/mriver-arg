@@ -68,7 +68,7 @@ PAGE_CONTENT['telegram_003'] = () => `<div class="bpage">
     ">── 未収録　記録</div>
     <div style="padding:14px;font-size:12px;line-height:2;">
       <div style="color:var(--t1);margin-bottom:6px;">
-        差出人：猫塚　ふみ<br>
+        差出人：蛸川　小蘭（仮名）<br>
         宛先：猫塚　清治
       </div>
       <div style="color:var(--t3);font-size:11px;">

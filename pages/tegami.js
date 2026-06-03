@@ -1,7 +1,7 @@
 // tegami.js　第2層④「声は壁を透して（文集）」
 // キーワード例: 三百通、収録、守る会
 // prereqs: hub_002
-// 役割：文集の全容を示す。ふみの手紙だけが収録されなかった理由を確定させる。
+// 役割：文集の全容を示す。小蘭の手紙だけが収録されなかった理由を確定させる。
 
 PAGE_CONTENT['tegami'] = () => `<div class="bpage">
   <div class="bpage-num">第2層　04</div>
@@ -106,18 +106,18 @@ PAGE_CONTENT['tegami'] = () => `<div class="bpage">
     ">── 未収録　記録</div>
     <div style="padding:13px 14px;font-size:12px;line-height:2;">
       <div style="color:var(--t1);margin-bottom:8px;">
-        差出人：猫塚　ふみ<br>
+        差出人：蛸川　小蘭（仮名）<br>
         宛先：猫塚　清治
       </div>
       <div style="color:var(--t2);">
         この手紙は文集に収録されなかった。<br>
-        理由：宛先の「猫塚清治」が記録上存在しない人物であるため。<br><br>
+        理由：差出人の身元が確認できず、宛先の「猫塚清治」も記録上存在しない人物であるため。<br><br>
         守る会の編集委員は収録を検討したが、
         存在しない人物への手紙を正式な文集に収録することができなかった。
         または、収録した場合に「猫塚清治」という名前が公的記録に残ることを
         恐れた誰かが、収録を止めたとも言われている。<br><br>
         <span class="anom" style="font-size:11px;">
-          ── 真相は不明。ふみは知らされなかった。
+          ── 真相は不明。小蘭には知らされなかった。
         </span>
       </div>
     </div>

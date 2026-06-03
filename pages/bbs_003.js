@@ -70,7 +70,7 @@ PAGE_CONTENT['bbs_003'] = () => `<div class="bpage">
     </p>
     <p style="font-style:italic;font-size:12px;color:#aaa;">
       ＊猫塚清治は今日も存在しない<br>
-      ＊でも　ふみさんは存在していた　ずっと　ここに
+      ＊それでも　声を上げた人たちは　確かにいた
     </p>
 
     <hr style="border:none;border-top:1px solid #333;margin:1.4em 0;">

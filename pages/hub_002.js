@@ -32,11 +32,11 @@ PAGE_CONTENT['hub_002'] = () => `<div class="bpage">
       color:var(--t3);letter-spacing:.1em;
     ">── ARCHIVE RESTORE COMPLETE</div>
 
-    ${['A　手記　────　事件の夜から、ふみの声まで',
+    ${['A　手記　────　事件の夜から、書けない手紙まで',
        'B　写真　────　記録されなかった人物の顔',
        'C　掲示板　──　市民の声と、差し止められた投書',
        'D　地図　────　14年間が刻まれた芙島市の地図',
-       'E　電文　────　N-0314と、未収録の手紙の予告',
+       'E　電文　────　N-0816と、未収録の手紙の予告',
     ].map(line => `
       <div style="
         display:flex;align-items:center;gap:10px;
@@ -109,7 +109,7 @@ PAGE_CONTENT['hub_002'] = () => `<div class="bpage">
         ['声は壁を透して（文集）', '三百通　／　収録　／　守る会'],
         ['声の速さと重さ', '葉書一通　／　重さ　／　現代'],
         ['芙島市の現在と桃見山', '今年も　／　帰れなかった　／　桜の花'],
-        ['ループの伏線回収', '未来の誰か　／　データ送信　／　ループ'],
+        ['記録の行方', '未来の誰か　／　タコに刻んだ　／　記録の行方'],
         ['小蘭のデータ痕跡の全容', 'バイナリ　／　穿孔　／　電文'],
       ].map(([title, kw]) => `
         <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:4px 12px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03);">

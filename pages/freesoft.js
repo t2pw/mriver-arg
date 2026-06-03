@@ -146,7 +146,7 @@ PAGE_CONTENT['freesoft'] = () => {
 
   <div id="fs-header">
     T.Watanabe's Tools Page
-    <small>フリーウェア配布ページ　／　Last Update : 2002.11.03</small>
+    <small>フリーウェア配布ページ　／　Last Update : 2013.07.21</small>
   </div>
 
   <div id="fs-nav">
@@ -207,10 +207,11 @@ PAGE_CONTENT['freesoft'] = () => {
     <p style="font-size:12px;font-weight:bold;margin-bottom:6px;">■ 更新履歴</p>
     <table style="font-size:11px;border-collapse:collapse;width:100%;margin-bottom:14px;">
       <tr style="background:#000080;color:#fff;"><td style="padding:3px 8px;">日付</td><td style="padding:3px 8px;">内容</td></tr>
-      <tr style="background:#f4f4f4;"><td style="padding:3px 8px;white-space:nowrap;">2002.11.03</td><td style="padding:3px 8px;">HexConv 1.2.0 公開。変換精度を改善。</td></tr>
-      <tr><td style="padding:3px 8px;white-space:nowrap;">2002.08.17</td><td style="padding:3px 8px;">HexConv 1.1.2 公開。</td></tr>
-      <tr style="background:#f4f4f4;"><td style="padding:3px 8px;white-space:nowrap;">2001.03.14</td><td style="padding:3px 8px;">MorseReader 0.9.4 公開。</td></tr>
-      <tr><td style="padding:3px 8px;white-space:nowrap;">2000.09.12</td><td style="padding:3px 8px;">サイト開設。</td></tr>
+      <tr style="background:#f4f4f4;"><td style="padding:3px 8px;white-space:nowrap;">2013.07.21</td><td style="padding:3px 8px;">HexConv 1.2.1 公開。スマートフォン対応を追加。</td></tr>
+      <tr><td style="padding:3px 8px;white-space:nowrap;">2002.11.03</td><td style="padding:3px 8px;">HexConv 1.2.0 公開。変換精度を改善。</td></tr>
+      <tr style="background:#f4f4f4;"><td style="padding:3px 8px;white-space:nowrap;">2002.08.17</td><td style="padding:3px 8px;">HexConv 1.1.2 公開。</td></tr>
+      <tr><td style="padding:3px 8px;white-space:nowrap;">2001.03.14</td><td style="padding:3px 8px;">MorseReader 0.9.4 公開。</td></tr>
+      <tr style="background:#f4f4f4;"><td style="padding:3px 8px;white-space:nowrap;">2000.09.12</td><td style="padding:3px 8px;">サイト開設。</td></tr>
     </table>
 
     <hr class="fs-hr">
@@ -227,7 +228,7 @@ PAGE_CONTENT['freesoft'] = () => {
   <div id="fs-footer">
     当サイトはリンクフリーです。バナーはありません。<br>
     <span class="fs-blink">●</span>
-    アクセスカウンター：<span class="fs-counter">0000314</span>
+    アクセスカウンター：<span class="fs-counter">0000816</span>
     <span class="fs-blink">●</span>
     <br>
     <span style="font-size:10px;color:#888;">

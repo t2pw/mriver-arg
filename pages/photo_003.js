@@ -42,10 +42,21 @@ PAGE_CONTENT['photo_003'] = () => `<div class="bpage">
       後ろ姿の女性が誰であるかも、特定できていない。
     </p>
 
+    <hr style="border:none;border-top:1px solid #2a2a2a;margin:1.4em 0;">
+
+    <p style="font-size:11px;color:#888;letter-spacing:1px;">── 写真の右下端（拡大・コントラスト補正後）</p>
+
+    <p class="anom" style="font-family:var(--mono);font-size:12px;line-height:2;padding:10px 12px;background:#0d1000;border-radius:6px;letter-spacing:.06em;">
+      写真の隅に、薄く文字が写り込んでいる。<br>
+      鉛筆か何かで書かれたもの。印画紙ではなく、<br>
+      土か泥が付着して文字の形を成しているようにも見える。<br>
+      判読できたのは二文字だけ：「蛸川」。
+    </p>
+
     <hr style="border:none;border-top:1px solid #333;margin:1.4em 0;">
 
     <p style="font-style:italic;font-size:12px;color:#aaa;">
-      ── 彼女はその後、14年間ここで暮らし続けた。<br>
+      ── 彼女はその後、14年間この場所の近くで暮らし続けた。<br>
          菜園の野菜は毎年育ち、暖簾は色褪せ、<br>
          手紙は一度も投函されなかった。
     </p>

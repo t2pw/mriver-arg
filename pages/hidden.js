@@ -65,6 +65,16 @@ PAGE_CONTENT['hidden'] = () => `<div class="bpage">
     <p>
       あなたが読む前から、受信者はあなただった。
     </p>
+    <p>
+      一つだけ問う。
+    </p>
+    <p style="font-style:italic;font-size:13px;color:var(--t2);letter-spacing:.06em;line-height:2.1;">
+      私が1949年8月17日の現場にいたのも、偶然だったのか。<br>
+      あなたがこれを読んでいるのも、偶然なのか。
+    </p>
+    <p style="font-size:11px;color:var(--t3);font-family:var(--mono);">
+      ── 答えは提示しない。
+    </p>
 
     <hr style="border:none;border-top:1px solid #2a0008;margin:1.8em 0;">
 

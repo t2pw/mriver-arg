@@ -1,14 +1,14 @@
-// fumi_tegami.js　第3層②「猫塚ふみの手紙」
+// fumi_tegami.js　第3層②「蛸川小蘭の手紙」
 // prereqs: hidden
-// ── ふみの手紙・全文（架空執筆）
-// ── 宛先：猫塚清治。投函されなかった。文集にも収録されなかった。
-// ── 小蘭がふみの代わりに書いた。それが本物か想像かは、もう分からない。
+// ── 小蘭から清治への手紙・全文
+// ── 差出人：蛸川小蘭。宛先：猫塚清治。投函されなかった。文集にも収録されなかった。
+// ── 1963年9月11日に書かれ、アーカイブの最深部に格納されていた。
 
 PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
   <div class="bpage-num">第3層　02</div>
-  <div class="bpage-title">猫塚ふみの手紙</div>
+  <div class="bpage-title">蛸川小蘭の手紙</div>
   <div class="bpage-meta">
-    差出人：猫塚　ふみ　／　宛先：猫塚　清治<br>
+    差出人：蛸川　小蘭　／　宛先：猫塚　清治<br>
     <span style="color:var(--red);font-size:10px;">
       未投函　／　未収録　／　記録上存在しない
     </span>
@@ -16,9 +16,9 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
 
   <div class="bpage-body">
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;">
-      ── このファイルは小蘭が1963年に書いた。<br>
-      　　ふみが書いたかもしれない言葉を、想像して。<br>
-      　　本物か想像か、もう区別はつかない。
+      ── このファイルは小蘭が1963年9月11日に書いた。<br>
+      　　アーカイブの最後に格納されていた。<br>
+      　　14年間、一度も投函されなかった。
     </p>
   </div>
 
@@ -35,9 +35,9 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
     <span style="color:var(--t3);">宛先</span>
     <span style="color:var(--t1);">猫塚　清治　様</span>
     <span style="color:var(--t3);">差出人</span>
-    <span style="color:var(--t1);">猫塚　ふみ</span>
+    <span style="color:var(--t1);">蛸川　小蘭</span>
     <span style="color:var(--t3);">日付</span>
-    <span style="color:var(--t1);">昭和二十四年　秋</span>
+    <span style="color:var(--t1);">昭和二十四年　秋〜昭和三十八年（書き直しの跡あり）</span>
     <span style="color:var(--t3);">状態</span>
     <span style="color:var(--red);">投函されず　引き出しの中</span>
   </div>
@@ -61,26 +61,34 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
 
     <p style="margin-bottom:1.6em;">
       手紙を書き始めて、もう何度目になるか分かりません。
-      書いては破り、書いては引き出しにしまい、
-      今日もまた書いています。
+      昭和二十四年の秋から書いては破り、書いては引き出しにしまい、
+      それでも今日もまた書いています。
     </p>
 
     <p style="margin-bottom:1.6em;">
       あなたは今どこにいるのでしょう。
       元気でいるでしょうか。
-      寒くなってきました。
-      菜園の白菜がようやく巻き始めました。
-      あなたが植えたものです。
     </p>
 
     <p style="margin-bottom:1.6em;">
-      あの夜のことを、まだ考えています。
-      何があったのか、私には分かりません。
-      あなたが何をしたのかも、しなかったのかも。
-      新聞には名前が出ない。
-      近所の人に聞いても、誰も知らない。
-      あなたのことを知っている人が、
-      この街からいなくなってしまったみたいです。
+      私はまだここにいます。
+      十湯から芙島市に出て、細々と暮らしています。
+      あなたの名前は、今も記録のどこにも出てきません。
+    </p>
+
+    <p style="margin-bottom:1.6em;">
+      あの夜のことを、十四年経った今でも考えています。
+    </p>
+
+    <p style="margin-bottom:1.6em;">
+      あなたが声を出すなと言った。
+      指を唇に当てた。
+      私の手首を掴んで、光の届かない方へ引っ張っていった。
+    </p>
+
+    <p style="margin-bottom:1.6em;">
+      理由は何も言わなかった。
+      翌朝、新聞を見て、何が起きていたか、私は初めて理解した。
     </p>
 
     <p style="margin-bottom:1.6em;">
@@ -92,11 +100,14 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
     </p>
 
     <p style="margin-bottom:1.6em;">
-      毎朝、線路に出かけていった。
-      砂利を直して、ボルトを締めて、夕方に帰ってきた。
-      菜園の水やりを忘れる私の代わりに、
-      あなたが夕方に水をやってくれていた。
-      私はそれを台所の窓から見ていました。
+      昭和二十四年八月十六日の夜。
+      T北本線M川駅の近く。
+      砂利の上に膝をついて、懐中電灯の光を避けていた。
+    </p>
+
+    <p style="margin-bottom:1.6em;">
+      あなたはそこにいた。
+      私と並んで、草むらに伏せていた。
     </p>
 
     <p style="margin-bottom:1.6em;">
@@ -113,8 +124,8 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
       宛先に「猫塚清治」と書いてしまうと、
       その名前が誰かの目に触れる。
       記録にない名前が、封筒の表に現れる。
-      それが怖いのか、悲しいのか、
-      自分でもよく分かりません。
+      あなたを守りたいのか、自分が怖いのか、
+      十四年経っても分かりません。
     </p>
 
     <p style="margin-bottom:1.6em;">
@@ -125,16 +136,23 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
     </p>
 
     <p style="margin-bottom:1.6em;">
-      白菜は今年もできました。
-      来年もできるでしょう。
-      菜園はあなたがいなくても、育ちます。
+      今日、無罪が確定しました。
+      二十名は、ようやく解放されます。
     </p>
 
     <p style="margin-bottom:1.6em;">
-      待っています。
-      帰ってきてください。
-      帰れない事情があるなら、
-      せめて、元気でいてください。
+      あなたの名前は、その中にありません。
+      あなたを救う裁判は、どこにも存在しなかった。
+      存在しない人物は、救われることもない。
+    </p>
+
+    <p style="margin-bottom:1.6em;">
+      それだけが、悔しい。
+    </p>
+
+    <p style="margin-bottom:1.6em;">
+      いつかこれを読む人へ——と書き続けてきた。
+      でも今夜だけは、あなたに向けて書きたかった。
     </p>
 
     <p style="margin-bottom:2em;">
@@ -143,19 +161,18 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
     </p>
 
     <p style="color:#9a9488;">
-      ふみ
+      小蘭
     </p>
 
   </div>
 
   <div class="bpage-body">
     <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:2;">
-      ── 小蘭の注記：<br>
-      この手紙はふみさんが実際に書いたものではない。<br>
-      私が1963年に書いた。<br>
-      でも「あなたはここにいた」という一文だけは、<br>
-      ふみさんが書いたはずだ、と思っている。<br>
-      根拠はない。ただそう思う。
+      ── 記録者注記：<br>
+      このファイルは蛸川小蘭が1963年9月11日に作成した。<br>
+      アーカイブの最深部に格納されていた。<br>
+      「あなたはここにいた」という一文は、<br>
+      最初の便箋にも、最後の便箋にも、同じ筆跡で書かれていた。
     </p>
 
     <p class="anom">
