@@ -673,11 +673,13 @@ const Shell = (() => {
     setTimeout(() => {
       KoeOS.installApp(id);
       modal.classList.remove('open');
-      // ホームへ戻してアイコンをポップイン
-      goHome();
-      renderToolGrid();
-      setTimeout(() => flashNewIcon(id), 60);
-      pushNotif(app.icon, 'アプリ', `${app.name} をインストールしました`, null);
+      loadToolScript(`tools/${id}.js`).then(() => {
+        // ホームへ戻してアイコンをポップイン
+        goHome();
+        renderToolGrid();
+        setTimeout(() => flashNewIcon(id), 60);
+        pushNotif(app.icon, 'アプリ', `${app.name} をインストールしました`, null);
+      });
     }, 2100);
   }
 
