@@ -1,6 +1,7 @@
 /**
- * os.js ── 「声は壁を透して」OS層 v3
+ * os.js ── 「声は壁を透して」OS層 v3.1
  * 進捗管理 / キーワード認証 / アンロック / 履歴管理 / 解析アプリのインストール管理
+ * v3.1: freesoft（ツール配布サイト）をページ登録（A案・構造的順序保証）
  */
 'use strict';
 
@@ -46,6 +47,11 @@ const KoeOS = (() => {
     { id:'telegram_001', title:'電文①　暗号データ',        locked:true, keywords:['███','受信者','暗号'],              prereqs:[],                phase:1, spokeGroup:'E', icon:'📡' },
     { id:'telegram_002', title:'電文②　№0314の意味',       locked:true, keywords:['0314','N-0314','三月十四日','さんがつじゅうよっか'],  prereqs:['telegram_001'],  phase:1, spokeGroup:'E', icon:'📡' },
     { id:'telegram_003', title:'電文③　声は壁を透して',    locked:true, keywords:['声は壁を透して','未収録','文集'],    prereqs:['telegram_002'],  phase:1, spokeGroup:'E', icon:'📡' },
+
+    // ★v3.1 ツール配布サイト（スポーク進捗には数えない / 暗号ページ閲覧後に検索で到達）
+    { id:'freesoft', title:"T.Watanabe's Tools Page", locked:true,
+      keywords:['バイナリ','モールス','16進','穿孔','解析ツール','フリーソフト'],
+      prereqs:['telegram_001'], phase:1, spokeGroup:null, icon:'💾' },
 
     // 第2層ハブ（全スポーク完了で自動解放）
     { id:'hub_002', title:'第2層が開く', locked:true, keywords:[], prereqs:[], phase:2, spokeGroup:null, icon:'🔓' },
@@ -106,6 +112,11 @@ const KoeOS = (() => {
     const s = getInstalled();
     if (s.has(id)) return false;
     s.add(id); ls.saveSet(INSTALLED_KEY, s); return true;
+  };
+  const uninstallApp = id => {   // ★v3.1 デバッグ用：アンインストール
+    const s = getInstalled();
+    if (!s.has(id)) return false;
+    s.delete(id); ls.saveSet(INSTALLED_KEY, s); return true;
   };
   const getToolApp   = id => TOOL_APPS.find(a => a.id === id);
 
@@ -206,7 +217,7 @@ const KoeOS = (() => {
     getHistory, addHistory, clearHistory,
     isFirstLaunch, markLaunched, resetAll,
     isSpokeComplete, areAllSpokesComplete, getSpokePages,
-    getInstalled, isInstalled, installApp, getToolApp,
+    getInstalled, isInstalled, installApp, uninstallApp, getToolApp,
     getPage: id => PAGES.find(p=>p.id===id),
   };
 })();
