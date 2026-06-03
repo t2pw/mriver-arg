@@ -21,6 +21,36 @@ MSG_THREADS['soran_intro'] = () => `
     受信日　：${new Date().toLocaleDateString('ja-JP')}
   </div>
 
+  <div class="mbubble-row" style="margin-top:6px;">
+    <div class="mbubble-av">📡</div>
+    <div>
+      <div class="mbubble anom">まず、このアーカイブの内容を確認してください。<br>ブラウザからアクセスできます。</div>
+      <div class="mbubble-time anom">1963-09-12 09:04</div>
+    </div>
+  </div>
+
+  <div style="margin:10px 4px 0;">
+    <div
+      onclick="Shell.open('browser'); setTimeout(() => Shell.bNavigate('archive_about'), 80);"
+      style="
+        display:flex;align-items:center;gap:10px;
+        background:var(--s2);
+        border:1px solid rgba(100,160,255,0.2);
+        border-radius:12px;
+        padding:13px 14px;
+        cursor:pointer;
+        user-select:none;
+      "
+    >
+      <span style="font-size:20px;">📁</span>
+      <div style="font-family:var(--mono);font-size:11px;line-height:1.7;">
+        <div style="color:var(--t1);letter-spacing:.04em;">このアーカイブについて</div>
+        <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">ブラウザで開く</div>
+      </div>
+      <span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span>
+    </div>
+  </div>
+
   <div class="mdate-sep" style="margin-top:20px;">── 添付ファイル ──</div>
   <div style="margin:0 4px;">
     <div style="
