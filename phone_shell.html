@@ -1097,6 +1097,12 @@ const Shell = (() => {
     const content = document.getElementById('acontent');
     const footer  = document.getElementById('afooter');
 
+    const old = document.getElementById('bbar-wrap');
+    if(old) old.remove();
+    content.style.display = 'block';
+    content.style.flexDirection = '';
+    content.style.overflow = 'auto';
+
     footer.style.display = 'flex';
     footer.innerHTML = `
       <button onclick="Shell.open('history')" style="
