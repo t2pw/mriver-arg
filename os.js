@@ -83,13 +83,13 @@ const KoeOS = (() => {
     { id:'data_trace',   title:'小蘭のデータ痕跡の全容', locked:true, keywords:[], prereqs:['loop'],     phase:2, spokeGroup:null, icon:'💾' },
 
     // 第3層
-    // receiver_lock: data_trace読了で自動解放 →(モールス→数字→16進→カタカナ)→ 解錠キーワードで hidden
+    // receiver_lock: data_trace読了で自動解放 → 不明送信元のモールス → 数字 → 16進 → カタカナ → hidden
     { id:'receiver_lock', title:'最後のロック', locked:true, keywords:[], prereqs:['data_trace'], phase:3, spokeGroup:null, icon:'🔒' },
     { id:'hidden',      title:'隠しページ',             locked:true, keywords:['あなたはここにいた','アナタハココニイタ'], prereqs:['receiver_lock'], phase:3, spokeGroup:null, icon:'🔮' },
     { id:'fumi_tegami', title:'蛸川小蘭の手紙',         locked:true, keywords:[], prereqs:['hidden'],     phase:3, spokeGroup:null, icon:'✉️' },
-    { id:'choice',      title:'この手紙を、記録しますか', locked:true, keywords:[], prereqs:['fumi_tegami'], phase:3, spokeGroup:null, icon:'❓' },
-    { id:'wiki_add',    title:'架空wiki（追記）',       locked:true, keywords:[], prereqs:['choice'],     phase:3, spokeGroup:null, icon:'📝' },
-    { id:'wiki_skip',   title:'架空wiki（スキップ）',   locked:true, keywords:[], prereqs:['choice'],     phase:3, spokeGroup:null, icon:'📝' },
+    { id:'choice',      title:'この手紙を、追記してください', locked:true, keywords:[], prereqs:['fumi_tegami'], phase:3, spokeGroup:null, icon:'❓' },
+    { id:'wiki_add',    title:'M川事件（編集）',        locked:true, keywords:[], prereqs:['choice'],     phase:3, spokeGroup:null, icon:'📝' },
+    { id:'wiki_skip',   title:'追記しない選択',         locked:true, keywords:[], prereqs:['choice'],     phase:3, spokeGroup:null, icon:'📝' },
     { id:'epilogue',    title:'エピローグ',             locked:true, keywords:[], prereqs:['choice'],     phase:3, spokeGroup:null, icon:'🌸' },
   ];
 

@@ -1,38 +1,40 @@
-// choice.js　結末①「この手紙を、記録しますか」
+// choice.js　結末①「追記の依頼」
 // prereqs: fumi_tegami
-// 役割：分岐点。wiki_add か wiki_skip かを選ぶ。
-//       ただし wiki_skip も最終的にもう一度問う設計なので、どちらも epilogue に繋がる。
+// 役割：分岐点。小蘭から、架空のM川事件wikiへの追記を依頼する。
 
 PAGE_CONTENT['choice'] = () => `<div class="bpage">
-  <div class="bpage-num">── 問い ──</div>
-  <div class="bpage-title">この手紙を、記録しますか</div>
+  <div class="bpage-num">── 依頼 ──</div>
+  <div class="bpage-title">この手紙があったことを、追記してください</div>
   <div class="bpage-meta" style="border-bottom:none;padding-bottom:0;">
-    架空文集「声は壁を透して」　未収録欄
+    架空M川事件wiki　編集依頼：蛸川小蘭
   </div>
 
   <div class="bpage-body" style="margin-top:24px;">
     <p>
-      蛸川小蘭の手紙は、どこにも記録されていない。
+      ふみさんの手紙は、文集に収録されませんでした。
+      宛先が「猫塚清治」だったからです。
+      記録の上にいない人へ書かれた手紙は、記録の中に置けなかった。
     </p>
     <p>
-      文集に収録されなかった。
-      郵便記録にもない。
-      歴史の中に、存在しない。
+      でも、あなたはここまで読んでくれました。
+      清治さんがいたことも、ふみさんが書いたことも、
+      私がそれを持ち出したことも、もう知っています。
     </p>
     <p>
-      小蘭はその手紙を24年間かけて書いた。
-      一度も投函できないまま、
-      アーカイブの最後に格納した。
+      私は、あなたの時代に百科事典のような場所があることを知っています。
+      誰かが調べ、誰かが直し、誰かが一行を足していく場所。
+      そこなら、消された名前の余白を少しだけ広げられるかもしれない。
     </p>
     <p>
-      そしてあなたに届けた。
+      架空のM川事件wikiに、
+      この手紙があったことと、清治さんと私のことを追記してください。
+      長い文章でなくていい。
     </p>
     <p>
-      あなたが、最後の記録者だ。
+      ふたりが、ここにいたと分かる一行を。
     </p>
   </div>
 
-  <!-- 選択 -->
   <div style="margin:8px 0 0;display:flex;flex-direction:column;gap:10px;">
 
     <div
@@ -50,11 +52,10 @@ PAGE_CONTENT['choice'] = () => `<div class="bpage">
       onmouseleave="this.style.background='#0d0d10'"
     >
       <div style="color:var(--gold);font-size:12px;letter-spacing:.1em;margin-bottom:6px;">
-        ▸ 記録する
+        ▸ M川事件wikiを編集する
       </div>
       <div style="color:var(--t2);font-size:11px;line-height:1.8;letter-spacing:.04em;">
-        猫塚清治と蛸川小蘭の存在を、<br>
-        アーカイブに確定させる。
+        未収録の手紙と、猫塚清治・蛸川小蘭の記録を追記する。
       </div>
     </div>
 
@@ -73,10 +74,10 @@ PAGE_CONTENT['choice'] = () => `<div class="bpage">
       onmouseleave="this.style.background='#0d0d10'"
     >
       <div style="color:var(--t2);font-size:12px;letter-spacing:.1em;margin-bottom:6px;">
-        ▸ 記録しない
+        ▸ 追記しない
       </div>
       <div style="color:var(--t3);font-size:11px;line-height:1.8;letter-spacing:.04em;">
-        このまま先へ進む。
+        アーカイブを閉じる。
       </div>
     </div>
 
@@ -84,8 +85,8 @@ PAGE_CONTENT['choice'] = () => `<div class="bpage">
 
   <div class="bpage-body" style="margin-top:20px;">
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;line-height:1.9;">
-      ── どちらを選んでも、物語は続く。<br>
-      　　でも記録されたかどうかは、残る。
+      ── 選択は記録されます。<br>
+      　　追記したかどうかだけが、最後のページに残ります。
     </p>
   </div>
 </div>`;

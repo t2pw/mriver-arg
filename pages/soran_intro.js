@@ -10,13 +10,13 @@ MSG_THREADS['soran_intro'] = () => `
   <div class="mbubble-row" style="margin-top:6px;">
     <div class="mbubble-av">📡</div>
     <div>
-      <div class="mbubble anom">記録が消える前に。<br>あなたが来るのを待っていた。</div>
+      <div class="mbubble anom">記録が消える前に。<br>受信者欄を照合しています。</div>
       <div class="mbubble-time anom">1973-09-12 09:04</div>
     </div>
   </div>
   <div class="mdate-sep" style="margin-top:20px;">── 送信者情報 ──</div>
   <div style="margin:0 4px;background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:13px;font-family:var(--mono);font-size:11px;color:var(--t2);line-height:1.9;">
-    差出人　：<span style="color:var(--red);">特定不能</span><br>
+    差出人　：<span style="color:var(--red);">繧ｿ◆縺薙％??</span><br>
     プロトコル：<span style="color:var(--red);">未知</span><br>
     受信日　：${new Date().toLocaleDateString('ja-JP')}
   </div>
@@ -54,7 +54,7 @@ MSG_THREADS['soran_intro'] = () => `
   <div class="mbubble-row" style="margin-top:6px;">
     <div class="mbubble-av">📡</div>
     <div>
-      <div class="mbubble anom">芙島市の地図データがある。<br>五つのポイントが、それぞれ別の記録を指している。</div>
+      <div class="mbubble anom">芙島市の地図データを検出。<br>五つのポイントが、それぞれ別の記録を指しています。</div>
       <div class="mbubble-time anom">1973-09-12 09:04</div>
     </div>
   </div>

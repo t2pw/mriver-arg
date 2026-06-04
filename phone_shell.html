@@ -644,11 +644,11 @@ const Shell = (() => {
           ov.classList.add('fadeout');
           setTimeout(() => {
             ov.classList.remove('show','fadeout');
-            pushNotif('📡', '蛸川小蘭', 'このアーカイブを見つけてください。', 'soran_intro');
+            pushNotif('📡', '繧ｿ◆縺薙％??', 'このアーカイブを見つけてください。', 'soran_intro');
           }, 700);
         }, { once: true });
       } else {
-        setTimeout(() => pushNotif('📡', '蛸川小蘭', 'このアーカイブを見つけてください。', 'soran_intro'), 1200);
+        setTimeout(() => pushNotif('📡', '繧ｿ◆縺薙％??', 'このアーカイブを見つけてください。', 'soran_intro'), 1200);
       }
     } else {
       // 既存セーブの再読込：到達済みビートを無音で既配信扱いにし、再トーストを防ぐ
@@ -1040,7 +1040,7 @@ const Shell = (() => {
   /* ═══════════════════════════════════
      メッセージアプリ
   ═══════════════════════════════════ */
-  // 小蘭からの私信。各メッセージは特定ページの復元（gate）で届く。
+  // 文字化けした不明送信元から届く復元通知。正体は最後まで明示しない。
   // 本文を使い回さず、受信者＝あなたに二人称で語りかける物語のビート。
   function _bub(text, anom, time) {
     return `<div class="mbubble-row">
@@ -1054,42 +1054,42 @@ const Shell = (() => {
 
   const STORY_MSGS = [
     {
-      id:'msg_reader', gate:'kiroku_001', name:'蛸川小蘭', avatar:'📡',
-      date:'1949.09', anomaly:true, preview:'あなたが読んでいるのが、分かる。',
+      id:'msg_reader', gate:'kiroku_001', name:'繧ｿ◆縺薙％??', avatar:'📡',
+      date:'1949.09', anomaly:true, preview:'ページが開かれました。',
       body:() => `<div class="mdate-sep">送信：1949年9月（推定）</div>`
-        + _bub('手記を、読んでくれたのね。')
-        + _bub('「いつかこれを読む人へ」と書いたとき、相手が誰かは分からなかった。今も分からない。それでも、ページが開かれた感触だけは、時間を越えて、こうして届く。')
-        + _bub('あなたが何者でも、最後まで読んでほしい。ここには、記録から消された人たちがいる。', true, '1949-09 ⚠ タイムスタンプ異常'),
+        + _bub('手記ファイルの開封を検知。')
+        + _bub('「いつかこれを読む人へ」── 書き出しを照合しました。受信者名は未登録です。')
+        + _bub('あなたが何者でも、最後まで読んでください。ここには、記録から消された人たちがいます。', true, '1949-09 ⚠ タイムスタンプ異常'),
     },
     {
-      id:'msg_inside', gate:'hub_002', name:'蛸川小蘭', avatar:'📡',
-      date:'1973.09.11', anomaly:true, preview:'外側は、全部見せた。',
+      id:'msg_inside', gate:'hub_002', name:'繧ｿ◆縺薙％??', avatar:'📡',
+      date:'1973.09.11', anomaly:true, preview:'第2層を開封できます。',
       body:() => `<div class="mdate-sep">送信：1973年9月11日</div>`
-        + _bub('手記も、写真も、掲示板も、地図も、電文も。全部たどってくれた。')
-        + _bub('ここまでが「外側」。事件の輪郭だけ。ここから先は、私が誰のために、何を残そうとしたのか、という話になる。')
-        + _bub('もう少しだけ、付き合ってほしい。', true, '1973-09-11')
+        + _bub('手記、写真、掲示板、地図、電文。五つのスポークを照合しました。')
+        + _bub('ここまでが「外側」です。ここから先は、記録が誰のために残されたのか、という話になります。')
+        + _bub('もう少しだけ、続けてください。', true, '1973-09-11')
     + `<div style="margin:10px 4px 0;"><div onclick="Shell.open('browser');setTimeout(()=>Shell.bNavigate('hub_002'),80);" style="display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid rgba(200,88,88,0.2);border-radius:12px;padding:13px 14px;cursor:pointer;user-select:none;"><span style="font-size:20px;">🔓</span><div style="font-family:var(--mono);font-size:11px;line-height:1.7;"><div style="color:var(--t1);letter-spacing:.04em;">第2層が開く</div><div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">ブラウザで開く</div></div><span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span></div></div>`,
     },
     {
-      id:'msg_receiver', gate:'hidden', name:'蛸川小蘭', avatar:'📡',
-      date:'復号済み', anomaly:true, preview:'受信者は、あなただった。',
+      id:'msg_receiver', gate:'hidden', name:'繧ｿ◆縺薙％??', avatar:'📡',
+      date:'復号済み', anomaly:true, preview:'受信者照合が完了しました。',
       body:() => `<div class="mdate-sep">送信：日時不明（復号済み）</div>`
-        + _bub('受信者の欄に、私は「███」とだけ刻んだ。名前を知らないまま。')
-        + _bub('でも、これを読んでいるのがあなただと分かった今、もう黒塗りは要らない。')
-        + _bub('受信者は、あなただった。最初から。', true, '受信者照合 ── 完了'),
+        + _bub('受信者欄「███」を復号しました。')
+        + _bub('現在の閲覧者と照合。名前は登録されていません。')
+        + _bub('受信者は、あなたです。最初から。', true, '受信者照合 ── 完了'),
     },
     {
-      id:'msg_deliver', gate:'fumi_tegami', name:'蛸川小蘭', avatar:'✉️',
-      date:'1973.09.11', anomaly:true, preview:'一通だけ、頼みたいことがある。',
+      id:'msg_deliver', gate:'fumi_tegami', name:'繧ｿ◆縺薙％??', avatar:'✉️',
+      date:'1973.09.11', anomaly:true, preview:'未投函の手紙があります。',
       body:() => `<div class="mdate-sep">送信：1973年9月11日</div>`
-        + _bub('最後に、一通の手紙を残した。清治さんへの。とうとう、出せなかった手紙を。')
-        + _bub('私にはもう、投函する時間も、届け先も、ない。')
-        + _bub('だから、あなたに頼む。この手紙を、記録してほしい。', true, '1973-09-11'),
+        + _bub('最深部に、未投函の手紙があります。宛先は、猫塚清治。')
+        + _bub('投函記録なし。文集収録なし。公式記録への参照なし。')
+        + _bub('この手紙を、記録してください。', true, '1973-09-11'),
     },
   ];
 
   const THREADS = [
-    { id:'soran_intro', name:'蛸川小蘭', avatar:'📡', preview:'このアーカイブを見つけてください。', date:'1973.09.12', anomaly:true, gate:null },
+    { id:'soran_intro', name:'繧ｿ◆縺薙％??', avatar:'📡', preview:'このアーカイブを見つけてください。', date:'1973.09.12', anomaly:true, gate:null },
     ...STORY_MSGS,
   ];
 

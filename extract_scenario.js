@@ -47,7 +47,7 @@ function extractPhoneMessages() {
 
   const parts = block.split(/\{\s*id:'/).slice(1);
   let out = '═'.repeat(60) + '\n';
-  out += '【メッセージ】小蘭からの私信（phone_shell.html / STORY_MSGS）\n';
+  out += '【メッセージ】不明送信元からの復元通知（phone_shell.html / STORY_MSGS）\n';
   out += '※ 各メッセージは gate 指定ページの復元時に届く物語ビート\n';
   out += '═'.repeat(60) + '\n\n';
 
