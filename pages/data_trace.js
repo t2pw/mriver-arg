@@ -48,10 +48,10 @@ PAGE_CONTENT['data_trace'] = () => `<div class="bpage">
         display:flex;align-items:center;justify-content:space-between;
       ">
         <span>02　障子の穿孔</span>
-        <span style="color:var(--t3);">十湯温泉　宿の部屋</span>
+        <span style="color:var(--t3);">月湯温泉　宿の部屋</span>
       </div>
       <div style="padding:12px 14px;font-size:12px;color:var(--t2);line-height:1.9;">
-        十湯温泉の宿の部屋の障子に、虫食いに見せかけた針穴を開けた。
+        月湯温泉の宿の部屋の障子に、虫食いに見せかけた針穴を開けた。
         穿孔の配置はモールス符号に対応している。
         宿の主人が「この部屋の障子は取り換えられなかった」と後に語っている。
         意図してそのままにしておいてもらった。

@@ -1,5 +1,5 @@
 // voices.js　第2層③「声を上げた人々」
-// キーワード例: 広瀬和郎、四面楚歌、書き続けた
+// キーワード例: ██████、四面楚歌、書き続けた
 // prereqs: hub_002
 
 PAGE_CONTENT['voices'] = () => `<div class="bpage">
@@ -14,7 +14,7 @@ PAGE_CONTENT['voices'] = () => `<div class="bpage">
     </p>
   </div>
 
-  <!-- 広瀬和郎 -->
+  <!-- ██████ -->
   <div style="
     margin:0 0 10px;
     background:#0d0d10;
@@ -25,15 +25,15 @@ PAGE_CONTENT['voices'] = () => `<div class="bpage">
       padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.06);
       background:rgba(200,169,110,0.07);
       color:var(--gold);font-size:10px;letter-spacing:.12em;
-    ">── 広瀬和郎　作家</div>
+    ">── ██████　作家</div>
     <div style="padding:13px 14px;font-size:12px;color:var(--t2);line-height:2;">
       裁判記録を読んで、おかしいと思った。
-      それだけのことだ、と広瀬は後のインタビューで語っている。<br><br>
+      それだけのことだ、と██████は後のインタビューで語っている。<br><br>
       全国紙に寄稿した。証拠の疑義を指摘した。
       「文学者が口を出すな」と批判された。
       出版社から圧力がかかった。友人の多くが距離を置いた。<br><br>
       それでも書き続けた。四面楚歌の中で、10年以上書き続けた。
-      広瀬の文章が世論を動かした、と後の研究者は評価している。
+      ██████の文章が世論を動かした、と後の研究者は評価している。
     </div>
   </div>
 

@@ -1,13 +1,13 @@
 PAGE_CONTENT['kiroku_002'] = () => `<div class="bpage">
   <div class="bpage-num">手記　02</div>
-  <div class="bpage-title">十湯温泉</div>
+  <div class="bpage-title">月湯温泉</div>
   <div class="bpage-meta">昭和24年8月〜　／　筆者：蛸川小蘭　／　暗号化解除済み</div>
 
   <img src="images/photo_yado.jpg"
        style="width:100%;height:220px;object-fit:cover;object-position:center;display:block;"
        onerror="this.style.display='none'">
   <div style="font-family:var(--mono);font-size:10px;color:var(--t3);padding:6px 0 4px;letter-spacing:.06em;">
-    ── 十湯温泉　湯宿外観（当時）
+    ── 月湯温泉　湯宿外観（当時）
   </div>
 
   <div class="bpage-body">

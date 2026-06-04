@@ -37,7 +37,7 @@ PAGE_CONTENT['momo'] = () => `<div class="bpage">
       <span style="color:var(--t3);">M川駅</span>
       <span style="color:var(--t1);">現役。駅舎は建て替えられた</span>
 
-      <span style="color:var(--t3);">十湯温泉</span>
+      <span style="color:var(--t3);">月湯温泉</span>
       <span style="color:var(--t1);">旅館が九軒営業中</span>
 
       <span style="color:var(--t3);">蒼沼ブルーランド</span>

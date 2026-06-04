@@ -23,10 +23,10 @@ const KoeOS = (() => {
     { id:'soran_profile', title:'蛸川小蘭とは',          locked:false, keywords:['蛸川小蘭','小蘭','蛸川'], prereqs:[], phase:0, spokeGroup:null, icon:'👤' },
 
     // スポークA 手記
-    // kiroku_001: soran_profile に「十湯温泉に逃げ込み」とある
-    { id:'kiroku_001', title:'手記①　事件の夜',        locked:true, keywords:['十湯温泉','土湯温泉'],        prereqs:[],             phase:1, spokeGroup:'A', icon:'📓' },
+    // kiroku_001: soran_profile に「月湯温泉に逃げ込み」とある
+    { id:'kiroku_001', title:'手記①　事件の夜',        locked:true, keywords:['月湯温泉','土湯温泉'],        prereqs:[],             phase:1, spokeGroup:'A', icon:'📓' },
     // kiroku_002: kiroku_001 冒頭「低い山がひとつ──偲山。なぜか懐かしい」
-    { id:'kiroku_002', title:'手記②　十湯温泉',        locked:true, keywords:['偲山'], prereqs:['kiroku_001'], phase:1, spokeGroup:'A', icon:'📓' },
+    { id:'kiroku_002', title:'手記②　月湯温泉',        locked:true, keywords:['偲山'], prereqs:['kiroku_001'], phase:1, spokeGroup:'A', icon:'📓' },
     // kiroku_003: kiroku_002 末尾「次に書くべきは、彼のこと──猫塚清治」
     { id:'kiroku_003', title:'手記③　猫塚清治のこと',  locked:true, keywords:['猫塚清治','清治'], prereqs:['kiroku_002'], phase:1, spokeGroup:'A', icon:'📓' },
     // kiroku_004: kiroku_003 末尾「封筒に宛名を書けない／書けない手紙が始まった」
@@ -77,7 +77,7 @@ const KoeOS = (() => {
     //   各ページ末尾が次の重要語を提示する（第1層と同方針）
     { id:'koaru_record', title:'猫塚清治という人物',    locked:true, keywords:['存在しない人物'],        prereqs:['hub_002'],      phase:2, spokeGroup:null, icon:'👤' },
     { id:'inochi',       title:'なぜ冤罪は生まれたか',  locked:true, keywords:['冤罪','自白','証拠隠蔽'], prereqs:['koaru_record'], phase:2, spokeGroup:null, icon:'📄' },
-    { id:'voices',       title:'声を上げた人々',        locked:true, keywords:['四面楚歌','広瀬和郎','広津和郎'], prereqs:['inochi'], phase:2, spokeGroup:null, icon:'📄' },
+    { id:'voices',       title:'声を上げた人々',        locked:true, keywords:['四面楚歌','広津和郎'], prereqs:['inochi'], phase:2, spokeGroup:null, icon:'📄' },
     { id:'tegami',       title:'声は壁を透して（文集）', locked:true, keywords:['三百通'],                 prereqs:['voices'],       phase:2, spokeGroup:null, icon:'📖' },
     { id:'sns',          title:'声の速さと重さ',        locked:true, keywords:['二グラム','2グラム'],     prereqs:['tegami'],       phase:2, spokeGroup:null, icon:'📄' },
     { id:'momo',         title:'芙島市の現在と桃見山',  locked:true, keywords:['帰れなかった'],           prereqs:['sns'],          phase:2, spokeGroup:null, icon:'🌸' },
