@@ -167,14 +167,6 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
   </div>
 
   <div class="bpage-body">
-    <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:2;">
-      ── 記録者注記：<br>
-      このファイルは蛸川小蘭が1973年9月11日に作成した。<br>
-      アーカイブの最深部に格納されていた。<br>
-      「あなたはここにいた」という一文は、<br>
-      最初の便箋にも、最後の便箋にも、同じ筆跡で書かれていた。
-    </p>
-
     <p class="anom">
       この手紙は、まだどこにも記録されていない。<br>
       文集にも。郵便記録にも。歴史にも。

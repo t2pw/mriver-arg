@@ -27,13 +27,21 @@ PAGE_CONTENT['telegram_001'] = () => {
 
   <div class="bpage-body">
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;">
-      ── このファイルは二重に暗号化されている。<br>
-      　　ヘッダは16進。添付された図は別の符号だ。
+      ── これは小蘭が宿の主人に宛てた電報の控えと、その添付写真だ。<br>
+      　　月湯を去る前に打った、最後の一通。
     </p>
     <p>
-      この電文だけ、構造が違う。
-      受信者識別子の部分を、別の方式で保護した。
-      何の符号なのか分かれば、読める。
+      月湯を離れる前、私は部屋の障子に、小さな穴をいくつも開けた。
+      虫食いに見せかけて、そこにある符号を刻んだ。
+    </p>
+    <p>
+      障子は持って行けない。だから宿の主人に電報を打った。
+      「障子はそのままに。写真を一枚だけ、撮っておいてほしい」と。
+      主人は理由を訊かなかった。いつもそうだった。
+    </p>
+    <p>
+      電報には、短い符号を添えておいた。
+      何を見ればいいのか、いつかこれを読む人に伝わるように。
     </p>
   </div>
 
@@ -45,8 +53,8 @@ PAGE_CONTENT['telegram_001'] = () => {
            style="width:100%;border-radius:6px;display:block;"
            onerror="this.outerHTML='<div style=\'background:#1a1610;border:1px dashed rgba(200,169,110,0.25);border-radius:6px;height:130px;display:flex;align-items:center;justify-content:center;color:var(--t3);font-family:var(--mono);font-size:10px;text-align:center;\'>[画像読み込みエラー]</div>'" >
       <div style="font-family:var(--mono);font-size:10px;color:var(--t3);margin-top:10px;line-height:1.8;">
-        ── 数字の羅列に見える。2桁ずつ区切られている。<br>
-        　　これが何の符号なのか、調べてみる価値がある。
+        ── 電報に添えられた符号。2桁ずつ区切られている。<br>
+        　　読み解けば、どこを見ればいいのかが分かる。
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;">
         ${kwTag('16進')}${kwTag('バイナリ')}
@@ -62,8 +70,8 @@ PAGE_CONTENT['telegram_001'] = () => {
            style="width:100%;border-radius:6px;display:block;"
            onerror="this.outerHTML='<div style=\'background:#1a1610;border:1px dashed rgba(200,169,110,0.25);border-radius:6px;height:160px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--t3);font-family:var(--mono);font-size:10px;text-align:center;line-height:1.7;\'>[ images/puzzle_e_shoji.jpg ]<br><span style=\'font-size:9px;\'>障子の穿孔図をここに配置</span></div>'">
       <div style="font-family:var(--mono);font-size:10px;color:var(--t3);margin-top:10px;line-height:1.8;">
-        ── 障子に開いた穴の列。短い点と、長い線のように見える。<br>
-        　　これも何かの符号だ。読み方を調べる必要がある。
+        ── 主人が撮ってくれた、障子の写真。穴の列が並んでいる。<br>
+        　　短い点と、長い線。これも符号だ。読み方を調べる必要がある。
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;">
         ${kwTag('モールス')}${kwTag('穿孔')}
@@ -74,9 +82,12 @@ PAGE_CONTENT['telegram_001'] = () => {
   <div class="bpage-body">
     <p style="font-family:var(--mono);font-size:11px;color:var(--t3);line-height:1.9;">
       ── 符号の名前で検索すれば、読み解く手がかりが見つかるかもしれない。<br>
-      　　解読して得た4桁の数字を、最後にこのブラウザで検索する。
+      　　障子の穴を読んで得た4桁の数字を、最後にこのブラウザで検索する。
     </p>
-    <p class="anom">受信者欄「███」は、その4桁が揃ったとき初めて意味を持つ。</p>
+    <p class="anom">
+      その4桁は、私のすべてが始まった日だ。<br>
+      そして、このアーカイブを解く鍵でもある。
+    </p>
   </div>
 </div>`;
 };
