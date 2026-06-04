@@ -1,5 +1,5 @@
 // bbs_003.js　掲示板③「無罪確定まで」
-// キーワード例: 猫塚清治は今日も存在しない、切り抜き
+// キーワード例: 清治さんの名前はそこになかった、切り抜き
 
 PAGE_CONTENT['bbs_003'] = () => `<div class="bpage">
   <div class="bpage-num">記録 No.12</div>
@@ -33,7 +33,7 @@ PAGE_CONTENT['bbs_003'] = () => `<div class="bpage">
       「M川事件被告二十名に判決。うち五名に死刑。弁護団は即日控訴」
     </p>
     <p style="font-style:italic;font-size:12px;color:#aaa;">
-      ＊猫塚清治は今日も存在しない
+      ＊清治さんの名前はそこになかった
     </p>
 
     <hr style="border:none;border-top:1px solid #2a2a2a;margin:1.2em 0;">
@@ -45,7 +45,7 @@ PAGE_CONTENT['bbs_003'] = () => `<div class="bpage">
       「守る会、一千三百名の署名を法務省へ提出。██████氏が全国紙に寄稿、証拠の疑義を指摘」
     </p>
     <p style="font-style:italic;font-size:12px;color:#aaa;">
-      ＊猫塚清治は今日も存在しない
+      ＊清治さんの名前はそこになかった
     </p>
 
     <hr style="border:none;border-top:1px solid #2a2a2a;margin:1.2em 0;">
@@ -57,7 +57,7 @@ PAGE_CONTENT['bbs_003'] = () => `<div class="bpage">
       「差し戻し審が始まる。新証人の証言が注目を集める。被告側は全員の無実を改めて訴える」
     </p>
     <p style="font-style:italic;font-size:12px;color:#aaa;">
-      ＊猫塚清治は今日も存在しない
+      ＊清治さんの名前はそこになかった
     </p>
 
     <hr style="border:none;border-top:1px solid #2a2a2a;margin:1.2em 0;">
@@ -69,7 +69,7 @@ PAGE_CONTENT['bbs_003'] = () => `<div class="bpage">
       「仙台高裁、M川事件被告全員に無罪判決。十四年に及んだ裁判、ついに終結」
     </p>
     <p style="font-style:italic;font-size:12px;color:#aaa;">
-      ＊猫塚清治は今日も存在しない<br>
+      ＊清治さんの名前はそこになかった<br>
       ＊それでも　声を上げた人たちは　確かにいた
     </p>
 

@@ -12,6 +12,18 @@ PAGE_CONTENT['data_trace'] = () => `<div class="bpage">
       どうやって当局の目を逃れたか。
       以下に、使った手段の全容を記す。
     </p>
+    <p>
+      すべての記録の中心にあったのは、タコのぬいぐるみだ。
+      1949年8月16日の夜、私が手の中に持っていたもの。
+      この時代に来た時、唯一持っていたもの。
+    </p>
+    <p>
+      なぜタコが媒体になったのか——それを選んだわけではない。
+      私がここへ来た時から、タコだけがあった。
+      だから、タコに刻むしかなかった。
+      ぬいぐるみの綿の密度、縫い目の間隔、布の織り目の方向。
+      指先で分かる凹凸が、データになった。
+    </p>
   </div>
 
   <div style="margin:0 0 8px;display:flex;flex-direction:column;gap:8px;">
@@ -33,7 +45,7 @@ PAGE_CONTENT['data_trace'] = () => `<div class="bpage">
         一見ただの帳面だが、罫線の幅と文字の配置を意図的にずらした。
         罫線からのズレを0/1に変換すると、バイナリデータが浮かび上がる。
         14冊の帳面全体で、約2MBのデータを記録した。
-        K鉄の保線用帳面を流用した。
+        タコの縫い目データと照合するための補助記録として機能する。
       </div>
     </div>
 
@@ -114,7 +126,7 @@ PAGE_CONTENT['data_trace'] = () => `<div class="bpage">
       <span>障子の穿孔</span><span style="color:var(--gold);">✓ 復元済み</span>
       <span>電文（5ノード）</span><span style="color:var(--gold);">✓ 結合済み</span>
       <span>物理保管データ</span><span style="color:var(--gold);">✓ 照合済み</span>
-      <span>暗号キー N-0816</span><span style="color:var(--gold);">✓ 解読済み</span>
+      <span>タコの縫い目データ</span><span style="color:var(--gold);">✓ 照合済み</span>
     </div>
   </div>
 

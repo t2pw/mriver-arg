@@ -29,17 +29,14 @@ PAGE_CONTENT['photo_003'] = () => `<div class="bpage">
     <hr style="border:none;border-top:1px solid #2a2a2a;margin:1.4em 0;">
 
     <p>
-      この写真がアーカイブに含まれていた理由は分からない。
-      猫塚家の写真だと断定できる根拠もない。
+      これが猫塚清治の家だと確信したのは、手記の記述と照合したからだ。
+      「M川駅の近く、芙島市郊外。菜園が前にある家。酒飯の暖簾」——
+      三つとも、この写真と一致した。
     </p>
 
     <p>
-      ただ、手記の中に「芙島市郊外、菜園が前にある家」という記述がある。
-      それだけだ。
-    </p>
-
-    <p>
-      後ろ姿の女性が誰であるかも、特定できていない。
+      この写真を私が撮ったのか、誰かから入手したのか、もう分からない。
+      後ろ姿の女性が誰なのかも、特定できていない。
     </p>
 
     <hr style="border:none;border-top:1px solid #2a2a2a;margin:1.4em 0;">
@@ -56,7 +53,7 @@ PAGE_CONTENT['photo_003'] = () => `<div class="bpage">
     <hr style="border:none;border-top:1px solid #333;margin:1.4em 0;">
 
     <p style="font-style:italic;font-size:12px;color:#aaa;">
-      ── 彼女はその後、14年間この場所の近くで暮らし続けた。<br>
+      ── 私はその後、14年間この場所の近くで暮らし続けた。<br>
          菜園の野菜は毎年育ち、暖簾は色褪せ、<br>
          手紙は一度も投函されなかった。
     </p>

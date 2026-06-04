@@ -88,7 +88,7 @@ PAGE_CONTENT['tegami'] = () => `<div class="bpage">
     <hr style="border:none;border-top:1px solid #222;margin:1.6em 0;">
 
     <p>
-      三百通を読み終えた時、小蘭は気がついた。
+      三百通を読み終えた時、気がついた。
     </p>
   </div>
 
