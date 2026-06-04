@@ -345,6 +345,34 @@ html,body{
   border-radius:3px;transition:width .12s linear;
 }
 
+/* ═══ 誰のスマホか 導入オーバーレイ ══ */
+#intro-overlay{
+  position:absolute;inset:0;z-index:500;
+  background:#080610;
+  display:none;align-items:center;justify-content:center;
+  cursor:pointer;user-select:none;
+  transition:opacity .7s ease;
+}
+#intro-overlay.show{display:flex;}
+#intro-overlay.fadeout{opacity:0;pointer-events:none;}
+#intro-inner{
+  text-align:center;padding:0 28px;font-family:var(--mono);
+}
+#intro-status{
+  font-size:9px;color:rgba(200,88,88,.7);
+  letter-spacing:.25em;margin-bottom:36px;
+  text-transform:uppercase;
+}
+#intro-msg{
+  font-size:14px;color:var(--t1);
+  line-height:2.4;letter-spacing:.04em;margin-bottom:44px;
+}
+#intro-sub{
+  font-size:9px;color:var(--t3);letter-spacing:.14em;
+  animation:pulse-sub 2.2s ease infinite;
+}
+@keyframes pulse-sub{0%,100%{opacity:.35;}50%{opacity:.9;}}
+
 /* ═══ メッセージアプリ ════════════════ */
 .mthread{
   display:flex;align-items:center;padding:13px 16px;gap:12px;
@@ -573,6 +601,19 @@ html,body{
       </div>
     </div>
 
+    <!-- ★A-4 誰のスマホか導入オーバーレイ（初回起動のみ） -->
+    <div id="intro-overlay">
+      <div id="intro-inner">
+        <div id="intro-status">⚠ UNKNOWN DEVICE</div>
+        <div id="intro-msg">
+          このスマートフォンが、<br>あなたの元に届いた。<br>
+          <span style="font-size:11px;color:var(--t3);">持ち主：不明</span><br>
+          <span style="font-size:11px;color:var(--t3);">最終起動：1963-09-12 09:04</span>
+        </div>
+        <div id="intro-sub">タップして起動</div>
+      </div>
+    </div>
+
   </div><!-- /screen -->
 
   <div id="hind"><div onclick="Shell.goHome()"></div></div>
@@ -596,7 +637,19 @@ const Shell = (() => {
     setTimeout(() => document.getElementById('clk-anom').classList.add('vis'), 900);
     if (KoeOS.isFirstLaunch()) {
       KoeOS.markLaunched();
-      setTimeout(() => pushNotif('📡', '蛸川小蘭', 'このアーカイブを見つけてください。', 'soran_intro'), 1200);
+      const ov = document.getElementById('intro-overlay');
+      if (ov) {
+        ov.classList.add('show');
+        ov.addEventListener('click', () => {
+          ov.classList.add('fadeout');
+          setTimeout(() => {
+            ov.classList.remove('show','fadeout');
+            pushNotif('📡', '蛸川小蘭', 'このアーカイブを見つけてください。', 'soran_intro');
+          }, 700);
+        }, { once: true });
+      } else {
+        setTimeout(() => pushNotif('📡', '蛸川小蘭', 'このアーカイブを見つけてください。', 'soran_intro'), 1200);
+      }
     } else {
       // 既存セーブの再読込：到達済みビートを無音で既配信扱いにし、再トーストを防ぐ
       deliverMessages(false);

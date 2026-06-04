@@ -19,8 +19,7 @@ const KoeOS = (() => {
   ────────────────────────────────────── */
   const PAGES = [
     // 最初から読める
-    { id:'archive_about', title:'このアーカイブについて', locked:false, keywords:['','',''], prereqs:[], phase:0, spokeGroup:null, icon:'📁' },
-    { id:'soran_profile', title:'蛸川小蘭とは',          locked:false, keywords:['蛸川小蘭','小蘭','蛸川'], prereqs:[], phase:0, spokeGroup:null, icon:'👤' },
+    { id:'archive_about', title:'このアーカイブについて', locked:false, keywords:['蛸川小蘭','小蘭','蛸川'], prereqs:[], phase:0, spokeGroup:null, icon:'📁' },
 
     // スポークA 手記
     // kiroku_001: soran_profile に「月湯温泉に逃げ込み」とある
