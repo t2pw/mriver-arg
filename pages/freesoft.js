@@ -126,7 +126,7 @@ PAGE_CONTENT['freesoft'] = () => {
 
   <div id="fs-topbar">
     <div>
-      <div id="fs-topbar-logo">▶ Play ストア</div>
+      <div id="fs-topbar-logo">▶ Pray ストア</div>
       <div id="fs-topbar-sub">T.Watanabe Tools Collection</div>
     </div>
   </div>

@@ -35,7 +35,7 @@ const KoeOS = (() => {
     // photo_001: soran_profile「記録されなかった人物が草むらすれすれから写されている」
     { id:'photo_001', title:'写真①　記録されなかった人物',    locked:true, keywords:['脱線','脱線事故'],           prereqs:[],            phase:1, spokeGroup:'B', icon:'📷' },
     // photo_002: photo_001 末尾「昭和二十四年八月の一枚」
-    { id:'photo_002', title:'写真②　同じ場所・70年の隔たり', locked:true, keywords:['昭和24年','昭和二十四年'], prereqs:['photo_001'], phase:1, spokeGroup:'B', icon:'📷' },
+    { id:'photo_002', title:'写真②　同じ場所・70年の隔たり', locked:true, keywords:['昭和24年','昭和二十四年','昭和24年8月16日','昭和二十四年八月十六日','1949年8月16日'], prereqs:['photo_001'], phase:1, spokeGroup:'B', icon:'📷' },
     // photo_003: photo_002 末尾「M川駅そばの家、暖簾のそばに」
     { id:'photo_003', title:'写真③　菜園のある家',           locked:true, keywords:['M川駅','松川駅'], prereqs:['photo_002'], phase:1, spokeGroup:'B', icon:'📷' },
 
@@ -185,7 +185,7 @@ const KoeOS = (() => {
       if (isRestored(p.id) || !p.keywords?.length) continue;
       const hit = p.keywords.some(kw => {
         const nk = kw.replace(/\s+/g,'');
-        return norm.includes(nk) || nk.includes(norm);
+        return norm === nk;
       });
       if (hit && p.prereqs.every(pid => isRestored(pid))) {
         markRestored(p.id); unlocked.push(p.id);

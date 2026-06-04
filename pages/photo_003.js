@@ -16,33 +16,28 @@ PAGE_CONTENT['photo_003'] = () => `<div class="bpage">
       秋の野菜だ。
     </p>
 
+    <hr style="border:none;border-top:1px solid #2a2a2a;margin:1.4em 0;">
+
     <p>
-      後ろ姿の女性が一人、玄関の方を向いて立っている。
-      顔は写っていない。
+      あの夜、清治さんが着ていたのと同じ作業着が、
+      玄関脇に、取り込まれないまま、ずっと干されている。
+      これが清治さんの家だと、それで分かった。
+    </p>
+
+    <p>
+      この写真は、私が撮った。
+      何度もこの家の前に立ち、ようやく一枚だけ、写すことができた。
     </p>
 
     <hr style="border:none;border-top:1px solid #2a2a2a;margin:1.4em 0;">
 
-    <p>
-      これが清治さんの家だと確信したのは、手記の記述と照合したからだ。
-      「M川駅の近く、芙島市郊外。菜園が前にある家」——
-      どれも、この写真と一致した。
-    </p>
-
-    <p>
-      この写真を私が撮ったのか、誰かから入手したのか、もう分からない。
-      後ろ姿の女性が誰なのかも、特定できていない。
-    </p>
-
-    <hr style="border:none;border-top:1px solid #2a2a2a;margin:1.4em 0;">
-
-    <p style="font-size:11px;color:#888;letter-spacing:1px;">── 写真の右下端（拡大・コントラスト補正後）</p>
+    <p style="font-size:11px;color:#888;letter-spacing:1px;">── 写真の右下端（拡大）</p>
 
     <p class="anom" style="font-family:var(--mono);font-size:12px;line-height:2;padding:10px 12px;background:#0d1000;border-radius:6px;letter-spacing:.06em;">
-      写真の隅に、薄く文字が写り込んでいる。<br>
-      鉛筆か何かで書かれたもの。印画紙ではなく、<br>
-      土か泥が付着して文字の形を成しているようにも見える。<br>
-      かろうじて読めたのは——「M川事件」。
+      右下に、私が書き込んだ文字がある。<br>
+      この写真を見つけた人が、たどっていけるように。<br>
+      ——「M川事件」。<br>
+      そこから先は、自分で探してほしい。
     </p>
 
     <hr style="border:none;border-top:1px solid #333;margin:1.4em 0;">

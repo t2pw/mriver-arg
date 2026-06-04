@@ -794,6 +794,10 @@ const Shell = (() => {
   function open(appId) {
     curApp = appId;
     curTool = null;
+    // メッセージのスレッド上のボタンから他appへ遷移した際、msgviewが残って
+    // 「押しても何も起きない」ように見えるのを防ぐ（遷移先を可視化）
+    const _mv = document.getElementById('msgview');
+    if(_mv) _mv.classList.remove('open');
     document.getElementById('home').classList.add('hidden');
     document.getElementById('appscr').classList.add('open');
     KoeOS.clearNotif(appId);
