@@ -37,7 +37,7 @@ const KoeOS = (() => {
     // photo_002: photo_001 末尾「昭和二十四年八月の一枚」
     { id:'photo_002', title:'写真②　同じ場所・70年の隔たり', locked:true, keywords:['昭和24年','昭和二十四年'], prereqs:['photo_001'], phase:1, spokeGroup:'B', icon:'📷' },
     // photo_003: photo_002 末尾「M川駅そばの家、暖簾のそばに」
-    { id:'photo_003', title:'写真③　菜園と暖簾',             locked:true, keywords:['M川駅','松川駅'], prereqs:['photo_002'], phase:1, spokeGroup:'B', icon:'📷' },
+    { id:'photo_003', title:'写真③　菜園のある家',           locked:true, keywords:['M川駅','松川駅'], prereqs:['photo_002'], phase:1, spokeGroup:'B', icon:'📷' },
 
     // スポークC 掲示板
     // bbs_001: soran_profile「M川事件」（松川事件は実在語フック）
