@@ -2,7 +2,7 @@
 // prereqs: hidden
 // ── 小蘭から清治への手紙・全文
 // ── 差出人：蛸川小蘭。宛先：猫塚清治。投函されなかった。文集にも収録されなかった。
-// ── 1963年9月11日に書かれ、アーカイブの最深部に格納されていた。
+// ── 1973年9月11日に書かれ、アーカイブの最深部に格納されていた。
 
 PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
   <div class="bpage-num">第3層　02</div>
@@ -16,9 +16,9 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
 
   <div class="bpage-body">
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;">
-      ── このファイルは小蘭が1963年9月11日に書いた。<br>
+      ── このファイルは小蘭が1973年9月11日に書いた。<br>
       　　アーカイブの最後に格納されていた。<br>
-      　　14年間、一度も投函されなかった。
+      　　24年間、一度も投函されなかった。
     </p>
   </div>
 
@@ -37,7 +37,7 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
     <span style="color:var(--t3);">差出人</span>
     <span style="color:var(--t1);">蛸川　小蘭</span>
     <span style="color:var(--t3);">日付</span>
-    <span style="color:var(--t1);">昭和二十四年　秋〜昭和三十八年（書き直しの跡あり）</span>
+    <span style="color:var(--t1);">昭和二十四年　秋〜昭和四十八年（書き直しの跡あり）</span>
     <span style="color:var(--t3);">状態</span>
     <span style="color:var(--red);">投函されず　引き出しの中</span>
   </div>
@@ -77,7 +77,7 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
     </p>
 
     <p style="margin-bottom:1.6em;">
-      あの夜のことを、十四年経った今でも考えています。
+      あの夜のことを、二十四年経った今でも考えています。
     </p>
 
     <p style="margin-bottom:1.6em;">
@@ -125,7 +125,7 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
       その名前が誰かの目に触れる。
       記録にない名前が、封筒の表に現れる。
       あなたを守りたいのか、自分が怖いのか、
-      十四年経っても分かりません。
+      二十四年経っても分かりません。
     </p>
 
     <p style="margin-bottom:1.6em;">
@@ -136,12 +136,12 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
     </p>
 
     <p style="margin-bottom:1.6em;">
-      今日、無罪が確定しました。
-      二十名は、ようやく解放されます。
+      無罪が確定したのは、もう十年も前になります。
+      二十名は、あのとき解放されました。
     </p>
 
     <p style="margin-bottom:1.6em;">
-      あなたの名前は、その中にありません。
+      でも、あなたの名前は、その中にありませんでした。
       あなたを救う裁判は、どこにも存在しなかった。
       存在しない人物は、救われることもない。
     </p>
@@ -169,7 +169,7 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
   <div class="bpage-body">
     <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:2;">
       ── 記録者注記：<br>
-      このファイルは蛸川小蘭が1963年9月11日に作成した。<br>
+      このファイルは蛸川小蘭が1973年9月11日に作成した。<br>
       アーカイブの最深部に格納されていた。<br>
       「あなたはここにいた」という一文は、<br>
       最初の便箋にも、最後の便箋にも、同じ筆跡で書かれていた。

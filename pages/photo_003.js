@@ -43,7 +43,7 @@ PAGE_CONTENT['photo_003'] = () => `<div class="bpage">
     <hr style="border:none;border-top:1px solid #333;margin:1.4em 0;">
 
     <p style="font-style:italic;font-size:12px;color:#aaa;">
-      ── それから14年、私は月湯の宿で、この家のことを思い続けた。<br>
+      ── それから二十四年、私は月湯の宿で、この家のことを思い続けた。<br>
          菜園の野菜は、毎年育っていただろうか。<br>
          手紙は、一度も投函されなかった。
     </p>

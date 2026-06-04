@@ -13,7 +13,7 @@ PAGE_CONTENT['sns'] = () => `<div class="bpage">
       ── 小蘭の手記の断片。現代語と当時の語彙が混在している。
     </p>
     <p>
-      1949年から1963年の間、私はずっとここにいた。
+      1949年から1973年の間、私はずっとここにいた。
       この時代に、この場所に。
     </p>
     <p>
@@ -78,7 +78,7 @@ PAGE_CONTENT['sns'] = () => `<div class="bpage">
     <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:2;">
       「私は現代から来た。
       速い声の時代を知っている。
-      でもここで14年間過ごして、
+      でもここで24年間過ごして、
       遅い声の方が遠くまで届くことがある、
       と思うようになった。」<br>
       <span style="font-size:10px;">── 小蘭の手記断片　年代不明</span>

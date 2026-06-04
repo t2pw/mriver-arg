@@ -5,14 +5,14 @@
 PAGE_CONTENT['hub_002'] = () => `<div class="bpage">
   <div class="bpage-num">── 第2層　解放 ──</div>
   <div class="bpage-title">あなたはすべてを読んだ</div>
-  <div class="bpage-meta">自動復元　／　解放条件：全スポーク完了　／　1963-09-12</div>
+  <div class="bpage-meta">自動復元　／　解放条件：全スポーク完了　／　1973-09-12</div>
 
   <div class="bpage-body">
     <p>
       手記を読んだ。写真を見た。掲示板の声を読んだ。地図の座標を辿った。電文を復号した。
     </p>
     <p>
-      小蘭が14年間かけて記録したものの、輪郭が見えてきた。
+      小蘭が24年間かけて記録したものの、輪郭が見えてきた。
     </p>
   </div>
 
@@ -35,7 +35,7 @@ PAGE_CONTENT['hub_002'] = () => `<div class="bpage">
     ${['A　手記　────　事件の夜から、書けない手紙まで',
        'B　写真　────　記録されなかった人物の顔',
        'C　掲示板　──　市民の声と、差し止められた投書',
-       'D　地図　────　14年間が刻まれた芙島市の地図',
+       'D　地図　────　24年間が刻まれた芙島市の地図',
        'E　電文　────　N-0816と、未収録の手紙の予告',
     ].map(line => `
       <div style="
@@ -84,7 +84,7 @@ PAGE_CONTENT['hub_002'] = () => `<div class="bpage">
       「いつかこれを読む人へ。<br>
       　ここまで来てくれた。<br>
       　もう少しだけ、続きがある。」<br>
-      <span style="font-size:10px;">── 蛸川小蘭　1963年9月11日</span>
+      <span style="font-size:10px;">── 蛸川小蘭　1973年9月11日</span>
     </p>
   </div>
 

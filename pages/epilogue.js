@@ -19,12 +19,12 @@ PAGE_CONTENT['epilogue'] = () => {
       芙島市に、桜の花が咲いている。
     </p>
     <p>
-      小蘭が14年間、三月のたびに眺めた山だ。
+      小蘭が24年間、三月のたびに眺めた山だ。
       清治と来たかった場所かどうかは、分からない。
       来られなかった。
     </p>
     <p>
-      小蘭は1963年9月12日の後、消えた。
+      小蘭は1973年9月12日の後、消えた。
       戸籍もない。記録もない。
       どこへ行ったのかも、なぜ消えたのかも、分からない。
     </p>
@@ -71,13 +71,13 @@ PAGE_CONTENT['epilogue'] = () => {
     </p>
     <p>
       清治の名前が、ここに残った。
-      小蘭の14年間が、ここに残った。
+      小蘭の24年間が、ここに残った。
       ふたりは記録されて、存在する。
     </p>
     <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:2;">
       「いつかこれを読む人へ。<br>
       　あなたが来るのを待っていた。」<br>
-      <span style="font-size:10px;">── 蛸川小蘭　1963年9月11日</span>
+      <span style="font-size:10px;">── 蛸川小蘭　1973年9月11日</span>
     </p>
     <p class="anom">
       声は、壁を透して届いた。
@@ -104,7 +104,7 @@ PAGE_CONTENT['epilogue'] = () => {
     <p>
       清治がいなければ、あの夜の小蘭もいなかった。
       小蘭がいなければ、この記録もなかった。
-      ふたりの14年間は、どこにも残らない。
+      ふたりの24年間は、どこにも残らない。
     </p>
     <p>
       それでも桜の花は咲く。
@@ -115,7 +115,7 @@ PAGE_CONTENT['epilogue'] = () => {
       　存在しなかったことになる。<br>
       　それが歴史というものだ。<br>
       　私はそれが嫌だった。だから書いた。」<br>
-      <span style="font-size:10px;">── 蛸川小蘭　1963年9月11日</span>
+      <span style="font-size:10px;">── 蛸川小蘭　1973年9月11日</span>
     </p>
     <p class="anom" style="opacity:.7;">
       あなたはいつでも戻って、記録できる。
@@ -137,7 +137,7 @@ PAGE_CONTENT['epilogue'] = () => {
     <hr style="border:none;border-top:1px solid #1a1a1a;margin:0 0 1.6em;">
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;line-height:2;">
       ── アーカイブ閲覧完了<br>
-      　　記録者：蛸川小蘭　1949年〜1963年<br>
+      　　記録者：蛸川小蘭　1949年〜1973年<br>
       　　閲覧者：あなた　${new Date().toLocaleDateString('ja-JP')}
     </p>
   </div>

@@ -63,9 +63,9 @@ PAGE_CONTENT['wiki_add'] = () => {
       font-family:var(--mono);font-size:10px;color:var(--red);letter-spacing:.1em;
     ">── 記録者</div>
     <div style="padding:14px 16px;color:var(--t2);">
-      蛸川小蘭。14年間にわたり清治の存在を記録し続けた。
+      蛸川小蘭。24年間にわたり清治の存在を記録し続けた。
       戸籍を持たない人物であり、彼女自身も公式記録には存在しない。
-      1963年9月12日を最後に、消息不明。
+      1973年9月12日を最後に、消息不明。
     </div>
   </div>
 

@@ -8,7 +8,7 @@
 PAGE_CONTENT['loop'] = () => `<div class="bpage">
   <div class="bpage-num">第2層　07</div>
   <div class="bpage-title">記録の行方</div>
-  <div class="bpage-meta">ファイル識別子：TRACE-ANALYSIS　／　復号：N-0816　／　作成：1963年</div>
+  <div class="bpage-meta">ファイル識別子：TRACE-ANALYSIS　／　復号：N-0816　／　作成：1973年</div>
 
   <div class="bpage-body">
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;">
@@ -58,14 +58,14 @@ PAGE_CONTENT['loop'] = () => `<div class="bpage">
         text: '文集「声は壁を透して」を古書店で入手。あの夜の自分の手紙が収録されていないことに気づく。記録の目的が、少し変わった。',
       },
       {
-        year: '1963年9月11日',
+        year: '1963年9月12日',
         color: 'var(--gold)',
-        text: '蒼沼ブルーランドの廃墟に、最後の記録を収めた。タコは、肌身離さず持ち続けた。受け取る相手の名は分からないまま、宛先の欄に「███」とだけ刻んだ。',
+        text: 'M川事件、無罪確定。被告二十名が解放された。だが清治さんの名前は、最後まで記録に戻らなかった。小蘭はなお、月湯に留まり続けた。',
       },
       {
-        year: '1963年9月12日',
+        year: '1973年',
         color: 'var(--red)',
-        text: '無罪確定。小蘭の消息が、この日を最後に途絶えた。タコがその後どこへ渡ったのかは、記録にない。',
+        text: '蒼沼ブルーランドが開いた年。小蘭は、人で賑わうその遊園地に紛れて、タコに刻んだ記録を埋めた。受け取る相手の名は分からないまま、宛先の欄に「███」とだけ刻んで。この年を最後に、小蘭の消息は途絶えた。タコがその後どこへ渡ったのかは、記録にない。',
       },
       {
         year: '現在',
@@ -94,7 +94,7 @@ PAGE_CONTENT['loop'] = () => `<div class="bpage">
 
   <div class="bpage-body">
     <p>
-      1949年から14年間かけて記録を作り、タコに納めた。
+      1949年から24年間かけて記録を作り、タコに納めた。
       確かに届くという保証はなかった。
       ただ、残すことと、託すことだけはできた。
     </p>

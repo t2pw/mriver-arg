@@ -4,11 +4,11 @@
 PAGE_CONTENT['data_trace'] = () => `<div class="bpage">
   <div class="bpage-num">第2層　08</div>
   <div class="bpage-title">小蘭のデータ痕跡　全容</div>
-  <div class="bpage-meta">記録者：蛸川小蘭　／　1963年9月　／　照合ファイル数：47</div>
+  <div class="bpage-meta">記録者：蛸川小蘭　／　1973年9月　／　照合ファイル数：47</div>
 
   <div class="bpage-body">
     <p>
-      14年間、私はどうやって記録を残したか。
+      24年間、私はどうやって記録を残したか。
       どうやって当局の目を逃れたか。
       その答えは、ひとつしかない。
     </p>

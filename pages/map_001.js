@@ -99,7 +99,7 @@
     return `<div class="bpage">
   <div class="bpage-num">記録 No.13</div>
   <div class="bpage-title">芙島市　座標データ</div>
-  <div class="bpage-meta">データ形式：不明　／　埋め込み日時：1963年以前（推定）　／　復元済み</div>
+  <div class="bpage-meta">データ形式：不明　／　埋め込み日時：1973年以前（推定）　／　復元済み</div>
 
   <div class="bpage-body">
     <p>アーカイブのデータ層に、座標がひとつだけ埋め込まれていた。</p>

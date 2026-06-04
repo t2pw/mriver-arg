@@ -74,8 +74,8 @@
       },
       {
         lat: 37.7240, lng: 140.5380,
-        label: '観察記録　1963年3月',
-        note: '最後に来た三月。この年の九月、無罪が確定した日、私はここにいなかった。蒼沼ブルーランドにいた。最後の記録を隠すために。',
+        label: '観察記録　1973年3月',
+        note: '最後に来た三月。この年、蒼沼ブルーランドが開いた。私はその雑踏に紛れて、最後の記録を隠した。',
         anom: true,
       },
     ];
@@ -120,7 +120,7 @@
     return `<div class="bpage">
   <div class="bpage-num">記録 No.14</div>
   <div class="bpage-title">桃見山　── 三月の記録</div>
-  <div class="bpage-meta">観測記録：1950年〜1963年　／　記録者：蛸川小蘭　／　毎年三月</div>
+  <div class="bpage-meta">観測記録：1950年〜1973年　／　記録者：蛸川小蘭　／　毎年三月</div>
 
   <style>
     #leaflet-map-002 { width:100%;height:260px;border-radius:8px;margin:0 0 4px; }
@@ -160,14 +160,14 @@
       　　点線の円：展望点からの視野（推定300m）。
     </p>
     <p class="anom">
-      1963年3月の記録は、他の年と筆跡が違う。<br>
+      1973年3月の記録は、他の年と筆跡が違う。<br>
       書き直した跡がある。消された地名の下に、もう一つの地名が透けて見える──蒼沼ブルーランド。
     </p>
     <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:1.9;">
       「桜の花は毎年咲く。<br>
       　私が帰れなくても、咲く。<br>
-      　それだけは確かだと思って、十四年間、春を待った。」<br>
-      <span style="font-size:10px;color:var(--t3);">──手記断片　1963年3月</span>
+      　それだけは確かだと思って、二十四年間、春を待った。」<br>
+      <span style="font-size:10px;color:var(--t3);">──手記断片　1973年3月</span>
     </p>
   </div>
 </div>`;
