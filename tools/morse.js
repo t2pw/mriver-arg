@@ -58,7 +58,8 @@ TOOL_UI['morse'] = () => {
     <div id="morse-output" style="
       background:#070709;border:1px solid rgba(200,169,110,0.2);
       border-radius:8px;padding:16px;font-size:24px;color:var(--t3);
-      letter-spacing:.25em;text-align:center;min-height:56px;margin-bottom:24px;
+      letter-spacing:.12em;text-align:center;min-height:56px;margin-bottom:24px;
+      line-height:1.45;white-space:normal;overflow-wrap:anywhere;word-break:break-all;
     ">—</div>
 
     <div style="font-size:10px;color:var(--t3);margin-bottom:8px;letter-spacing:.1em;">── 内蔵モールス数字表</div>

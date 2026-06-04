@@ -1,6 +1,6 @@
 // map_001.js　地図①「芙島市中心部」
-// キーワード例: 座標、芙島市、埋め込み
-// v3: IMG_BOUNDS・マーカー座標を map_fushima.jpg の実画像に合わせて調整済み
+// キーワード例: 芙島市、桃見山
+// v4: 地図上の欠落した地名をたどる記録として整理
 
 (function () {
 
@@ -34,12 +34,11 @@
     }
   }
 
-  // 座標は map_fushima.jpg のピクセル位置から逆算
   const POINTS = [
     {
       lat: 37.7285, lng: 140.5112,
       label: '███ ██',
-      note: '座標のみ。地名は黒塗り。付近に「桃見山」と呼ばれた場所がある。',
+      note: '地名が黒塗りされている。付近に「桃見山」と呼ばれた場所がある。',
       anom: true,
     },
   ];
@@ -85,7 +84,6 @@
               <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.8;
                 color:${p.anom ? '#c85858' : '#e2e0da'};background:#1a1a1f;padding:4px 2px;">
                 <div style="font-weight:bold;letter-spacing:.08em;margin-bottom:4px;">${p.label}</div>
-                <div style="color:#8a8880;font-size:10px;">${p.lat.toFixed(4)}, ${p.lng.toFixed(4)}</div>
                 <div style="margin-top:6px;font-size:10px;color:${p.anom ? '#c85858' : '#a0a09a'};">${p.note}</div>
               </div>`);
 
@@ -98,12 +96,12 @@
 
     return `<div class="bpage">
   <div class="bpage-num">記録 No.13</div>
-  <div class="bpage-title">芙島市　座標データ</div>
+  <div class="bpage-title">芙島市　欠落した地名</div>
   <div class="bpage-meta">データ形式：不明　／　埋め込み日時：1973年以前（推定）　／　復元済み</div>
 
   <div class="bpage-body">
-    <p>アーカイブのデータ層に、座標がひとつだけ埋め込まれていた。</p>
-    <p>地名は黒塗りされている。なぜそこが記録されたのかは、ポイントをタップすると確認できる。</p>
+    <p>アーカイブの地図データに、黒塗りされた地名がひとつ残っていた。</p>
+    <p>なぜそこだけが伏せられているのかは、地図上の印をタップすると確認できる。</p>
   </div>
 
   <style>
@@ -125,11 +123,11 @@
 
   <div class="bpage-body" style="margin-top:12px;">
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;">
-      ── 赤いポイントは座標のみが記録され、地名が黒塗りされている。<br>
+      ── 赤い印は、地名が黒塗りされた場所を示している。<br>
       　　タップで詳細が開く。
     </p>
     <p class="anom">
-      黒塗りの座標については、対応する記録が別ファイルに存在する可能性がある。桃見山と呼ばれた地域。
+      黒塗りの地名については、対応する記録が別ファイルに存在する可能性がある。桃見山と呼ばれた地域。
     </p>
   </div>
 </div>`;

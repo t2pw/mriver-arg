@@ -14,8 +14,9 @@ function stripHtml(str) {
     .replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&nbsp;/g,' ')
     .replace(/\$\{[^}]*\}/g, '[…]')
     .replace(/[ \t]+/g, ' ')
+    .replace(/[ \t]+\n/g, '\n')
     .replace(/\n[ \t]+/g, '\n')
-    .replace(/\n{3,}/g, '\n\n')
+    .replace(/(?:\r?\n[ \t]*){3,}/g, '\n\n')
     .trim();
 }
 
@@ -35,7 +36,7 @@ function extractIntro() {
   return out;
 }
 
-// phone_shell.html の STORY_MSGS（小蘭からのメッセージ）を抽出
+// phone_shell.html の STORY_MSGS（不明送信元からの復元通知）を抽出
 function extractPhoneMessages() {
   const fpath = path.join(__dirname, 'phone_shell.html');
   if (!fs.existsSync(fpath)) return '';
@@ -118,6 +119,7 @@ for (const id of ORDER) {
 }
 
 out += extractPhoneMessages();
+out = out.replace(/(?:\r?\n[ \t]*){3,}/g, '\n\n');
 
 fs.writeFileSync(path.join(__dirname, 'scenario_text.txt'), out, 'utf8');
 console.log('生成完了: scenario_text.txt');

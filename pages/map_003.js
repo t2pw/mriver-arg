@@ -1,6 +1,6 @@
 // map_003.js　地図③「蒼沼ブルーランドへ」
 // キーワード例: 蒼沼、廃墟、最後
-// v3: IMG_BOUNDS・マーカー座標を map_fushima.jpg に合わせて調整済み
+// v4: 地図上の印をたどる保管記録
 
 (function () {
 
@@ -52,7 +52,7 @@
 
     L.imageOverlay('images/map_fushima.jpg', IMG_BOUNDS, { opacity: 0.92 }).addTo(map);
 
-    // 蒼沼周辺のポイント（画像上の湖位置に合わせた座標）
+    // 蒼沼周辺の保管記録
     const POINTS = [
       {
         lat: 37.7946, lng: 140.5395,
@@ -74,8 +74,8 @@
       },
       {
         lat: 37.7980, lng: 140.5460,
-        label: '███　（座標のみ）',
-        note: '対応する記録なし。この座標だけが他のファイルと一致する。',
+        label: '███',
+        note: '対応する記録なし。この印だけが他のファイルと一致する。',
         anom: true, size: 10, color: '#c85858',
       },
     ];
@@ -166,7 +166,7 @@
 
   <div class="bpage-body" style="margin-top:12px;">
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;">
-      ── 青いポイント：記録された保管場所。タップで詳細。<br>
+      ── 青い印：記録された保管場所。タップで詳細。<br>
       　　点線の矩形：旧遊園地の敷地範囲（推定）。
     </p>
     <p class="anom">

@@ -50,9 +50,9 @@ const KoeOS = (() => {
     // スポークD 地図（謎解きスポーク）
     // map_001: soran_intro メッセージ「芙島市の地図がある」
     { id:'map_001', title:'地図①　芙島市中心部',         locked:true, keywords:['芙島市'], prereqs:[],           phase:1, spokeGroup:'D', icon:'🗺' },
-    // map_002: map_001 謎解き答え ── 異常マーカーのpopup「桃見山、花見山」
+    // map_002: map_001 謎解き答え ── 地図上の黒塗り地名「桃見山、花見山」
     { id:'map_002', title:'地図②　桃見山',               locked:true, keywords:['桃見山','花見山'],           prereqs:['map_001'],  phase:1, spokeGroup:'D', icon:'🗺' },
-    // map_003: map_002 謎解き答え ── 1973年3月マーカー／本文「蒼沼ブルーランド」が透けて見える
+    // map_003: map_002 謎解き答え ── 1973年3月の記録／本文「蒼沼ブルーランド」が透けて見える
     { id:'map_003', title:'地図③　蒼沼ブルーランドへ',   locked:true, keywords:['蒼沼ブルーランド','蒼沼'], prereqs:['map_002'],  phase:1, spokeGroup:'D', icon:'🗺' },
 
     // スポークE 電文（謎解きスポーク）

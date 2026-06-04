@@ -1,6 +1,6 @@
 // map_002.js　地図②「桃見山」
 // キーワード例: 桃見山、三月、帰れる
-// v3: IMG_BOUNDS・マーカー座標を map_fushima.jpg に合わせて調整済み
+// v4: 地図上の印をたどる観察記録
 
 (function () {
 
@@ -52,7 +52,7 @@
 
     L.imageOverlay('images/map_fushima.jpg', IMG_BOUNDS, { opacity: 0.92 }).addTo(map);
 
-    // 桃見山の観察ポイント群（画像上の山の位置に合わせた座標）
+    // 桃見山の観察記録
     const POINTS = [
       {
         lat: 37.7224, lng: 140.5365,
@@ -156,7 +156,7 @@
 
   <div class="bpage-body" style="margin-top:12px;">
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;">
-      ── 金色のポイント：観察記録あり。タップで内容が開く。<br>
+      ── 金色の印：観察記録あり。タップで内容が開く。<br>
       　　点線の円：展望点からの視野（推定300m）。
     </p>
     <p class="anom">
