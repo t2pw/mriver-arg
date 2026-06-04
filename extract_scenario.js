@@ -19,6 +19,61 @@ function stripHtml(str) {
     .trim();
 }
 
+// index.html（発見者の導入ページ）本文を抽出
+function extractIntro() {
+  const fpath = path.join(__dirname, 'index.html');
+  if (!fs.existsSync(fpath)) return '';
+  const src = fs.readFileSync(fpath, 'utf8');
+  const a = src.indexOf('<article');
+  const b = src.indexOf('</article>');
+  if (a < 0 || b < 0) return '';
+  const body = src.slice(src.indexOf('>', a) + 1, b);
+  let out = '═'.repeat(60) + '\n';
+  out += '【導入】index.html　発見者ページ\n';
+  out += '═'.repeat(60) + '\n\n';
+  out += stripHtml(body) + '\n\n';
+  return out;
+}
+
+// phone_shell.html の STORY_MSGS（小蘭からのメッセージ）を抽出
+function extractPhoneMessages() {
+  const fpath = path.join(__dirname, 'phone_shell.html');
+  if (!fs.existsSync(fpath)) return '';
+  const src = fs.readFileSync(fpath, 'utf8');
+  const start = src.indexOf('const STORY_MSGS');
+  if (start < 0) return '';
+  const end = src.indexOf('\n  ];', start);
+  const block = src.slice(start, end > 0 ? end : src.length);
+
+  const parts = block.split(/\{\s*id:'/).slice(1);
+  let out = '═'.repeat(60) + '\n';
+  out += '【メッセージ】小蘭からの私信（phone_shell.html / STORY_MSGS）\n';
+  out += '※ 各メッセージは gate 指定ページの復元時に届く物語ビート\n';
+  out += '═'.repeat(60) + '\n\n';
+
+  for (const p of parts) {
+    const id      = (p.match(/^(\w+)'/) || [])[1] || '';
+    const name    = (p.match(/name:'([^']*)'/) || [])[1] || '';
+    const date    = (p.match(/date:'([^']*)'/) || [])[1] || '';
+    const gate    = (p.match(/gate:'([^']*)'/) || [])[1] || '';
+    const preview = (p.match(/preview:'([^']*)'/) || [])[1] || '';
+
+    const lines = [];
+    const lineRe = /mdate-sep[^>]*>([^<]*)<|_bub\('((?:[^'\\]|\\.)*)'/g;
+    let m;
+    while ((m = lineRe.exec(p)) !== null) {
+      if (m[1] !== undefined) lines.push('── ' + m[1].trim());
+      else if (m[2] !== undefined) lines.push(m[2].replace(/<br\s*\/?>/gi, '\n').trim());
+    }
+
+    out += '─'.repeat(50) + '\n';
+    out += `［${name}］　${date}${gate ? `　（gate: ${gate}）` : ''}　id:${id}\n`;
+    if (preview) out += `通知：${preview}\n`;
+    out += '\n' + lines.join('\n') + '\n\n';
+  }
+  return out;
+}
+
 const ORDER = [
   'archive_about','soran_profile','soran_intro',
   'kiroku_001','kiroku_002','kiroku_003','kiroku_004',
@@ -34,6 +89,8 @@ const ORDER = [
 
 let out = '# 「声は壁を透して」シナリオテキスト\n';
 out += '# 生成日時: ' + new Date().toLocaleString('ja-JP') + '\n\n';
+
+out += extractIntro();
 
 for (const id of ORDER) {
   const fpath = path.join(__dirname, 'pages', id + '.js');
@@ -59,6 +116,8 @@ for (const id of ORDER) {
   out += '═'.repeat(60) + '\n\n';
   out += stripHtml(tmplAll) + '\n\n';
 }
+
+out += extractPhoneMessages();
 
 fs.writeFileSync(path.join(__dirname, 'scenario_text.txt'), out, 'utf8');
 console.log('生成完了: scenario_text.txt');
