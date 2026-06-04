@@ -31,7 +31,7 @@ MSG_THREADS['soran_intro'] = () => `
 
   <div style="margin:10px 4px 0;">
     <div
-      onclick="Shell.open('browser');"
+      onclick="Shell.open('browser'); setTimeout(()=>Shell.bNavigate('archive_about'), 80);"
       style="
         display:flex;align-items:center;gap:10px;
         background:var(--s2);
