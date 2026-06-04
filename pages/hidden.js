@@ -123,4 +123,26 @@ PAGE_CONTENT['hidden'] = () => `<div class="bpage">
       ── 届けてほしい。あなたに頼む理由は、それだけだ。
     </p>
   </div>
+
+  <div style="margin:0 0 0;">
+    <div
+      onclick="Shell.bNavigate('fumi_tegami')"
+      style="
+        display:flex;align-items:center;gap:10px;
+        background:#0d0009;
+        border:1px solid rgba(200,88,88,0.25);
+        border-radius:12px;
+        padding:13px 14px;
+        cursor:pointer;
+        user-select:none;
+      "
+    >
+      <span style="font-size:20px;">✉️</span>
+      <div style="font-family:var(--mono);font-size:11px;line-height:1.7;">
+        <div style="color:var(--t1);letter-spacing:.04em;">届けられなかった手紙</div>
+        <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">差出人：蛸川小蘭　宛先：猫塚清治</div>
+      </div>
+      <span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span>
+    </div>
+  </div>
 </div>`;

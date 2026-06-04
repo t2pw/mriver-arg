@@ -913,9 +913,16 @@ const Shell = (() => {
     const page = KoeOS.getPage(pageId);
     if(!page) { bview.innerHTML = '<div style="padding:40px 20px;font-family:var(--mono);font-size:11px;color:var(--t3);text-align:center;">ページが見つかりません</div>'; return; }
     KoeOS.markRestored(pageId);
-    KoeOS.checkPrereqUnlocks();
-    deliverMessages(true);
-    updateBadges();
+    const _newIds = KoeOS.checkPrereqUnlocks();
+    if (_newIds.length) {
+      Promise.all(_newIds.map(id => loadPageScript(`pages/${id}.js`))).then(() => {
+        deliverMessages(true);
+        updateBadges();
+      });
+    } else {
+      deliverMessages(true);
+      updateBadges();
+    }
 
     const html = PAGE_CONTENT[pageId] ? PAGE_CONTENT[pageId]() : _placeholder(page);
     bview.innerHTML = html;
@@ -1001,7 +1008,8 @@ const Shell = (() => {
       body:() => `<div class="mdate-sep">送信：1963年9月11日</div>`
         + _bub('手記も、写真も、掲示板も、地図も、電文も。全部たどってくれた。')
         + _bub('ここまでが「外側」。事件の輪郭だけ。ここから先は、私が誰のために、何を残そうとしたのか、という話になる。')
-        + _bub('もう少しだけ、付き合ってほしい。', true, '1963-09-11'),
+        + _bub('もう少しだけ、付き合ってほしい。', true, '1963-09-11')
+    + `<div style="margin:10px 4px 0;"><div onclick="Shell.open('browser');setTimeout(()=>Shell.bNavigate('hub_002'),80);" style="display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid rgba(200,88,88,0.2);border-radius:12px;padding:13px 14px;cursor:pointer;user-select:none;"><span style="font-size:20px;">🔓</span><div style="font-family:var(--mono);font-size:11px;line-height:1.7;"><div style="color:var(--t1);letter-spacing:.04em;">第2層が開く</div><div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">ブラウザで開く</div></div><span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span></div></div>`,
     },
     {
       id:'msg_receiver', gate:'hidden', name:'蛸川小蘭', avatar:'📡',
