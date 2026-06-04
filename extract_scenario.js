@@ -84,7 +84,7 @@ const ORDER = [
   'freesoft',
   'hub_002',
   'inochi','voices','tegami','sns','momo','loop','data_trace',
-  'hidden','fumi_tegami','choice','wiki_add','wiki_skip','epilogue',
+  'receiver_lock','hidden','fumi_tegami','choice','wiki_add','wiki_skip','epilogue',
 ];
 
 let out = '# 「声は壁を透して」シナリオテキスト\n';
