@@ -799,8 +799,8 @@ const Shell = (() => {
         <div id="bbar" style="display:flex;align-items:center;padding:9px 12px;gap:7px;border-bottom:1px solid var(--bd);background:var(--s1);">
           <div class="bnav-btn" id="bbtn-back" onclick="Shell.bBack()" title="戻る">‹</div>
           <div class="bnav-btn" id="bbtn-fwd"  onclick="Shell.bFwd()"  title="進む">›</div>
-          <input id="burl" placeholder="キーワードを入力して復元…" style="flex:1;background:var(--s3);border:1px solid var(--bd);border-radius:10px;padding:7px 11px;font-family:var(--mono);font-size:12px;color:var(--t1);outline:none;letter-spacing:.03em;" />
-          <button id="bgo" onclick="Shell.doSearch()" style="background:var(--gold-d);border:1px solid rgba(200,169,110,.28);border-radius:8px;padding:7px 13px;font-family:var(--mono);font-size:12px;color:var(--gold);cursor:pointer;letter-spacing:.05em;white-space:nowrap;">復元</button>
+          <input id="burl" placeholder="キーワードを入力して検索…" style="flex:1;background:var(--s3);border:1px solid var(--bd);border-radius:10px;padding:7px 11px;font-family:var(--mono);font-size:12px;color:var(--t1);outline:none;letter-spacing:.03em;" />
+          <button id="bgo" onclick="Shell.doSearch()" style="background:var(--gold-d);border:1px solid rgba(200,169,110,.28);border-radius:8px;padding:7px 13px;font-family:var(--mono);font-size:12px;color:var(--gold);cursor:pointer;letter-spacing:.05em;white-space:nowrap;">検索</button>
         </div>
         <div id="bsearch-result" style="display:none;padding:10px 14px;"></div>
       </div>
@@ -815,7 +815,9 @@ const Shell = (() => {
     content.style.flexDirection = 'column';
     content.style.overflow = 'hidden';
 
-    document.getElementById('burl').addEventListener('keydown', e => { if(e.key==='Enter') Shell.doSearch(); });
+    const _burlEl = document.getElementById('burl');
+    _burlEl.addEventListener('keydown', e => { if(e.key==='Enter') Shell.doSearch(); });
+    _burlEl.addEventListener('focus',   () => { _burlEl.select(); });
 
     if(pageId) {
       _loadPage(pageId);
