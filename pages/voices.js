@@ -120,4 +120,15 @@ PAGE_CONTENT['voices'] = () => `<div class="bpage">
       声を上げた人々の言葉は、消えずに残った。一冊の文集に。被告と家族と支援者から寄せられた、三百通の手紙として。
     </p>
   </div>
+
+  <div style="margin:18px 0 4px;">
+    <div onclick="Shell.bNavigate('tegami')" style="display:flex;align-items:center;gap:10px;background:#0d0d10;border:1px solid rgba(200,169,110,0.22);border-radius:12px;padding:13px 14px;cursor:pointer;user-select:none;">
+      <span style="font-size:18px;">📖</span>
+      <div style="font-family:var(--mono);font-size:11px;line-height:1.7;">
+        <div style="color:var(--gold);letter-spacing:.04em;">次の記録を開く</div>
+        <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">声は壁を透して（文集）</div>
+      </div>
+      <span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span>
+    </div>
+  </div>
 </div>`;

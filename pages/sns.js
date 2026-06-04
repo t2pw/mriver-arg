@@ -94,4 +94,15 @@ PAGE_CONTENT['sns'] = () => `<div class="bpage">
       私自身の声も、届かなかった。この時代に取り残され、ついに、帰れなかった。今の芙島市が、それを静かに語っている。
     </p>
   </div>
+
+  <div style="margin:18px 0 4px;">
+    <div onclick="Shell.bNavigate('momo')" style="display:flex;align-items:center;gap:10px;background:#0d0d10;border:1px solid rgba(200,169,110,0.22);border-radius:12px;padding:13px 14px;cursor:pointer;user-select:none;">
+      <span style="font-size:18px;">🌸</span>
+      <div style="font-family:var(--mono);font-size:11px;line-height:1.7;">
+        <div style="color:var(--gold);letter-spacing:.04em;">次の記録を開く</div>
+        <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">芙島市の現在と桃見山</div>
+      </div>
+      <span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span>
+    </div>
+  </div>
 </div>`;

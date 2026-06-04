@@ -28,7 +28,7 @@ const ORDER = [
   'telegram_001','telegram_002','telegram_003',
   'freesoft',
   'hub_002',
-  'koaru_record','inochi','voices','tegami','sns','momo','loop','data_trace',
+  'inochi','voices','tegami','sns','momo','loop','data_trace',
   'hidden','fumi_tegami','choice','wiki_add','wiki_skip','epilogue',
 ];
 
