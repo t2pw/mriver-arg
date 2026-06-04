@@ -72,7 +72,7 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
 
     <p style="margin-bottom:1.6em;">
       私はまだここにいます。
-      十湯から芙島市に出て、細々と暮らしています。
+      月湯から芙島市に出て、細々と暮らしています。
       あなたの名前は、今も記録のどこにも出てきません。
     </p>
 

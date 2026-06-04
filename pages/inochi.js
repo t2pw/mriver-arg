@@ -1,9 +1,9 @@
-// inochi.js　第2層②「なぜ冤罪は生まれたか」
-// キーワード例: 自白、証拠隠蔽、冤罪
+// inochi.js　第2層①「なぜ冤罪は生まれたか」
+// キーワード: なぜ冤罪は生まれたか
 // prereqs: hub_002
 
 PAGE_CONTENT['inochi'] = () => `<div class="bpage">
-  <div class="bpage-num">第2層　02</div>
+  <div class="bpage-num">第2層　01</div>
   <div class="bpage-title">なぜ冤罪は生まれたか</div>
   <div class="bpage-meta">資料出典：裁判記録・新聞報道・守る会文書　／　記録者：蛸川小蘭</div>
 
@@ -112,7 +112,7 @@ PAGE_CONTENT['inochi'] = () => `<div class="bpage">
     </p>
 
     <p>
-      それでも、この冤罪を覆そうとした人々がいた。世論の逆風に晒され、四面楚歌の中で、書き続け、訴え続けた者たちが。
+      それでも、この冤罪を覆そうとした人々がいた。世論の逆風に晒され、孤立しながら、書き続け、訴え続けた者たちが。
     </p>
   </div>
 </div>`;

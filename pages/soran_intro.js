@@ -54,7 +54,7 @@ MSG_THREADS['soran_intro'] = () => `
   <div class="mbubble-row" style="margin-top:6px;">
     <div class="mbubble-av">📡</div>
     <div>
-      <div class="mbubble anom">データ層に、座標が埋め込まれている。<br>五つの座標が、それぞれ別の記録を指している。</div>
+      <div class="mbubble anom">芙島市の地図データがある。<br>五つのポイントが、それぞれ別の記録を指している。</div>
       <div class="mbubble-time anom">1963-09-12 09:04</div>
     </div>
   </div>

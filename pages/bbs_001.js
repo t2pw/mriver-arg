@@ -68,7 +68,7 @@ PAGE_CONTENT['bbs_001'] = () => `<div class="bpage">
 
     <p style="font-size:11px;color:#888;letter-spacing:1px;">── 次号予告</p>
     <p>
-      投書だけでは、声は届かない。守る会は来春より、被告の無実を訴える署名運動を始めます。一人の名前が、次の名前を呼ぶ。この街の声を、確かな記録として残すために。
+      投書だけでは、声は届かない。M川事件を守る会は来春、被告の無実を訴えるビラを配布します。一人の声が、次の声を呼ぶ。この街の声を、確かな記録として残すために。
     </p>
 
     <p style="font-size:11px;color:#666;margin-top:2em;letter-spacing:1px;">

@@ -55,7 +55,7 @@ PAGE_CONTENT['hub_002'] = () => `<div class="bpage">
       letter-spacing:.08em;
       font-size:11px;
     ">
-      UNLOCK：第2層　8ファイル
+      UNLOCK：第2層　7ファイル
     </div>
   </div>
 
@@ -103,13 +103,13 @@ PAGE_CONTENT['hub_002'] = () => `<div class="bpage">
       font-size:10px;color:var(--red);letter-spacing:.12em;
     ">── 第2層　最初のファイル</div>
     <div style="padding:14px;font-size:12px;color:var(--t2);line-height:2.1;letter-spacing:.04em;">
-      まず、あの夜に私を逃がした男のことを書く。<br>
-      彼は被告にも証人にもならなかった。記録のどこにも、その名はない。<br>
-      当局の照合結果には、ただ一語だけが残っている——<span style="color:var(--red);">存在しない人物</span>、と。
+      まず、私が問い続けた問いから始める。<br>
+      無実の人間が、なぜ有罪にされるのか。<br>
+      記録の中に、その答えを残した——<span style="color:var(--red);">なぜ冤罪は生まれたか</span>、と。
     </div>
     <div style="padding:0 14px 14px;font-size:10px;color:var(--t3);letter-spacing:.06em;line-height:1.8;">
       ── この語を検索することから、第2層は始まる。<br>
-      　　以降は、一つ読むごとに次の語が現れる。
+      　　以降は、一つ読めば次が自動で開く。
     </div>
   </div>
 </div>`;
