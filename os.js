@@ -27,7 +27,7 @@ const KoeOS = (() => {
     // kiroku_002: kiroku_001 末尾「月湯温泉に着いた頃には」
     { id:'kiroku_002', title:'手記②　月湯温泉',        locked:true, keywords:['月湯温泉'], prereqs:['kiroku_001'], phase:1, spokeGroup:'A', icon:'📓' },
     // kiroku_003: kiroku_002 末尾「次に書くべきは、彼のこと──猫塚清治」
-    { id:'kiroku_003', title:'手記③　猫塚清治のこと',  locked:true, keywords:['猫塚清治','清治'], prereqs:['kiroku_002'], phase:1, spokeGroup:'A', icon:'📓' },
+    { id:'kiroku_003', title:'手記③　清治さんのこと',  locked:true, keywords:['猫塚清治','清治'], prereqs:['kiroku_002'], phase:1, spokeGroup:'A', icon:'📓' },
     // kiroku_004: kiroku_003 末尾「封筒に宛名を書けない／書けない手紙が始まった」
     { id:'kiroku_004', title:'手記④　書けない手紙',    locked:true, keywords:['封筒','書けない手紙'], prereqs:['kiroku_003'], phase:1, spokeGroup:'A', icon:'📓' },
 

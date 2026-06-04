@@ -29,7 +29,7 @@ PAGE_CONTENT['photo_003'] = () => `<div class="bpage">
     <hr style="border:none;border-top:1px solid #2a2a2a;margin:1.4em 0;">
 
     <p>
-      これが猫塚清治の家だと確信したのは、手記の記述と照合したからだ。
+      これが清治さんの家だと確信したのは、手記の記述と照合したからだ。
       「M川駅の近く、芙島市郊外。菜園が前にある家。酒飯の暖簾」——
       三つとも、この写真と一致した。
     </p>
