@@ -155,11 +155,12 @@ html,body{
 }
 #clk-anom.vis{opacity:1;}
 
-/* アプリグリッド（3アプリ＋広い間隔） */
+/* アプリグリッド（4アプリ） */
 #grid{
   position:relative;z-index:1;
-  display:flex;justify-content:center;gap:32px;
+  display:flex;justify-content:center;gap:18px;
   padding:40px 0 20px;
+  flex-wrap:wrap;
 }
 
 .aico{
@@ -460,6 +461,26 @@ html,body{
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.45;}}
 
+/* ★v3.4 セクタマップ */
+@keyframes sectorBlink{0%,100%{opacity:.25;}50%{opacity:1;}}
+@keyframes takoGlow{0%,100%{opacity:.7;filter:drop-shadow(0 0 6px rgba(200,169,110,.5));}50%{opacity:1;filter:drop-shadow(0 0 18px rgba(200,169,110,.9));}}
+.sector-unread{animation:sectorBlink 2s infinite;}
+.tako-complete-svg{animation:takoGlow 2.5s ease infinite;}
+.tako-wrap{padding:14px 0 20px;}
+.tako-status{font-family:var(--mono);font-size:10px;letter-spacing:.08em;margin:0 16px 6px;line-height:1.6;}
+.tako-subhead{font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.1em;margin:0 16px 8px;}
+.tako-svg-wrap{display:flex;justify-content:center;margin-bottom:4px;}
+.tako-list{margin:0 16px;}
+.tako-leg-row{border-bottom:1px solid var(--bd);padding:10px 0;cursor:pointer;user-select:none;}
+.tako-leg-row:last-child{border-bottom:none;}
+.tako-leg-header{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--t1);}
+.tako-leg-header.dimmed{color:var(--t3);}
+.tako-leg-sectors{margin-top:8px;display:none;flex-direction:column;gap:4px;}
+.tako-leg-sectors.open{display:flex;}
+.tako-sector-item{font-family:var(--mono);font-size:11px;padding:3px 0 3px 10px;display:flex;align-items:center;gap:6px;}
+.tako-foot{font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.06em;line-height:1.9;margin:16px 16px 32px;padding-top:12px;border-top:1px solid var(--bd);}
+.tako-complete-note{font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:.1em;text-align:center;padding:10px 0 4px;}
+
 /* ══ スマートフォン実機対応 ══════════════ */
 @media (max-width: 430px) {
   html, body {
@@ -528,7 +549,7 @@ html,body{
         <div id="clk-anom">▸ 異常なタイムスタンプを検出</div>
       </div>
 
-      <!-- 3アプリ（固定） -->
+      <!-- 4アプリ（固定） -->
       <div id="grid">
         <div class="aico" onclick="Shell.open('browser')">
           <div class="aibox" style="background:linear-gradient(135deg,#162840 0%,#0a1520 100%);">
@@ -550,6 +571,13 @@ html,body{
             <div class="nbadge" id="b-history"></div>
           </div>
           <span class="ailabel">履歴</span>
+        </div>
+        <div class="aico" onclick="Shell.open('tako')">
+          <div class="aibox" style="background:linear-gradient(135deg,#2a1530 0%,#150a18 100%);">
+            🐙
+            <div class="nbadge" id="b-tako"></div>
+          </div>
+          <span class="ailabel">セクタマップ</span>
         </div>
       </div>
 
@@ -683,6 +711,21 @@ const Shell = (() => {
       el.textContent = n>9?'9+':String(n);
       el.classList.toggle('vis', n>0);
     });
+    // ★v3.4 セクタマップバッジ：restored && !viewed（TAKO_LEGS 対象のみ、クリア時は0）
+    const elTako = document.getElementById('b-tako');
+    if(elTako) {
+      const isClear = KoeOS.isViewed('epilogue') && (localStorage.getItem('koe_fumi_note')||'').trim() !== '';
+      let takoUnread = 0;
+      if(!isClear) {
+        for(const leg of KoeOS.TAKO_LEGS) {
+          for(const pid of leg.pages) {
+            if(KoeOS.isRestored(pid) && !KoeOS.isViewed(pid)) takoUnread++;
+          }
+        }
+      }
+      elTako.textContent = takoUnread>9?'9+':String(takoUnread);
+      elTako.classList.toggle('vis', takoUnread>0);
+    }
   }
 
   /* ═══════════════════════════════════
@@ -809,7 +852,7 @@ const Shell = (() => {
     KoeOS.clearNotif(appId);
     updateBadges();
 
-    const titles = { browser:'ブラウザ', messages:'メッセージ', history:'履歴' };
+    const titles = { browser:'ブラウザ', messages:'メッセージ', history:'履歴', tako:'セクタマップ' };
     document.getElementById('anav-title').textContent = titles[appId] || appId;
 
     const old = document.getElementById('bbar-wrap');
@@ -825,6 +868,7 @@ const Shell = (() => {
     if(appId === 'browser') renderBrowser();
     else if(appId === 'messages') renderMessages(content);
     else if(appId === 'history') renderHistory(content);
+    else if(appId === 'tako') _renderTako(content);
   }
 
   /* ── アプリを閉じる ── */
@@ -1298,6 +1342,187 @@ const Shell = (() => {
       renderHistory(document.getElementById('acontent'));
     }
   }
+
+  /* ═══════════════════════════════════
+     ★v3.4 セクタマップ（タコ躯体図）
+  ═══════════════════════════════════ */
+  function _renderTako(el) {
+    const legs = KoeOS.getLegProgress();
+    const isClear = KoeOS.isViewed('epilogue') && (localStorage.getItem('koe_fumi_note')||'').trim() !== '';
+
+    /* ─ (1) ステータス行 ─ */
+    const statusHtml = isClear
+      ? `<div class="tako-status" style="color:var(--gold);">損耗率：0.0%　全セクタ固定</div>`
+      : `<div class="tako-status">セクタ固定率：<span style="color:var(--gold);">${KoeOS.getFixedPercent()}%</span>　<span style="color:rgba(200,88,88,.6);">損耗進行中</span></div>`;
+
+    /* ─ (2) 小見出し ─ */
+    const subheadHtml = `<div class="tako-subhead">── 記録躯体　セクタ配置図</div>`;
+
+    /* ─ (3) SVG躯体図 ─ */
+    // 8本の足：中心(160,150)、半径36の胴体から放射状
+    // 角度：0°から開始し45°ずつ時計回り（上から右回り）
+    // legs の並び順: A=上, B=右上, C=右, D=右下, E=下, spine=左下, shelf=左, core=左上
+    const cx = 160, cy = 150, bodyR = 36;
+    // 足の角度（度）、時計回り・上から
+    const legAngles = [-90, -45, 0, 45, 90, 135, 180, -135]; // 上→右上→右→右下→下→左下→左→左上
+
+    function toRad(deg) { return deg * Math.PI / 180; }
+
+    // 足パスの生成：start から angle 方向に湾曲しながら長さ legLen 伸びる
+    // Q カーブで緩やかな渦巻き
+    function legPath(angle, legLen) {
+      const rad = toRad(angle);
+      const perpRad = toRad(angle + 25); // 少し曲げる方向
+      // 開始点（胴体縁）
+      const sx = cx + bodyR * Math.cos(rad);
+      const sy = cy + bodyR * Math.sin(rad);
+      // 先端
+      const ex = cx + legLen * Math.cos(rad);
+      const ey = cy + legLen * Math.sin(rad);
+      // 制御点：中間点を少し横にずらして湾曲
+      const midLen = legLen * 0.55;
+      const qx = cx + midLen * Math.cos(perpRad);
+      const qy = cy + midLen * Math.sin(perpRad);
+      return { sx, sy, ex, ey, qx, qy };
+    }
+
+    // 足上の点（パラメタ t: 0=胴体側, 1=先端）をベジエ曲線で求める
+    function bezierPt(p, t) {
+      const mt = 1 - t;
+      return {
+        x: mt*mt*p.sx + 2*mt*t*p.qx + t*t*p.ex,
+        y: mt*mt*p.sy + 2*mt*t*p.qy + t*t*p.ey,
+      };
+    }
+
+    let svgParts = [];
+    // 目
+    legs.forEach((leg, i) => {
+      const angle = legAngles[i];
+      const legLen = 125;
+      const p = legPath(angle, legLen);
+      const pathStr = `M ${p.sx.toFixed(1)} ${p.sy.toFixed(1)} Q ${p.qx.toFixed(1)} ${p.qy.toFixed(1)} ${p.ex.toFixed(1)} ${p.ey.toFixed(1)}`;
+
+      // 足の線の色
+      let strokeColor;
+      if(isClear || leg.complete) strokeColor = 'var(--gold)';
+      else if(leg.revealed) strokeColor = 'rgba(200,169,110,0.35)';
+      else strokeColor = 'rgba(255,255,255,0.08)';
+
+      svgParts.push(`<path d="${pathStr}" fill="none" stroke="${strokeColor}" stroke-width="1.5" stroke-linecap="round"/>`);
+
+      // 吸盤（各セクタ）を足に沿って等間隔配置
+      const n = leg.sectors.length;
+      leg.sectors.forEach((sec, si) => {
+        // t=0.15（胴体近く）から t=0.9（先端近く）まで均等割り
+        const t = n === 1 ? 0.5 : 0.15 + (si / (n - 1)) * 0.75;
+        const pt = bezierPt(p, t);
+        const isViewed = isClear || sec.viewed;
+        const isUnread = !isClear && sec.restored && !sec.viewed;
+        const isLocked = !sec.restored;
+
+        if(isViewed) {
+          // グロー円（薄い金）
+          svgParts.push(`<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="9" fill="rgba(200,169,110,0.15)"/>`);
+          svgParts.push(`<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="5" fill="var(--gold)"/>`);
+        } else if(isUnread) {
+          svgParts.push(`<circle class="sector-unread" cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="5" fill="none" stroke="var(--gold)" stroke-width="1.5"/>`);
+        } else {
+          // 未解放
+          svgParts.push(`<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="5" fill="#101014" stroke="#2a2a30" stroke-width="1"/>`);
+        }
+      });
+
+      // 足先ラベル
+      const labelStr = leg.revealed ? leg.label : '▒▒▒▒';
+      const labelColor = (isClear || leg.complete) ? 'var(--gold)' : (leg.revealed ? 'var(--t2)' : 'var(--t3)');
+      // ラベル位置（足先より少し先、画面端に収まるよう調整）
+      const labelRad = toRad(angle);
+      let lx = cx + (legLen + 14) * Math.cos(labelRad);
+      let ly = cy + (legLen + 14) * Math.sin(labelRad);
+      // テキストアンカー調整
+      let anchor = 'middle';
+      const normAngle = ((angle % 360) + 360) % 360;
+      if(normAngle > 200 && normAngle < 340) anchor = 'end';
+      else if(normAngle > 20 && normAngle < 160) anchor = 'start';
+      // 画面端クランプ（viewBox 0 0 320 340）
+      lx = Math.max(14, Math.min(306, lx));
+      ly = Math.max(10, Math.min(334, ly));
+      svgParts.push(`<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}" font-family="IBM Plex Mono,monospace" font-size="9" fill="${labelColor}" dominant-baseline="middle">${labelStr}</text>`);
+    });
+
+    // 胴体（足の根元を覆うよう最後に描く）。目は胴体の塗りに隠れないよう、さらに後に描く
+    const bodySvg = `<circle cx="${cx}" cy="${cy}" r="${bodyR}" fill="#0d0d10" stroke="rgba(200,169,110,0.25)" stroke-width="1.5"/>`
+      + `<circle cx="${cx-12}" cy="${cy-6}" r="3" fill="none" stroke="rgba(200,169,110,0.5)" stroke-width="1.2"/>`
+      + `<circle cx="${cx+12}" cy="${cy-6}" r="3" fill="none" stroke="rgba(200,169,110,0.5)" stroke-width="1.2"/>`;
+
+    const completeNote = isClear ? `<div class="tako-complete-note">── 全セクタ、固定されました。</div>` : '';
+    const svgClass = isClear ? 'tako-complete-svg' : '';
+
+    const svgHtml = `
+      <div class="tako-svg-wrap">
+        <svg class="${svgClass}" viewBox="0 0 320 340" width="300" height="318" xmlns="http://www.w3.org/2000/svg">
+          ${svgParts.join('\n          ')}
+          ${bodySvg}
+        </svg>
+      </div>
+      ${completeNote}`;
+
+    /* ─ (4) 足の一覧 ─ */
+    let listHtml = '<div class="tako-list">';
+    legs.forEach((leg, i) => {
+      const headerLabel = leg.revealed ? leg.label : '▒▒▒▒';
+      const dotsArr = leg.sectors.map(sec => {
+        if(isClear || sec.viewed) return `<span style="color:var(--gold);">●</span>`;
+        if(sec.restored && !sec.viewed) return `<span class="sector-unread" style="color:var(--gold);">◌</span>`;
+        return `<span style="color:var(--t3);">○</span>`;
+      });
+      const dotsHtml = dotsArr.join('');
+      const fixedCnt = isClear ? leg.total : leg.fixed;
+      const headerClass = leg.revealed ? 'tako-leg-header' : 'tako-leg-header dimmed';
+      const headerColor = (isClear || leg.complete) ? 'color:var(--gold);' : '';
+
+      listHtml += `<div class="tako-leg-row" onclick="_takoToggleLeg(this)">
+        <div class="${headerClass}" style="${headerColor}">
+          <span style="flex:1;">${headerLabel}</span>
+          <span style="font-size:10px;color:var(--t3);">${fixedCnt}/${leg.total}</span>
+          <span style="margin-left:8px;font-size:10px;">${dotsHtml}</span>
+          <span style="margin-left:6px;color:var(--t3);font-size:12px;" class="tako-toggle-arrow">›</span>
+        </div>
+        <div class="tako-leg-sectors" data-leg-idx="${i}">`;
+
+      leg.sectors.forEach(sec => {
+        if(isClear || sec.viewed) {
+          listHtml += `<div class="tako-sector-item"><span style="color:var(--gold);">●</span><span style="color:var(--t1);">${sec.title}</span></div>`;
+        } else if(sec.restored && !sec.viewed) {
+          listHtml += `<div class="tako-sector-item" style="cursor:pointer;" onclick="event.stopPropagation();Shell.open('browser');setTimeout(()=>Shell.bNavigate('${sec.id}'),80);">
+            <span class="sector-unread" style="color:var(--gold);">◌</span>
+            <span style="color:var(--t1);">${sec.title}</span>
+            <span style="color:var(--t3);font-size:10px;margin-left:4px;">─ 未読</span>
+          </div>`;
+        } else {
+          listHtml += `<div class="tako-sector-item"><span style="color:var(--t3);">▒</span><span style="color:var(--t3);">▒▒▒▒▒▒</span></div>`;
+        }
+      });
+
+      listHtml += `</div></div>`;
+    });
+    listHtml += '</div>';
+
+    /* ─ (6) 添え書き ─ */
+    const footHtml = `<div class="tako-foot">閲覧された記録は固定されます。読まれていない記録から、先に壊れていきます。</div>`;
+
+    el.innerHTML = `<div class="tako-wrap">${statusHtml}${subheadHtml}${svgHtml}${listHtml}${footHtml}</div>`;
+  }
+
+  /* セクタマップ：足の一覧行の開閉トグル */
+  window._takoToggleLeg = function(row) {
+    const sectors = row.querySelector('.tako-leg-sectors');
+    const arrow   = row.querySelector('.tako-toggle-arrow');
+    if(!sectors) return;
+    const isOpen = sectors.classList.toggle('open');
+    if(arrow) arrow.textContent = isOpen ? '⌄' : '›';
+  };
 
   /* ═══════════════════════════════════
      デバッグパネル

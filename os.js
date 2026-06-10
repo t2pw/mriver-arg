@@ -6,6 +6,7 @@
  *       「一致したが前提不足」応答（prereqBlocked）／検索失敗カウンタ（missStreak）／
  *       choice内ボタン解放ページ（manual:true）を連鎖対象外に
  * v3.3: 第2層を背骨＋資料棚に再構成。data_trace は黒塗り復元謎（バックアップ）の検索解放
+ * v3.4: セクタマップ（タコ躯体図）用の getLegProgress を追加
  */
 'use strict';
 
@@ -106,6 +107,32 @@ const KoeOS = (() => {
   ];
 
   const SPOKES = ['A','B','C','D','E'];
+
+  /* ── ★v3.4 セクタマップ（タコ躯体図）：8本の足＝記録グループ ── */
+  const TAKO_LEGS = [
+    { id:'A',     label:'手記',     pages:['kiroku_001','kiroku_002','kiroku_003','kiroku_004'] },
+    { id:'B',     label:'写真',     pages:['photo_001','photo_002','photo_003'] },
+    { id:'C',     label:'掲示板',   pages:['bbs_001','bbs_002','bbs_003'] },
+    { id:'D',     label:'地図',     pages:['map_001','map_002','map_003'] },
+    { id:'E',     label:'電文',     pages:['telegram_001','telegram_002','telegram_003'] },
+    { id:'spine', label:'深層記録', pages:['hub_002','inochi','loop','data_trace'] },
+    { id:'shelf', label:'資料棚',   pages:['voices','tegami','sns','momo'] },
+    { id:'core',  label:'最深部',   pages:['receiver_lock','hidden','fumi_tegami','choice','epilogue'] },
+  ];
+  // freesoft（壁のこちら側のツールサイト）と wiki_add/wiki_skip（choice の分岐演出）は躯体図に含めない
+  const getLegProgress = () => TAKO_LEGS.map(leg => {
+    const sectors = leg.pages.map(pid => {
+      const p = PAGES.find(pg => pg.id === pid);
+      return { id: pid, title: p ? p.title : pid, restored: isRestored(pid), viewed: isViewed(pid) };
+    });
+    return {
+      id: leg.id, label: leg.label, sectors,
+      revealed: sectors.some(s => s.restored),
+      fixed: sectors.filter(s => s.viewed).length,
+      total: sectors.length,
+      complete: sectors.every(s => s.viewed),
+    };
+  });
 
   /* ──────────────────────────────────────
      ★v3 解析アプリ定義テーブル
@@ -306,6 +333,7 @@ const KoeOS = (() => {
     isSpokeComplete, areAllSpokesComplete, getSpokePages,
     getInstalled, isInstalled, installApp, uninstallApp, getToolApp,
     getPage: id => PAGES.find(p=>p.id===id),
+    TAKO_LEGS, getLegProgress,
   };
 })();
 
