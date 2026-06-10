@@ -6,6 +6,17 @@ PAGE_CONTENT['bbs_003'] = () => `<div class="bpage">
   <div class="bpage-title">切り抜き帖　昭和二十四年〜昭和三十八年</div>
   <div class="bpage-meta">出典不明。アーカイブ内で発見。手書きメモが複数。</div>
 
+  <div class="bpage-body" style="border-left:2px solid #333;padding-left:1em;margin:1.2em 0;">
+    <p style="font-style:italic;font-size:12px;color:#aaa;line-height:1.9;">
+      ビラの名簿に、私は名前を書いた。<br>
+      しかし戸籍のない人間の署名は、会を危うくする。<br>
+      頼んだのは私のほうだったかもしれないし、消したのは会のほうだったかもしれない。<br>
+      どちらでも、結果は同じだった。<br>
+      記録を守ろうとする側の名簿からさえ、私は消える側だった。
+    </p>
+  </div>
+
+
   <div class="bpage-body">
     <p style="font-size:11px;color:#888;letter-spacing:1px;">
       ── 以下、切り抜き帖のスキャン画像および転記テキスト。

@@ -52,7 +52,7 @@ PAGE_CONTENT['photo_001'] = () => `<div class="bpage">
     <p style="font-size:11px;color:#888;letter-spacing:1px;">── 裏面のメモ（鉛筆書き、自筆）</p>
 
     <p class="anom" style="font-family:var(--mono);font-size:13px;line-height:2;padding:12px;background:#1a0000;border-radius:6px;">
-      あなたはここにいた<br>
+      この人はここにいた<br>
       昭和24年8月16日の夜<br>
       現場にいた<br>
       でも記録にはいない

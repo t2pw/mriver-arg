@@ -1,7 +1,10 @@
 /**
- * os.js ── 「声は壁を透して」OS層 v3.1
+ * os.js ── 「声は壁を透して」OS層 v3.2
  * 進捗管理 / キーワード認証 / アンロック / 履歴管理 / 解析アプリのインストール管理
  * v3.1: freesoft（ツール配布サイト）をページ登録（A案・構造的順序保証）
+ * v3.2: prereq連鎖を「閲覧済み」基準に変更（一括解放の防止）／
+ *       「一致したが前提不足」応答（prereqBlocked）／検索失敗カウンタ（missStreak）／
+ *       choice内ボタン解放ページ（manual:true）を連鎖対象外に
  */
 'use strict';
 
@@ -13,26 +16,29 @@ const KoeOS = (() => {
   const NOTIF_KEY    = 'koe_notif';
   const LAUNCHED_KEY = 'koe_launched';
   const INSTALLED_KEY= 'koe_installed_apps';  // ★v3 解析アプリのインストール状態
+  const MISS_KEY     = 'koe_miss_streak';     // ★v3.2 解放なし検索の連続回数（ヒント用）
 
   /* ──────────────────────────────────────
      ページ定義テーブル
   ────────────────────────────────────── */
   const PAGES = [
     // 最初から読める
-    { id:'archive_about', title:'このアーカイブについて', locked:false, keywords:['蛸川小蘭','小蘭','蛸川'], prereqs:[], phase:0, spokeGroup:null, icon:'📁' },
+    // archive_about は locked:false（常時公開）のため解錠キーワード不要。旧keywordsは bbs_003 の名簿照合と衝突するため撤去
+    { id:'archive_about', title:'このアーカイブについて', locked:false, keywords:[], prereqs:[], phase:0, spokeGroup:null, icon:'📁' },
 
     // スポークA 手記
-    // kiroku_001: soran_profile に「月湯温泉に逃げ込み」とある
+    // kiroku_001: archive_about に「月湯温泉に逃げ込みました」とある
     { id:'kiroku_001', title:'手記①　事件の夜',        locked:true, keywords:['月湯温泉','土湯温泉'],        prereqs:[],             phase:1, spokeGroup:'A', icon:'📓' },
-    // kiroku_002: kiroku_001 末尾「月湯温泉に着いた頃には」
-    { id:'kiroku_002', title:'手記②　月湯温泉',        locked:true, keywords:['月湯温泉'], prereqs:['kiroku_001'], phase:1, spokeGroup:'A', icon:'📓' },
+    // kiroku_002: 黒塗り復元パズル ── kiroku_001 の赤い黒塗り（████＝現代語）を
+    //   文脈（「消えない場所」「どこからでも取り出せる」）から推定して検索する
+    { id:'kiroku_002', title:'手記②　月湯温泉',        locked:true, keywords:['クラウド','クラウドストレージ'], prereqs:['kiroku_001'], phase:1, spokeGroup:'A', icon:'📓' },
     // kiroku_003: kiroku_002 末尾「次に書くべきは、彼のこと──猫塚清治」
     { id:'kiroku_003', title:'手記③　清治さんのこと',  locked:true, keywords:['猫塚清治','清治'], prereqs:['kiroku_002'], phase:1, spokeGroup:'A', icon:'📓' },
     // kiroku_004: kiroku_003 末尾「封筒に宛名を書けない／書けない手紙が始まった」
     { id:'kiroku_004', title:'手記④　書けない手紙',    locked:true, keywords:['封筒','書けない手紙'], prereqs:['kiroku_003'], phase:1, spokeGroup:'A', icon:'📓' },
 
     // スポークB 写真
-    // photo_001: soran_profile「記録されなかった人物が草むらすれすれから写されている」
+    // photo_001: archive_about「脱線事故が起きた夜です」
     { id:'photo_001', title:'写真①　記録されなかった人物',    locked:true, keywords:['脱線','脱線事故'],           prereqs:[],            phase:1, spokeGroup:'B', icon:'📷' },
     // photo_002: photo_001 末尾「昭和二十四年八月の一枚」
     { id:'photo_002', title:'写真②　同じ場所・70年の隔たり', locked:true, keywords:['昭和24年','昭和二十四年','昭和24年8月16日','昭和二十四年八月十六日','1949年8月16日'], prereqs:['photo_001'], phase:1, spokeGroup:'B', icon:'📷' },
@@ -40,12 +46,12 @@ const KoeOS = (() => {
     { id:'photo_003', title:'写真③　菜園のある家',           locked:true, keywords:['M川駅','松川駅'], prereqs:['photo_002'], phase:1, spokeGroup:'B', icon:'📷' },
 
     // スポークC 掲示板
-    // bbs_001: soran_profile「M川事件」（松川事件は実在語フック）
+    // bbs_001: archive_about「翌朝、新聞でM川事件を知りました」（松川事件は実在語フック）
     { id:'bbs_001', title:'掲示板①　投書欄の声',     locked:true, keywords:['M川事件','松川事件'],    prereqs:[],           phase:1, spokeGroup:'C', icon:'📋' },
     // bbs_002: bbs_001「M川事件を守る会が結成された」
     { id:'bbs_002', title:'掲示板②　守る会のビラ',   locked:true, keywords:['M川事件を守る会'], prereqs:['bbs_001'],  phase:1, spokeGroup:'C', icon:'📋' },
-    // bbs_003: bbs_002「冤罪を晴らすために」
-    { id:'bbs_003', title:'掲示板③　無罪確定まで',   locked:true, keywords:['冤罪','自白強要','冤罪事件'], prereqs:['bbs_002'],  phase:1, spokeGroup:'C', icon:'📋' },
+    // bbs_003: 名簿照合パズル ── bbs_002 ビラの賛同者名簿「蛸川 ██」の塗り潰しを、記録者の名前と照合する
+    { id:'bbs_003', title:'掲示板③　無罪確定まで',   locked:true, keywords:['蛸川小蘭','小蘭'], prereqs:['bbs_002'],  phase:1, spokeGroup:'C', icon:'📋' },
 
     // スポークD 地図（謎解きスポーク）
     // map_001: soran_intro メッセージ「芙島市の地図がある」
@@ -71,9 +77,10 @@ const KoeOS = (() => {
     // 第2層ハブ（全スポーク完了で自動解放）
     { id:'hub_002', title:'第2層が開く', locked:true, keywords:[], prereqs:[], phase:2, spokeGroup:null, icon:'🔓' },
 
-    // 第2層は連鎖：hub_002 →(なぜ冤罪は生まれたか)→ inochi →prereq→ voices →prereq→ tegami
-    //   →prereq→ sns →prereq→ momo →prereq→ loop →prereq→ data_trace →prereq→ hidden
-    //   inochi のみキーワード解放、それ以降は prereq 自動解放
+    // 第2層は連鎖：hub_002 →(なぜ冤罪は生まれたか)→ inochi →閲覧→ voices →閲覧→ tegami
+    //   →閲覧→ sns →閲覧→ momo →閲覧→ loop →閲覧→ data_trace →閲覧→ receiver_lock
+    //   inochi のみキーワード解放。それ以降は「前のページを読む」たびに次の1ページが解放される
+    //   （★v3.2 prereq解放済みではなく prereq閲覧済みで連鎖。一括解放を防ぐ）
     { id:'inochi',       title:'なぜ冤罪は生まれたか',  locked:true, keywords:['なぜ冤罪は生まれたか'], prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📄' },
     { id:'voices',       title:'声を上げた人々',        locked:true, keywords:[], prereqs:['inochi'],    phase:2, spokeGroup:null, icon:'📄' },
     { id:'tegami',       title:'声は壁を透して（文集）', locked:true, keywords:[], prereqs:['voices'],    phase:2, spokeGroup:null, icon:'📖' },
@@ -88,9 +95,12 @@ const KoeOS = (() => {
     { id:'hidden',      title:'隠しページ',             locked:true, keywords:['あなたはここにいた','アナタハココニイタ'], prereqs:['receiver_lock'], phase:3, spokeGroup:null, icon:'🔮' },
     { id:'fumi_tegami', title:'蛸川小蘭の手紙',         locked:true, keywords:[], prereqs:['hidden'],     phase:3, spokeGroup:null, icon:'✉️' },
     { id:'choice',      title:'この手紙を、追記してください', locked:true, keywords:[], prereqs:['fumi_tegami'], phase:3, spokeGroup:null, icon:'❓' },
-    { id:'wiki_add',    title:'M川事件（編集）',        locked:true, keywords:[], prereqs:['choice'],     phase:3, spokeGroup:null, icon:'📝' },
-    { id:'wiki_skip',   title:'追記しない選択',         locked:true, keywords:[], prereqs:['choice'],     phase:3, spokeGroup:null, icon:'📝' },
-    { id:'epilogue',    title:'エピローグ',             locked:true, keywords:[], prereqs:['choice'],     phase:3, spokeGroup:null, icon:'🌸' },
+    // ★v3.2 以下3ページは prereq 連鎖から除外（manual:true）。
+    //   choice ページ内の選択ボタン（bNavigate → _loadPage の markRestored）で解放される。
+    //   選択を提示する前に「追記しない選択」「エピローグ」が一覧・通知に並ぶのを防ぐ。
+    { id:'wiki_add',    title:'M川事件（編集）',        locked:true, keywords:[], prereqs:['choice'],     manual:true, phase:3, spokeGroup:null, icon:'📝' },
+    { id:'wiki_skip',   title:'追記しない選択',         locked:true, keywords:[], prereqs:['choice'],     manual:true, phase:3, spokeGroup:null, icon:'📝' },
+    { id:'epilogue',    title:'エピローグ',             locked:true, keywords:[], prereqs:['choice'],     manual:true, phase:3, spokeGroup:null, icon:'🌸' },
   ];
 
   const SPOKES = ['A','B','C','D','E'];
@@ -143,9 +153,29 @@ const KoeOS = (() => {
     try { return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]'); } catch { return []; }
   };
 
+  // ★v3.2 閲覧済み判定（prereq連鎖の基準）。
+  //   解放と同時に閲覧扱いにしないため、markRestored ではなく履歴を見る。
+  //   連鎖解放はページを開いた瞬間（_loadPage の addHistory 後）に判定されるので、
+  //   履歴の50件上限やクリアで取り逃すことはない。
+  const VIEWED_KEY = 'koe_viewed';
+  const isViewed = id => ls.getSet(VIEWED_KEY).has(id);
+  const markViewed = id => {
+    const s = ls.getSet(VIEWED_KEY);
+    if (s.has(id)) return false;
+    s.add(id); ls.saveSet(VIEWED_KEY, s); return true;
+  };
+
+  // ★ セクタ固定率：閲覧済み（＝損耗から固定された）ページの割合。ブラウザのホームに表示する
+  const getFixedPercent = () => {
+    const v = ls.getSet(VIEWED_KEY);
+    const locked = PAGES.filter(p => p.locked);
+    return Math.round(locked.filter(p => v.has(p.id)).length / locked.length * 100);
+  };
+
   const addHistory = (id) => {
     const page = PAGES.find(p => p.id === id);
     if (!page) return;
+    markViewed(id);  // ★v3.2 prereq連鎖用の閲覧フラグ（履歴クリアの影響を受けない）
     const h = getHistory().filter(e => e.id !== id); // 重複除去（最新を先頭に）
     h.unshift({ id, title: page.title, icon: page.icon, ts: Date.now() });
     if (h.length > 50) h.pop();
@@ -176,36 +206,63 @@ const KoeOS = (() => {
     return null;
   };
 
-  /* ── キーワード認証 ── */
+  /* ── ★v3.2 検索失敗カウンタ（解放なし検索の連続回数。ヒント表示用） ── */
+  const getMissStreak = () => {
+    const n = parseInt(localStorage.getItem(MISS_KEY) || '0', 10);
+    return Number.isFinite(n) ? n : 0;
+  };
+  const _setMissStreak = n => localStorage.setItem(MISS_KEY, String(n));
+
+  /* ── キーワード認証 ──
+     ★v3.2 戻り値に prereqBlocked（一致したが前提となる記録が未復元）と
+     missStreak（連続失敗回数）を追加。prereqBlocked のときはキーワードを
+     使用済みにしない（前提を満たした後に再検索できる）。完全一致仕様は維持。 */
   const submitKeyword = input => {
     const norm = input.trim().replace(/\s+/g,'');
     const used = getKeywords();
-    if (used.has(norm)) return { success:false, unlocked:[], alreadyUsed:true };
+    if (used.has(norm)) return { success:false, unlocked:[], alreadyUsed:true, prereqBlocked:false, missStreak:getMissStreak() };
 
     const unlocked = [];
+    let blocked = false;
     for (const p of PAGES) {
       if (isRestored(p.id) || !p.keywords?.length) continue;
       const hit = p.keywords.some(kw => {
         const nk = kw.replace(/\s+/g,'');
         return norm === nk;
       });
-      if (hit && p.prereqs.every(pid => isRestored(pid))) {
+      if (!hit) continue;
+      if (p.prereqs.every(pid => isRestored(pid))) {
         markRestored(p.id); unlocked.push(p.id);
+      } else {
+        blocked = true;
       }
     }
-    if (unlocked.length) { used.add(norm); ls.saveSet(KEYWORD_KEY,used); const hub=_checkHub(); if(hub) unlocked.push(hub); }
-    return { success: unlocked.length>0, unlocked, alreadyUsed:false };
+    if (unlocked.length) {
+      used.add(norm); ls.saveSet(KEYWORD_KEY,used);
+      const hub=_checkHub(); if(hub) unlocked.push(hub);
+      _setMissStreak(0);
+    } else if (!blocked) {
+      _setMissStreak(getMissStreak() + 1);  // 完全なハズレのみカウント
+    }
+    return {
+      success: unlocked.length>0, unlocked, alreadyUsed:false,
+      prereqBlocked: !unlocked.length && blocked,
+      missStreak: getMissStreak(),
+    };
   };
 
-  /* prereqのみで解放されるページの連鎖チェック */
+  /* prereqのみで解放されるページの連鎖チェック
+     ★v3.2 「prereqが解放済み」ではなく「prereqが閲覧済み」で連鎖する。
+     1ページ読むごとに次の1ページだけが開き、第2層の一括解放を防ぐ。
+     manual:true（choice内ボタンで解放）のページは連鎖対象外。 */
   const checkPrereqUnlocks = () => {
     const newlyUnlocked = [];
     let changed=true;
     while(changed){
       changed=false;
       for(const p of PAGES){
-        if(isRestored(p.id)||p.keywords?.length) continue;
-        if(p.prereqs.length && p.prereqs.every(pid=>isRestored(pid))){
+        if(isRestored(p.id)||p.keywords?.length||p.manual) continue;
+        if(p.prereqs.length && p.prereqs.every(pid=>isViewed(pid))){
           markRestored(p.id); newlyUnlocked.push(p.id); changed=true;
         }
       }
@@ -227,14 +284,19 @@ const KoeOS = (() => {
   /* ── 起動済みフラグ ── */
   const isFirstLaunch = () => !localStorage.getItem(LAUNCHED_KEY);
   const markLaunched  = () => localStorage.setItem(LAUNCHED_KEY,'1');
-  const resetAll = () => [STORAGE_KEY,KEYWORD_KEY,HISTORY_KEY,NOTIF_KEY,LAUNCHED_KEY,INSTALLED_KEY]
-    .forEach(k=>localStorage.removeItem(k));
+  const resetAll = () => [STORAGE_KEY,KEYWORD_KEY,HISTORY_KEY,NOTIF_KEY,LAUNCHED_KEY,INSTALLED_KEY,
+    VIEWED_KEY,MISS_KEY,
+    'koe_msgs_delivered',  // phone_shell.html の物語メッセージ配信済みフラグ
+    'koe_fumi_note',       // wiki_add/wiki_skip の選択記録
+  ].forEach(k=>localStorage.removeItem(k));
 
   return {
     PAGES, SPOKES, TOOL_APPS,
     isRestored, markRestored, getRestored,
+    isViewed, markViewed,
+    getFixedPercent,
     getProgressPercent, getSpokeProgress,
-    submitKeyword, checkPrereqUnlocks, getKeywords,
+    submitKeyword, checkPrereqUnlocks, getKeywords, getMissStreak,
     getNotif, addNotif, clearNotif,
     getHistory, addHistory, clearHistory,
     isFirstLaunch, markLaunched, resetAll,

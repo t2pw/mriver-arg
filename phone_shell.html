@@ -608,7 +608,8 @@ html,body{
         <div id="intro-msg">
           回収された端末のアーカイブを、<br>あなたが開こうとしている。<br>
           <span style="font-size:11px;color:var(--t3);">持ち主：不明</span><br>
-          <span style="font-size:11px;color:var(--t3);">最終起動：1973-09-12 09:04</span>
+          <span style="font-size:11px;color:var(--t3);">最終起動：1973-09-12 09:04</span><br>
+          <span style="font-size:11px;color:var(--red);opacity:.65;">接続元：照合できません</span>
         </div>
         <div id="intro-sub">タップして起動</div>
       </div>
@@ -921,6 +922,10 @@ const Shell = (() => {
             アーカイブ各所に散らばったキーワードを見つけ、上部の入力欄に入力してください。一致すると封鎖されたページが復元されます。
           </div>
         </div>
+        <div style="width:100%;max-width:320px;margin-top:14px;font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.08em;display:flex;justify-content:space-between;">
+          <span>セクタ固定率：<span style="color:var(--gold);">${KoeOS.getFixedPercent()}%</span></span>
+          <span style="color:rgba(200,88,88,.6);">損耗進行中</span>
+        </div>
         ${restoredRows}
       </div>`;
   }
@@ -973,19 +978,16 @@ const Shell = (() => {
     if(!page) { bview.innerHTML = '<div style="padding:40px 20px;font-family:var(--mono);font-size:11px;color:var(--t3);text-align:center;">ページが見つかりません</div>'; return; }
     KoeOS.markRestored(pageId);
     const _newIds = KoeOS.checkPrereqUnlocks();
-    if (_newIds.length) {
-      Promise.all(_newIds.map(id => loadPageScript(`pages/${id}.js`))).then(() => {
-        deliverMessages(true);
-        updateBadges();
-      });
-    } else {
+    const _scripts = _newIds.map(id => `pages/${id}.js`);
+    // manual解放ページ（wiki_add 等）は連鎖で事前ロードされないため、未定義ならここで読む
+    if (!PAGE_CONTENT[pageId]) _scripts.push(`pages/${pageId}.js`);
+    Promise.all(_scripts.map(loadPageScript)).then(() => {
       deliverMessages(true);
       updateBadges();
-    }
-
-    const html = PAGE_CONTENT[pageId] ? PAGE_CONTENT[pageId]() : _placeholder(page);
-    bview.innerHTML = html;
-    bview.scrollTop = scrollY;
+      const html = PAGE_CONTENT[pageId] ? PAGE_CONTENT[pageId]() : _placeholder(page);
+      bview.innerHTML = html;
+      bview.scrollTop = scrollY;
+    });
   }
 
   function _placeholder(page) {
@@ -1015,8 +1017,10 @@ const Shell = (() => {
 
     if(res.alreadyUsed) {
       rbox.innerHTML = `<div class="sbox ng"><div class="sbox-label">登録済み</div><div class="sbox-desc">このキーワードは既に使用されています。</div></div>`;
+      setTimeout(() => { if(rbox) rbox.style.display='none'; }, 3500);
       return;
     }
+    let hideAfter = 3500;
     if(res.success) {
       const pages = res.unlocked.map(id=>KoeOS.getPage(id)).filter(Boolean);
       const titles = pages.map(p=>p.title).join('、');
@@ -1031,10 +1035,48 @@ const Shell = (() => {
         const bv = document.getElementById('bview');
         if(bv && bPtr === 0) _renderBrowserHome(bv);
       });
+    } else if(res.prereqBlocked) {
+      // 「正しいが今は開かない」を無反応にしない（前提不足の明示）
+      rbox.innerHTML = `<div class="sbox" style="border-color:rgba(200,169,110,.35);">
+        <div class="sbox-label" style="color:var(--gold);">── 照合一致 ──</div>
+        <div class="sbox-desc">キーワードは記録と一致しました。ただし参照元の記録が不足しています。<br>復元済みの記録を読み進めてから、もう一度試してください。</div>
+      </div>`;
+      hideAfter = 6000;
     } else {
-      rbox.innerHTML = `<div class="sbox ng"><div class="sbox-label">── 一致なし ──</div><div class="sbox-desc">該当するアーカイブが見つかりません。別のキーワードを試してください。</div></div>`;
+      const hint = _missHint(res.missStreak);
+      rbox.innerHTML = `<div class="sbox ng">
+        <div class="sbox-label">── 一致なし ──</div>
+        <div class="sbox-desc">該当するアーカイブが見つかりません。別のキーワードを試してください。</div>
+        ${hint ? `<div class="sbox-desc" style="margin-top:8px;color:var(--red);font-family:var(--mono);font-size:11px;">📡 ${hint}</div>` : ''}
+      </div>`;
+      if(hint) {
+        hideAfter = 7000;
+        // 6回目以降は不明送信元からのナッジとして3回ごとにトースト
+        if(res.missStreak >= 6 && res.missStreak % 3 === 0) pushNotif('📡', '繧ｿ◆縺薙％??', hint, null);
+      }
     }
-    setTimeout(() => { if(rbox) rbox.style.display='none'; }, 3500);
+    setTimeout(() => { if(rbox) rbox.style.display='none'; }, hideAfter);
+  }
+
+  /* ── ★ヒントシステム：解放なし検索が続いたとき、不明送信元の口調でナッジ ── */
+  function _missHint(streak) {
+    if (!streak || streak < 3) return '';
+    if (streak < 6) return '…照合失敗が続いています。復元済みの記録を読み直すことを推奨します。';
+    // 6回以上：現在地に応じた具体ナッジ
+    const SPOKE_HINTS = {
+      A: '手記の記録が途切れています。直前の手記を読み直してください。赤い黒塗りは、文脈から元の言葉を推定できます。',
+      B: '写真の照合が未完了です。写真そのものに写り込んでいる情報を確認してください。',
+      C: '掲示板の記録が未照合です。ビラと投書の文面を読み直してください。',
+      D: '地図の黒塗りが未照合です。欠けた地名を推定してください。',
+      E: '電文の解読が未完了です。符号の名前（モールス）で検索すると、道具が見つかります。',
+    };
+    const sp = KoeOS.getSpokeProgress().find(s => !s.complete);
+    if (sp) return SPOKE_HINTS[sp.group] || '';
+    if (KoeOS.isRestored('receiver_lock') && !KoeOS.isRestored('hidden'))
+      return '最後のロックの信号は、モールス読取機と16進変換器の二段で解読できます。';
+    if (!KoeOS.isRestored('hidden'))
+      return '未読の記録が残っています。復元済みファイルの一覧から、まだ読んでいないものを開いてください。';
+    return '';
   }
 
   /* ═══════════════════════════════════
@@ -1059,6 +1101,7 @@ const Shell = (() => {
       body:() => `<div class="mdate-sep">送信：1949年9月（推定）</div>`
         + _bub('手記ファイルの開封を検知。')
         + _bub('「いつかこれを読む人へ」── 書き出しを照合しました。受信者名は未登録です。')
+        + _bub('記録セクタの損耗率：3%。閲覧された記録は固定されます。読まれていない記録から、先に壊れていきます。')
         + _bub('あなたが何者でも、最後まで読んでください。ここには、記録から消された人たちがいます。', true, '1949-09 ⚠ タイムスタンプ異常'),
     },
     {
@@ -1066,6 +1109,7 @@ const Shell = (() => {
       date:'1973.09.11', anomaly:true, preview:'第2層を開封できます。',
       body:() => `<div class="mdate-sep">送信：1973年9月11日</div>`
         + _bub('手記、写真、掲示板、地図、電文。五つのスポークを照合しました。')
+        + _bub('損耗率：14%。破損は止まっていません。急がなくていい。でも、止まらないでください。')
         + _bub('ここまでが「外側」です。ここから先は、記録が誰のために残されたのか、という話になります。')
         + _bub('もう少しだけ、続けてください。', true, '1973-09-11')
     + `<div style="margin:10px 4px 0;"><div onclick="Shell.open('browser');setTimeout(()=>Shell.bNavigate('hub_002'),80);" style="display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid rgba(200,88,88,0.2);border-radius:12px;padding:13px 14px;cursor:pointer;user-select:none;"><span style="font-size:20px;">🔓</span><div style="font-family:var(--mono);font-size:11px;line-height:1.7;"><div style="color:var(--t1);letter-spacing:.04em;">第2層が開く</div><div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">ブラウザで開く</div></div><span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span></div></div>`,
@@ -1074,14 +1118,17 @@ const Shell = (() => {
       id:'msg_receiver', gate:'hidden', name:'繧ｿ◆縺薙％??', avatar:'📡',
       date:'復号済み', anomaly:true, preview:'受信者照合が完了しました。',
       body:() => `<div class="mdate-sep">送信：日時不明（復号済み）</div>`
+        + _bub('損耗率：3█%。一部のセクタ照合に失敗し▒▒した。継続します。')
         + _bub('受信者欄「███」を復号しました。')
         + _bub('現在の閲覧者と照合。名前は登録されていません。')
+        + _bub('受信の条件は、ひとつだけ。記録が消えない側で、これを読めること。')
         + _bub('受信者は、あなたです。最初から。', true, '受信者照合 ── 完了'),
     },
     {
       id:'msg_deliver', gate:'fumi_tegami', name:'繧ｿ◆縺薙％??', avatar:'✉️',
       date:'1973.09.11', anomaly:true, preview:'未投函の手紙があります。',
       body:() => `<div class="mdate-sep">送信：1973年9月11日</div>`
+        + _bub('損耗率：5█%。手紙のセクタは、まだ無事で▒。')
         + _bub('最深部に、未投函の手紙があります。宛先は、猫塚清治。')
         + _bub('投函記録なし。文集収録なし。公式記録への参照なし。')
         + _bub('この手紙を、記録してください。', true, '1973-09-11'),
@@ -1394,8 +1441,7 @@ const TOOL_UI      = {};   // ★v3.1 解析アプリUI辞書
 
 const ALWAYS_LOAD = [
   'pages/archive_about.js',
-  'pages/soran_profile.js',
-  'pages/soran_intro.js',
+  'pages/soran_intro.js',   // MSG_THREADS（メッセージスレッド）として動作。PAGES 登録不要
 ];
 
 function loadPageScript(src) {

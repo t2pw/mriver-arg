@@ -1,3 +1,6 @@
+// soran_intro.js ── 初回メッセージスレッド（不明送信元）
+// 注意：PAGES には登録しない。ブラウザページではなく MSG_THREADS として動作しており、
+// phone_shell.html の ALWAYS_LOAD から常時読み込まれる。
 MSG_THREADS['soran_intro'] = () => `
   <div class="mdate-sep">送信日時：1973年9月12日　09:04</div>
   <div class="mbubble-row">

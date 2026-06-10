@@ -175,8 +175,10 @@
         <div class="ps-h">── 追記</div>
         起動させた翌朝から、私の方のスマホに、時々おかしな通知が届くようになった。「archive://」で始まる、宛先も差出人も分からない通知だ。タップしても何も起きない。
         <br><br>
-        それで気づいたことがある。あの記録の受信者の欄は、最初から私の名前ではなかった。「███」とだけ刻まれていて、私には読めない。たぶん、これは私が読むためのものではない。これを今開いている、あなたのものだ。
+        それで気づいたことがある。あの記録の受信者の欄は、最初から私の名前ではなかった。「███」とだけ刻まれていて、私には読めない。誰に宛てたものなのかは、いまも分からない。
       </div>
+
+      <div class="ps" id="ps-after" style="display:none;"></div>
 
       <div class="foot">
         <span>♡ 312</span>
@@ -185,7 +187,7 @@
     </article>
   </div>
 
-  <div id="boot-fade"><div class="b-msg">起動しています…</div></div>
+  <div id="boot-fade"><div class="b-msg">接続しています…</div></div>
 
   <script>
     (function(){
@@ -198,6 +200,22 @@
         fade.classList.add('on');
         setTimeout(function(){ window.location.href = link.getAttribute('href'); }, 620);
       });
+    })();
+
+    // クリア後の後日談（localStorage はアーカイブ側と共有）
+    (function(){
+      try {
+        var restored = JSON.parse(localStorage.getItem('koe_restored') || '[]');
+        if (restored.indexOf('epilogue') < 0) return;
+        var note = localStorage.getItem('koe_fumi_note');
+        var recorded = !!(note && note.trim() !== '');
+        var el = document.getElementById('ps-after');
+        if (!el) return;
+        el.style.display = 'block';
+        el.innerHTML = recorded
+          ? '<div class="ps-h">── 追記の追記</div>あれから、おかしな通知はぱたりと来なくなった。最後に一度だけ、短い信号のようなものが届いた。文字化けしていて読めなかったが、なぜか、礼を言われた気がした。<br><br>端末はいまも手元にある。布の中は、静かだ。'
+          : '<div class="ps-h">── 追記の追記</div>あの端末は、あれきり起動しなくなった。何度電源を当てても、布の中は静かなままだ。<br><br>拾ったときより、少しだけ軽くなった気がする。気のせいだと思いたい。';
+      } catch (e) {}
     })();
   </script>
 

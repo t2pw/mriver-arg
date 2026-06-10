@@ -16,6 +16,15 @@ PAGE_CONTENT['kiroku_001'] = () => `<div class="bpage">
       外では虫が鳴いている。昭和二十四年の夏の夜だ。
     </p>
     <p>
+      紙に書くのは、ひどく心許ない。
+      向こうにいた頃は、書いたものは何でも<span class="anom" style="background:rgba(200,88,88,0.15);padding:0 3px;border-radius:2px;font-size:11px;letter-spacing:.1em;">████</span>に置いておけた。
+      消えない場所。どこからでも取り出せる場所。
+      いまここで書くものは、この紙の上にしかない。
+      濡れたら消える。燃えたら終わる。
+      それでも、書かずにはいられなかった。
+    </p>
+    <p style="font-size:10px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;">── 赤い黒塗り語句は原文のまま。現代語と思われるが特定不能。</p>
+    <p>
       昨夜——8月16日の深夜——私はT北本線のM川駅付近にいた。
       なぜそこにいたのかは説明できない。
       気がついたら、砂利の上に倒れていた。

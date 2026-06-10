@@ -29,7 +29,7 @@ PAGE_CONTENT['bbs_002'] = () => `<div class="bpage">
       私たちは一千三百名の署名を集め、東京へ届けます。芙島市の、この街に生きる人々の声を、記録に残します。あなたの名前が、歴史の一部になります。
     </p>
 
-    <hr style="border:none;border-top:1px solid #2a2a2a;margin:1.4em 0;">
+    <hr style="border:none;border-top:1px solid #333;margin:1.4em 0;">
 
     <p style="font-size:11px;color:#888;letter-spacing:1px;">── 賛同者名簿（第四次集計・一部）</p>
 
@@ -51,7 +51,7 @@ PAGE_CONTENT['bbs_002'] = () => `<div class="bpage">
     <hr style="border:none;border-top:1px solid #333;margin:1.4em 0;">
 
     <p style="font-size:11px;color:#666;">
-      ※「住所不詳」の署名者一名については、守る会内部でも身元が確認できておりません。
+      ※「住所不詳」の署名者一名については、名が墨で塗り潰されており、守る会内部でも身元が確認できておりません。
       集計時に原紙が存在したため名簿に記載しましたが、住所確認のための連絡が取れていません。
       もし心当たりのある方は守る会までご連絡ください。
     </p>
@@ -64,6 +64,10 @@ PAGE_CONTENT['bbs_002'] = () => `<div class="bpage">
     <p class="anom">
       この署名活動の経緯と、事件の冤罪構造について、続く記録に詳しい。<br>
       自白強要、証拠の隠蔽——なぜ無実の人間が有罪とされたのか。
+    </p>
+
+    <p style="font-style:italic;font-size:12px;color:#aaa;">
+      ＊塗り潰された名前を、私は知っている
     </p>
   </div>
 </div>`;

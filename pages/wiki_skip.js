@@ -93,7 +93,7 @@ PAGE_CONTENT['wiki_skip'] = () => {
         ▸ それでも、追記しない
       </div>
       <div style="color:var(--t3);font-size:11px;letter-spacing:.04em;opacity:.6;">
-        先へ進む。
+        接続を終了する。
       </div>
     </div>
 

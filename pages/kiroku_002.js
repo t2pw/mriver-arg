@@ -38,7 +38,7 @@ PAGE_CONTENT['kiroku_002'] = () => `<div class="bpage">
     <p>
       部屋に入って、まず記録しなければと思った。
       手元には何もなかった。
-      スマートフォンも、<span class="anom" style="background:rgba(200,88,88,0.15);padding:0 3px;border-radius:2px;font-size:11px;letter-spacing:.1em;">██████</span>も、ない。
+      スマートフォンも、<span class="anom" style="background:rgba(200,88,88,0.15);padding:0 3px;border-radius:2px;font-size:11px;letter-spacing:.1em;">████</span>も、ない。
       この時代にそういうものはない。
       宿の主人に頼んで紙と鉛筆を借りた。書くしかなかった。
     </p>

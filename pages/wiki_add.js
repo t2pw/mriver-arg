@@ -7,7 +7,9 @@ PAGE_CONTENT['wiki_add'] = () => {
     const btn = document.getElementById('wiki-save-btn');
     if (!btn) return;
     btn.addEventListener('click', () => {
-      try { localStorage.setItem('koe_fumi_note', '1'); } catch {}
+      const ta = document.getElementById('wiki-user-line');
+      const line = ((ta && ta.value) || '').trim() || '猫塚清治と蛸川小蘭は、ここにいた。';
+      try { localStorage.setItem('koe_fumi_note', line); } catch {}
       Shell.bNavigate('epilogue');
     });
   }, 0);
@@ -63,6 +65,26 @@ PAGE_CONTENT['wiki_add'] = () => {
 蛸川小蘭のアーカイブには、猫塚清治が事件当夜に身元不明の人物を逃がしたこと、蛸川小蘭がその後二十四年間にわたり清治の痕跡を記録したことが残されている。
 
 この手紙は、記録されなかった人物が存在したことを示す資料である。</div>
+    </div>
+
+    <div style="padding:0 14px 14px;">
+      <label style="display:block;font-size:12px;color:#202122;margin-bottom:6px;">あなたの一行（ふたりが、ここにいたと分かる一行を）</label>
+      <textarea
+        id="wiki-user-line"
+        rows="2"
+        placeholder="例：一九四九年八月十六日の夜、猫塚清治はM川駅の近くにいた。"
+        style="
+          width:100%;
+          box-sizing:border-box;
+          border:1px solid #a2a9b1;
+          background:#fff;
+          padding:8px 10px;
+          font-family:Consolas,'Courier New',monospace;
+          font-size:12px;
+          color:#202122;
+          resize:none;
+        "
+      ></textarea>
     </div>
 
     <div style="padding:0 14px 14px;">

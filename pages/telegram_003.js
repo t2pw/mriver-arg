@@ -80,8 +80,7 @@ PAGE_CONTENT['telegram_003'] = () => `<div class="bpage">
 
   <div class="bpage-body">
     <p>
-      清治さんは記録から消えた。
-      存在しない人物への手紙は、文集に載せられなかった。
+      記録にない名前に宛てた手紙は、文集には載せられなかった。
     </p>
     <p class="anom">
       ── それでも、手紙は書かれた。どこかにある。
