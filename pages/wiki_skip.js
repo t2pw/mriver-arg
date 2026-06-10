@@ -18,7 +18,7 @@ PAGE_CONTENT['wiki_skip'] = () => {
   <div class="bpage-num">── 確認 ──</div>
   <div class="bpage-title">追記しない、ということ</div>
   <div class="bpage-meta" style="border-bottom:none;padding-bottom:0;color:var(--t3);">
-    選択：架空M川事件wikiへ追記しない
+    選択：M川事件wikiへ追記しない
   </div>
 
   <div class="bpage-body" style="margin-top:24px;">
@@ -71,7 +71,7 @@ PAGE_CONTENT['wiki_skip'] = () => {
         ▸ やはり、追記する
       </div>
       <div style="color:var(--t3);font-size:11px;letter-spacing:.04em;">
-        架空M川事件wikiに一行を足す。
+        M川事件wikiに一行を足す。
       </div>
     </div>
 

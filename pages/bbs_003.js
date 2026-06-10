@@ -88,8 +88,8 @@ PAGE_CONTENT['bbs_003'] = () => `<div class="bpage">
 
     <p class="anom">
       最後のページだけ、紙の質が違う。<br>
-      他の切り抜きより二十年は新しい紙だ。<br>
-      誰かが後から追加した。
+      十四年、この一枚を貼るために切り抜き帖を続けた。<br>
+      無罪の記事だけは、新しい紙に貼ると決めていた。
     </p>
 
     <p style="font-size:11px;color:#666;margin-top:1.5em;">

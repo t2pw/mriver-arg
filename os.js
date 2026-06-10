@@ -287,6 +287,7 @@ const KoeOS = (() => {
   const resetAll = () => [STORAGE_KEY,KEYWORD_KEY,HISTORY_KEY,NOTIF_KEY,LAUNCHED_KEY,INSTALLED_KEY,
     VIEWED_KEY,MISS_KEY,
     'koe_msgs_delivered',  // phone_shell.html の物語メッセージ配信済みフラグ
+    'koe_msgs_read',       // メッセージ既読フラグ
     'koe_fumi_note',       // wiki_add/wiki_skip の選択記録
   ].forEach(k=>localStorage.removeItem(k));
 

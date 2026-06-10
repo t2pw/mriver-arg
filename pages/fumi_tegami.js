@@ -189,7 +189,7 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
       <span style="font-size:20px;">❓</span>
       <div style="font-family:var(--mono);font-size:11px;line-height:1.7;">
         <div style="color:var(--gold);letter-spacing:.04em;">この手紙があったことを、追記してください</div>
-        <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">架空M川事件wiki　未収録資料</div>
+        <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">M川事件wiki　未収録資料</div>
       </div>
       <span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span>
     </div>

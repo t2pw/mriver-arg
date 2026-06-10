@@ -202,6 +202,7 @@ PAGE_CONTENT['epilogue'] = () => {
     color:var(--t2);
   ">
     <div style="color:var(--red);font-size:10px;letter-spacing:.12em;margin-bottom:8px;">📡 繧ｿ◆縺薙％??　── 補記</div>
+    損耗率：0.0%。全セクタ、固定されました。<br>
     転送完了。受信者：あなた。<br>
     照合補記：この事件には、壁のそちら側に、写し元となった実在の記録があります。<br>
     名前は「松川事件」。そこにも、名簿に載らなかった人が、いたかもしれません。<br>

@@ -62,13 +62,11 @@ TOOL_UI['morse'] = () => {
       line-height:1.45;white-space:normal;overflow-wrap:anywhere;word-break:break-all;
     ">—</div>
 
-    <div style="font-size:10px;color:var(--t3);margin-bottom:8px;letter-spacing:.1em;">── 内蔵モールス数字表</div>
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;">
+    <div style="font-size:10px;color:var(--t3);margin-bottom:8px;letter-spacing:.1em;">── 内蔵モールス数字表（参照用）</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0;">
       ${Object.entries(MORSE_MAP).map(([m,d]) => `
-        <div style="background:#0d0d10;border:1px solid rgba(255,255,255,0.05);
-          border-radius:5px;padding:6px 2px;text-align:center;line-height:1.6;">
-          <div style="color:var(--t1);font-size:12px;">${d}</div>
-          <div style="color:var(--t3);font-size:9px;letter-spacing:-1px;">${m}</div>
+        <div style="padding:3px 4px;line-height:1.9;border-bottom:1px solid rgba(255,255,255,0.04);">
+          <span style="color:var(--t3);font-size:11px;">${d} → </span><span style="color:var(--t1);font-size:11px;letter-spacing:-0.5px;">${m}</span>
         </div>
       `).join('')}
     </div>

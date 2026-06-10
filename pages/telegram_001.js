@@ -13,12 +13,12 @@ PAGE_CONTENT['telegram_001'] = () => {
   const kwTag = (kw) =>
     `<span data-kwtag="${kw}" style="
       background:#0d0d10;border:1px solid rgba(255,255,255,0.09);
-      border-radius:20px;padding:4px 10px;
+      border-radius:3px;padding:4px 10px;
       font-family:var(--mono);font-size:10px;color:var(--t3);
       cursor:pointer;letter-spacing:.06em;transition:border-color .15s,color .15s;
     " onmouseenter="this.style.color='var(--gold)';this.style.borderColor='rgba(200,169,110,0.3)'"
        onmouseleave="this.style.color='var(--t3)';this.style.borderColor='rgba(255,255,255,0.09)'"
-    ># ${kw}</span>`;
+    >［照合語：${kw}］</span>`;
 
   return `<div class="bpage">
   <div class="bpage-num">電文　01</div>

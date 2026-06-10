@@ -654,6 +654,12 @@ const Shell = (() => {
     } else {
       // 既存セーブの再読込：到達済みビートを無音で既配信扱いにし、再トーストを防ぐ
       deliverMessages(false);
+      // 旧セーブ移行：_READ_KEY が未初期化の場合のみ、現在可視スレッドを全て既読として初期化
+      // （過去にプレイ済みのプレイヤーのバッジが全部未読になるのを防ぐ）
+      if (localStorage.getItem(_READ_KEY) === null) {
+        const _initRead = new Set(_visibleThreads().map(t => t.id));
+        localStorage.setItem(_READ_KEY, JSON.stringify([..._initRead]));
+      }
     }
   }
 
@@ -671,7 +677,7 @@ const Shell = (() => {
   /* ── バッジ更新 ── */
   function updateBadges() {
     ['browser','messages','history'].forEach(a => {
-      const n = KoeOS.getNotif(a);
+      const n = (a === 'messages') ? _unreadCount() : KoeOS.getNotif(a);
       const el = document.getElementById('b-'+a);
       if(!el) return;
       el.textContent = n>9?'9+':String(n);
@@ -787,7 +793,6 @@ const Shell = (() => {
       isl.style.cursor = '';
       isl.onclick = null;
     }, 4500);
-    KoeOS.addNotif('messages', 1);
     updateBadges();
   }
 
@@ -1010,6 +1015,7 @@ const Shell = (() => {
     }
     if(!val) return;
 
+    const _before = KoeOS.getSpokeProgress();
     const res = KoeOS.submitKeyword(val);
     const rbox = document.getElementById('bsearch-result');
     if(!rbox) return;
@@ -1030,6 +1036,17 @@ const Shell = (() => {
         <div class="sbox-link" onclick="Shell.bNavigate('${res.unlocked[0]}')">▸ 開く</div>
       </div>`;
       inp.value = '';
+      // スポーク完了ナッジ：今回の検索で新たに complete になったスポークがあれば通知
+      const SPOKE_NAMES = { A:'手記', B:'写真', C:'掲示板', D:'地図', E:'電文' };
+      const _after = KoeOS.getSpokeProgress();
+      const _newlyCompleted = _after.filter(s => s.complete && !_before.find(b => b.group === s.group && b.complete));
+      if (_newlyCompleted.length > 0) {
+        const g = _newlyCompleted[0].group;
+        const remaining = _after.filter(s => !s.complete).map(s => SPOKE_NAMES[s.group]);
+        if (remaining.length > 0) {
+          pushNotif('📡', '繧ｿ◆縺薙％??', `${SPOKE_NAMES[g]}の照合が完了。未照合：${remaining.join('、')}`, null);
+        }
+      }
       Promise.all(res.unlocked.map(id => loadPageScript(`pages/${id}.js`))).then(() => {
         deliverMessages(true);
         const bv = document.getElementById('bview');
@@ -1145,6 +1162,13 @@ const Shell = (() => {
   function _getDelivered() {
     try { return new Set(JSON.parse(localStorage.getItem(_DELIVERED_KEY)||'[]')); } catch { return new Set(); }
   }
+
+  /* ── メッセージ既読管理 ── */
+  const _READ_KEY = 'koe_msgs_read';
+  function _getRead() { try { return new Set(JSON.parse(localStorage.getItem(_READ_KEY)||'[]')); } catch { return new Set(); } }
+  function _markRead(id) { const s=_getRead(); if(!s.has(id)) { s.add(id); localStorage.setItem(_READ_KEY, JSON.stringify([...s])); } }
+  function _visibleThreads() { return THREADS.filter(t => t.gate ? KoeOS.isRestored(t.gate) : true); }
+  function _unreadCount() { const r=_getRead(); return _visibleThreads().filter(t => !r.has(t.id)).length; }
   function deliverMessages(animate) {
     const done = _getDelivered();
     let changed = false;
@@ -1165,19 +1189,21 @@ const Shell = (() => {
       return;
     }
 
-    el.innerHTML = visible.map(t =>
-      `<div class="mthread" onclick="Shell.openThread('${t.id}')">
+    const _readSet = _getRead();
+    el.innerHTML = visible.map(t => {
+      const unread = !_readSet.has(t.id);
+      return `<div class="mthread" onclick="Shell.openThread('${t.id}')">
         <div class="mthread-av">${t.avatar}</div>
         <div class="mthread-body">
-          <div class="mthread-name">${t.name}</div>
+          <div class="mthread-name" style="${unread ? '' : 'color:var(--t2);font-weight:400;'}">${t.name}</div>
           <div class="mthread-prev">${t.preview}</div>
         </div>
         <div class="mthread-meta">
           ${t.date}
-          ${t.anomaly ? '<div class="mthread-dot"></div>' : ''}
+          ${unread ? '<div class="mthread-dot"></div>' : ''}
         </div>
-      </div>`
-    ).join('');
+      </div>`;
+    }).join('');
   }
 
   function openThread(threadId) {
@@ -1193,6 +1219,7 @@ const Shell = (() => {
 
     mv.classList.add('open');
     KoeOS.addHistory(threadId);
+    _markRead(threadId);
     updateBadges();
   }
 

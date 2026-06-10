@@ -6,7 +6,7 @@ PAGE_CONTENT['choice'] = () => `<div class="bpage">
   <div class="bpage-num">── 依頼 ──</div>
   <div class="bpage-title">この手紙があったことを、追記してください</div>
   <div class="bpage-meta" style="border-bottom:none;padding-bottom:0;">
-    架空M川事件wiki　編集依頼：蛸川小蘭
+    M川事件wiki　編集依頼：蛸川小蘭
   </div>
 
   <div class="bpage-body" style="margin-top:24px;">
@@ -26,7 +26,7 @@ PAGE_CONTENT['choice'] = () => `<div class="bpage">
       そこなら、消された名前の余白を少しだけ広げられるかもしれない。
     </p>
     <p>
-      架空のM川事件wikiに、
+      M川事件のwikiに、
       この手紙があったことと、清治さんと私のことを追記してください。
       長い文章でなくていい。
     </p>

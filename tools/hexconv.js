@@ -21,8 +21,11 @@ TOOL_UI['hexconv'] = () => {
     btn.addEventListener('click', () => {
       const raw = inp.value.trim().toUpperCase();
       if (!raw) { out.textContent = '—'; out.style.color = 'var(--t3)'; return; }
-      // スペース・カンマ・改行で区切る
-      const tokens = raw.split(/[\s,]+/).filter(Boolean);
+      // スペース・カンマ・改行で区切り、連続した16進文字列は2桁ずつ自動分割
+      const tokens = raw.split(/[\s,]+/).filter(Boolean).flatMap(t =>
+        (t.length > 2 && t.length % 2 === 0 && /^[0-9A-F]+$/.test(t))
+          ? t.match(/../g) : [t]
+      );
       const result = tokens.map(t => HEX_MAP[t] ?? '?').join('');
       out.textContent = result;
       out.style.color = result.includes('?') ? 'var(--red)' : 'var(--gold)';
@@ -35,7 +38,7 @@ TOOL_UI['hexconv'] = () => {
     <div style="color:var(--blue);font-size:11px;letter-spacing:.12em;margin-bottom:4px;">── 解析ツール</div>
     <div style="font-family:var(--serif);font-size:19px;color:var(--t1);letter-spacing:.04em;margin-bottom:6px;">16進変換器</div>
     <div style="font-size:10px;color:var(--t3);letter-spacing:.06em;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--bd);line-height:1.7;">
-      電文に記録された16進値を読み取り、下に入力してください。<br>スペース区切りで複数入力できます。
+      電文に記録された16進値を読み取り、下に入力してください。<br>スペースがなくても、2桁ずつ自動で区切ります。
     </div>
 
     <div style="font-size:10px;color:var(--t3);margin-bottom:8px;letter-spacing:.08em;">入力（例：53 55 4A）</div>
@@ -60,13 +63,11 @@ TOOL_UI['hexconv'] = () => {
       font-family:var(--serif);
     ">—</div>
 
-    <div style="font-size:10px;color:var(--t3);margin-bottom:8px;letter-spacing:.1em;">── 内蔵変換表</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;">
+    <div style="font-size:10px;color:var(--t3);margin-bottom:8px;letter-spacing:.1em;">── 内蔵変換表（参照用）</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;">
       ${Object.entries(HEX_MAP).map(([h,k]) => `
-        <div style="background:#0d0d10;border:1px solid rgba(255,255,255,0.05);
-          border-radius:5px;padding:6px 2px;text-align:center;line-height:1.5;">
-          <div style="color:var(--t1);font-size:12px;">${k}</div>
-          <div style="color:var(--t3);font-size:10px;">${h}</div>
+        <div style="padding:3px 4px;line-height:1.9;border-bottom:1px solid rgba(255,255,255,0.04);">
+          <span style="color:var(--t3);font-size:11px;">${h} → </span><span style="color:var(--t1);font-size:11px;">${k}</span>
         </div>
       `).join('')}
     </div>
