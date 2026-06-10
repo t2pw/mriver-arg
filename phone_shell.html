@@ -1089,6 +1089,8 @@ const Shell = (() => {
     };
     const sp = KoeOS.getSpokeProgress().find(s => !s.complete);
     if (sp) return SPOKE_HINTS[sp.group] || '';
+    if (KoeOS.isRestored('loop') && !KoeOS.isRestored('data_trace'))
+      return '最後のファイルの照合語は、文集に挟まれた断片の中にあります。赤い黒塗りは、文脈から元の言葉を推定できます。';
     if (KoeOS.isRestored('receiver_lock') && !KoeOS.isRestored('hidden'))
       return '最後のロックの信号は、モールス読取機と16進変換器の二段で解読できます。';
     if (!KoeOS.isRestored('hidden'))

@@ -1,5 +1,5 @@
 // tegami.js　第2層④「声は壁を透して（文集）」
-// キーワード例: 三百通、収録、守る会
+// 添え状の断片＝data_trace の照合語（バックアップ）の謎素材（赤い黒塗りの復元）
 // prereqs: hub_002
 // 役割：文集の全容を示す。小蘭の手紙だけが収録されなかった理由を確定させる。
 
@@ -123,6 +123,34 @@ PAGE_CONTENT['tegami'] = () => `<div class="bpage">
     </div>
   </div>
 
+  <!-- 添え状断片ボックス -->
+  <div style="
+    margin:0 0 20px;
+    background:#0d0d10;
+    border:1px solid rgba(200,88,88,0.2);
+    border-radius:10px;overflow:hidden;font-family:var(--mono);
+  ">
+    <div style="
+      padding:9px 14px;border-bottom:1px solid rgba(200,88,88,0.12);
+      background:rgba(200,88,88,0.07);
+      color:var(--red);font-size:10px;letter-spacing:.12em;
+    ">── 断片　添え状の控え</div>
+    <div style="padding:13px 14px;">
+      <div style="font-size:11px;color:var(--t3);line-height:1.9;">
+        収録を願い出たとき、手紙には添え状を付けていた。その控えが、文集の記録と並べて格納されていた。
+      </div>
+      <div style="margin-top:10px;color:var(--t1);font-size:12px;line-height:2.1;">
+        「もし収録がかなわなくても、どうか、お気になさらないでください。<br>
+        　清治さんのことは、ぜんぶ書いて、<span class="anom" style="background:rgba(200,88,88,0.15);padding:0 3px;border-radius:2px;font-size:11px;letter-spacing:.1em;">████</span>を取ってあります。<br>
+        　紙とちがって、濡れても、燃えても、なくなりません。<br>
+        　同じものが、もう一つ、あるからです。」
+      </div>
+      <div style="margin-top:10px;font-size:10px;color:var(--t3);">
+        ＊赤い黒塗りの語句は原文のまま。現代語と思われるが特定不能（手記①②の赤い黒塗りと同種）。
+      </div>
+    </div>
+  </div>
+
   <div class="bpage-body">
     <p>
       その手紙は今も、どこかにある。
@@ -140,7 +168,7 @@ PAGE_CONTENT['tegami'] = () => `<div class="bpage">
     <div onclick="Shell.bNavigate('sns')" style="display:flex;align-items:center;gap:10px;background:#0d0d10;border:1px solid rgba(200,169,110,0.22);border-radius:12px;padding:13px 14px;cursor:pointer;user-select:none;">
       <span style="font-size:18px;">📄</span>
       <div style="font-family:var(--mono);font-size:11px;line-height:1.7;">
-        <div style="color:var(--gold);letter-spacing:.04em;">次の記録を開く</div>
+        <div style="color:var(--gold);letter-spacing:.04em;">資料棚：次の資料</div>
         <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">声の速さと重さ</div>
       </div>
       <span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span>

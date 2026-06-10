@@ -31,6 +31,7 @@ const PUZZLE_ANSWERS = {
   map_003:      { kw: '蒼沼ブルーランド', how: 'map_002 の謎解き' },
   telegram_002: { kw: '0816',          how: 'hexconv＋モールス解読' },
   hidden:       { kw: 'あなたはここにいた', how: 'receiver_lock モールス→16進→カタカナ' },
+  data_trace:   { kw: 'バックアップ',   how: 'tegami 添え状断片・赤い黒塗り（現代語）の文脈推定' },
 };
 
 /* ── os.js をスタブ環境で実行して実物の KoeOS を得る ── */
@@ -101,6 +102,9 @@ function storyMsgs() {
 }
 
 const norm = s => String(s).replace(/\s+/g, '');
+
+/* 意図的な一括解放（資料棚。hub_002 閲覧で4冊同時に開くのは仕様） */
+const INTENDED_BULK = { hub_002: new Set(['voices', 'tegami', 'sns', 'momo']) };
 
 /* ── ページ内ボタンによる解放（os.js の prereq 連鎖外）──
    phone_shell.html の bNavigate → _loadPage(markRestored) を模倣する。 */
@@ -178,8 +182,13 @@ function visibleTextNow() {
 const steps = [];
 const viewedMain = new Set();
 const onCascadeF = (vid, cas) => {
-  if (cas.length > 1)
-    findings.F.push(`「${vid}」閲覧時に prereq連鎖が一括解放: ${cas.join(' → ')}（${cas.length}ページ）`);
+  if (cas.length > 1) {
+    const bulk = INTENDED_BULK[vid];
+    if (bulk && cas.every(id => bulk.has(id)))
+      findings.F.push(`(情報)「${vid}」閲覧で資料棚を一括解放: ${cas.join(', ')}（仕様）`);
+    else
+      findings.F.push(`「${vid}」閲覧時に prereq連鎖が一括解放: ${cas.join(' → ')}（${cas.length}ページ）`);
+  }
 };
 // 常時公開ページを開いた状態からスタート
 for (const p of PAGES) if (p.locked === false) KoeOS.markRestored(p.id);

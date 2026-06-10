@@ -5,6 +5,7 @@
  * v3.2: prereq連鎖を「閲覧済み」基準に変更（一括解放の防止）／
  *       「一致したが前提不足」応答（prereqBlocked）／検索失敗カウンタ（missStreak）／
  *       choice内ボタン解放ページ（manual:true）を連鎖対象外に
+ * v3.3: 第2層を背骨＋資料棚に再構成。data_trace は黒塗り復元謎（バックアップ）の検索解放
  */
 'use strict';
 
@@ -71,23 +72,24 @@ const KoeOS = (() => {
 
     // ツール配布サイト（スポーク進捗には数えない / telegram_001 の kwTag クリックで検索）
     { id:'freesoft', title:"T.Watanabe's Tools Page", locked:true,
-      keywords:['バイナリ','モールス','16進','穿孔','解析ツール','フリーソフト'],
+      keywords:['バイナリ','モールス','16進','符号','解析ツール','フリーソフト'],
       prereqs:['telegram_001'], phase:1, spokeGroup:null, icon:'💾' },
 
     // 第2層ハブ（全スポーク完了で自動解放）
     { id:'hub_002', title:'第2層が開く', locked:true, keywords:[], prereqs:[], phase:2, spokeGroup:null, icon:'🔓' },
 
-    // 第2層は連鎖：hub_002 →(なぜ冤罪は生まれたか)→ inochi →閲覧→ voices →閲覧→ tegami
-    //   →閲覧→ sns →閲覧→ momo →閲覧→ loop →閲覧→ data_trace →閲覧→ receiver_lock
-    //   inochi のみキーワード解放。それ以降は「前のページを読む」たびに次の1ページが解放される
-    //   （★v3.2 prereq解放済みではなく prereq閲覧済みで連鎖。一括解放を防ぐ）
+    // 第2層（★v3.3 背骨＋資料棚）：
+    //   背骨：hub_002 →(検索:なぜ冤罪は生まれたか)→ inochi →閲覧→ loop →(検索:バックアップ)→ data_trace →閲覧→ receiver_lock
+    //   資料棚：voices / tegami / sns / momo は hub_002 閲覧で一括解放（任意閲覧。読破は進行条件にしない）。
+    //   prereq連鎖は「閲覧済み」基準（★v3.2。一括解放を防ぐ）。
+    //   data_trace は検索解放（中間謎：tegami 添え状断片の赤い黒塗り＝バックアップ）。receiver_lock の条件は data_trace のみ。
     { id:'inochi',       title:'なぜ冤罪は生まれたか',  locked:true, keywords:['なぜ冤罪は生まれたか'], prereqs:['hub_002'], phase:2, spokeGroup:null, icon:'📄' },
-    { id:'voices',       title:'声を上げた人々',        locked:true, keywords:[], prereqs:['inochi'],    phase:2, spokeGroup:null, icon:'📄' },
-    { id:'tegami',       title:'声は壁を透して（文集）', locked:true, keywords:[], prereqs:['voices'],    phase:2, spokeGroup:null, icon:'📖' },
-    { id:'sns',          title:'声の速さと重さ',        locked:true, keywords:[], prereqs:['tegami'],    phase:2, spokeGroup:null, icon:'📄' },
-    { id:'momo',         title:'芙島市の現在と桃見山',  locked:true, keywords:[], prereqs:['sns'],       phase:2, spokeGroup:null, icon:'🌸' },
-    { id:'loop',         title:'記録の行方',            locked:true, keywords:[], prereqs:['momo'],      phase:2, spokeGroup:null, icon:'🔄' },
-    { id:'data_trace',   title:'小蘭のデータ痕跡の全容', locked:true, keywords:[], prereqs:['loop'],     phase:2, spokeGroup:null, icon:'💾' },
+    { id:'voices',       title:'声を上げた人々',        locked:true, keywords:[], prereqs:['hub_002'],   phase:2, spokeGroup:null, icon:'📄' },
+    { id:'tegami',       title:'声は壁を透して（文集）', locked:true, keywords:[], prereqs:['hub_002'],  phase:2, spokeGroup:null, icon:'📖' },
+    { id:'sns',          title:'声の速さと重さ',        locked:true, keywords:[], prereqs:['hub_002'],   phase:2, spokeGroup:null, icon:'📄' },
+    { id:'momo',         title:'芙島市の現在と桃見山',  locked:true, keywords:[], prereqs:['hub_002'],   phase:2, spokeGroup:null, icon:'🌸' },
+    { id:'loop',         title:'記録の行方',            locked:true, keywords:[], prereqs:['inochi'],    phase:2, spokeGroup:null, icon:'🔄' },
+    { id:'data_trace',   title:'小蘭のデータ痕跡の全容', locked:true, keywords:['バックアップ','データのバックアップ'], prereqs:['loop'], phase:2, spokeGroup:null, icon:'💾' },
 
     // 第3層
     // receiver_lock: data_trace読了で自動解放 → 不明送信元のモールス → 数字 → 16進 → カタカナ → hidden
@@ -110,7 +112,7 @@ const KoeOS = (() => {
   ────────────────────────────────────── */
   const TOOL_APPS = [
     { id:'hexconv', name:'16進変換器',     icon:'🔢', spoke:'E', desc:'16進数をカタカナに変換する解析ツール。' },
-    { id:'morse',   name:'モールス読取機', icon:'📻', spoke:'E', desc:'穿孔パターンをモールス符号として数字に変換する。' },
+    { id:'morse',   name:'モールス読取機', icon:'📻', spoke:'E', desc:'記録された符号列（・と−）をモールス符号として数字に変換する。' },
     // 今後：binary（C）、coord（D）など
   ];
 

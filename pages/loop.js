@@ -1,6 +1,6 @@
 // loop.js　第2層⑦「記録の行方」
 // キーワード: 未来の誰か、タコに刻んだ、記録の行方
-// prereqs: hub_002
+// prereqs: inochi（背骨2番目）。次の data_trace は施錠＝照合語は tegami の添え状断片（バックアップ）
 // 役割：小蘭が「未来の誰か」に向けて記録していたことが明かされる。
 //       hidden.jsの「███ = あなた」への橋渡し。
 //       タコ＝声を運んだ器。archive_about（発見者）と接続。
@@ -50,7 +50,7 @@ PAGE_CONTENT['loop'] = () => `<div class="bpage">
       {
         year: '記録の方法',
         color: 'var(--t2)',
-        text: '確実に未来へ届ける手段はなかった。だから小蘭は、すべてをタコへ託した。タコは綿の奥に小さな機械を抱えていて、撫でる、握る、と触れることで一文字ずつ記録を受け取った。帳面の罫線や障子の穴は、その控えだ。一文字に何日もかかった。機械は時折ひとりでに、どこかへ繋がろうとした。その線の先がいつの時代なのかは、分からなかった。',
+        text: '確実に未来へ届ける手段はなかった。だから小蘭は、すべてをタコへ託した。タコは綿の奥に小さな機械を抱えていて、撫でる、握る、と触れることで一文字ずつ記録を受け取った。帳面の罫線に紛れさせた小さな印は、その控えだ。一文字に何日もかかった。機械は時折ひとりでに、どこかへ繋がろうとした。その線の先がいつの時代なのかは、分からなかった。',
       },
       {
         year: '1954年頃',
@@ -114,13 +114,15 @@ PAGE_CONTENT['loop'] = () => `<div class="bpage">
   </div>
 
   <div style="margin:18px 0 4px;">
-    <div onclick="Shell.bNavigate('data_trace')" style="display:flex;align-items:center;gap:10px;background:#0d0d10;border:1px solid rgba(200,169,110,0.22);border-radius:12px;padding:13px 14px;cursor:pointer;user-select:none;">
-      <span style="font-size:18px;">💾</span>
-      <div style="font-family:var(--mono);font-size:11px;line-height:1.7;">
-        <div style="color:var(--gold);letter-spacing:.04em;">次の記録を開く</div>
-        <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">小蘭のデータ痕跡の全容</div>
+    <div style="background:#0d0009;border:1px solid rgba(200,88,88,0.25);border-radius:12px;overflow:hidden;font-family:var(--mono);">
+      <div style="padding:9px 14px;border-bottom:1px solid rgba(200,88,88,0.15);font-size:10px;color:var(--red);letter-spacing:.12em;">── 最後のファイル　施錠</div>
+      <div style="padding:13px 14px;color:var(--t2);font-size:12px;line-height:2;">
+        最後のファイルには、私が自分で鍵をかけた。<br>
+        消されないため、ではない。読む人に、先に文集を開いてほしかったからだ。<br>
+        鍵にした言葉は、文集に挟まれた断片の中にある。<br>
+        この時代の誰にも読めなかった言葉。あなたになら、読める言葉。
       </div>
-      <span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span>
+      <div style="padding:0 14px 13px;font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.08em;">［照合語：████］</div>
     </div>
   </div>
 </div>`;

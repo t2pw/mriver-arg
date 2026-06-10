@@ -125,7 +125,7 @@ PAGE_CONTENT['voices'] = () => `<div class="bpage">
     <div onclick="Shell.bNavigate('tegami')" style="display:flex;align-items:center;gap:10px;background:#0d0d10;border:1px solid rgba(200,169,110,0.22);border-radius:12px;padding:13px 14px;cursor:pointer;user-select:none;">
       <span style="font-size:18px;">📖</span>
       <div style="font-family:var(--mono);font-size:11px;line-height:1.7;">
-        <div style="color:var(--gold);letter-spacing:.04em;">次の記録を開く</div>
+        <div style="color:var(--gold);letter-spacing:.04em;">資料棚：次の資料</div>
         <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">声は壁を透して（文集）</div>
       </div>
       <span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span>

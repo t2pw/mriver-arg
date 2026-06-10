@@ -1,10 +1,10 @@
 // tools/hexconv.js　解析アプリ「16進変換器」
-// 画像 puzzle_e_hex.jpg を見て読み取った16進値を手入力 → カタカナに変換。
+// telegram_001 の電文ヘッダ等から読み取った16進値を手入力 → カタカナに変換。
 // 読み取り＝人間 / 変換＝アプリ。対応表はアプリ内蔵。
 
 TOOL_UI['hexconv'] = () => {
 
-  // 16進→カタカナ対応表（独自表。電文ヘッダ 53 55 4A → ショ ウ ジ）
+  // 16進→カタカナ対応表（独自表。電文ヘッダ 16 10 → タ コ）
   const HEX_MAP = {
     '41':'ア','42':'イ','55':'ウ','44':'エ','45':'オ',
     '51':'サ','52':'シ','53':'ショ','56':'ス','57':'セ','58':'ソ',
@@ -41,7 +41,7 @@ TOOL_UI['hexconv'] = () => {
       電文に記録された16進値を読み取り、下に入力してください。<br>スペースがなくても、2桁ずつ自動で区切ります。
     </div>
 
-    <div style="font-size:10px;color:var(--t3);margin-bottom:8px;letter-spacing:.08em;">入力（例：53 55 4A）</div>
+    <div style="font-size:10px;color:var(--t3);margin-bottom:8px;letter-spacing:.08em;">入力（例：16 10）</div>
     <input id="hex-input" placeholder="16進値を入力…" style="
       width:100%;box-sizing:border-box;background:#070709;
       border:1px solid rgba(255,255,255,0.12);border-radius:8px;

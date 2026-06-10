@@ -130,14 +130,42 @@ PAGE_CONTENT['inochi'] = () => `<div class="bpage">
     <p>
       それでも、この冤罪を覆そうとした人々がいた。世論の逆風に晒され、孤立しながら、書き続け、訴え続けた者たちが。
     </p>
+    <p>
+      彼らの声は、資料棚に収めた。<br>
+      そして——声がどこにも届かなかったあと、記録はどこへ行くのか。<br>
+      それを、次のファイルに書いた。
+    </p>
   </div>
 
   <div style="margin:18px 0 4px;">
-    <div onclick="Shell.bNavigate('voices')" style="display:flex;align-items:center;gap:10px;background:#0d0d10;border:1px solid rgba(200,169,110,0.22);border-radius:12px;padding:13px 14px;cursor:pointer;user-select:none;">
-      <span style="font-size:18px;">📄</span>
+    <div style="background:#0d0d10;border:1px solid rgba(200,169,110,0.22);border-radius:12px;overflow:hidden;font-family:var(--mono);">
+      <div style="padding:9px 14px;border-bottom:1px solid rgba(200,169,110,0.12);font-size:10px;color:var(--gold);letter-spacing:.12em;">── 資料棚　解放済み</div>
+      <div style="padding:10px 14px 4px;font-size:11px;color:var(--t3);letter-spacing:.06em;line-height:1.9;">読む順番は、あなたが決めていい。</div>
+      <div onclick="Shell.bNavigate('voices')" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;user-select:none;border-top:1px solid rgba(255,255,255,0.04);">
+        <span style="font-size:15px;">📄</span>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--t2);letter-spacing:.04em;">声を上げた人々</div>
+      </div>
+      <div onclick="Shell.bNavigate('tegami')" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;user-select:none;border-top:1px solid rgba(255,255,255,0.04);">
+        <span style="font-size:15px;">📖</span>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--t2);letter-spacing:.04em;">声は壁を透して（文集）</div>
+      </div>
+      <div onclick="Shell.bNavigate('sns')" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;user-select:none;border-top:1px solid rgba(255,255,255,0.04);">
+        <span style="font-size:15px;">📄</span>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--t2);letter-spacing:.04em;">声の速さと重さ</div>
+      </div>
+      <div onclick="Shell.bNavigate('momo')" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;user-select:none;border-top:1px solid rgba(255,255,255,0.04);">
+        <span style="font-size:15px;">🌸</span>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--t2);letter-spacing:.04em;">芙島市の現在と桃見山</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin:18px 0 4px;">
+    <div onclick="Shell.bNavigate('loop')" style="display:flex;align-items:center;gap:10px;background:#0d0d10;border:1px solid rgba(200,169,110,0.22);border-radius:12px;padding:13px 14px;cursor:pointer;user-select:none;">
+      <span style="font-size:18px;">🔄</span>
       <div style="font-family:var(--mono);font-size:11px;line-height:1.7;">
         <div style="color:var(--gold);letter-spacing:.04em;">次の記録を開く</div>
-        <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">声を上げた人々</div>
+        <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">記録の行方</div>
       </div>
       <span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span>
     </div>

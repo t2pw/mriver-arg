@@ -1,5 +1,5 @@
 // tools/morse.js　解析アプリ「モールス読取機」
-// 画像 puzzle_e_shoji.jpg の障子の穴を読み取り、・と−で手入力 → 数字に変換。
+// telegram_001 の接触記録（タコへの入力ログ）や受信信号を読み取り、・と−で手入力 → 数字に変換。
 // 読み取り＝人間 / 変換＝アプリ。対応表はアプリ内蔵。
 
 TOOL_UI['morse'] = () => {
@@ -37,7 +37,7 @@ TOOL_UI['morse'] = () => {
     <div style="color:var(--blue);font-size:11px;letter-spacing:.12em;margin-bottom:4px;">── 解析ツール</div>
     <div style="font-family:var(--serif);font-size:19px;color:var(--t1);letter-spacing:.04em;margin-bottom:6px;">モールス読取機</div>
     <div style="font-size:10px;color:var(--t3);letter-spacing:.06em;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--bd);line-height:1.7;">
-      障子の穴を読み取り、短点（・）と長点（−）で入力してください。<br>升ごとに改行またはスペースで区切ります。
+      記録の符号列を読み取り、短点（・）と長点（−）で入力してください。<br>一文字（一行）ごとに改行またはスペースで区切ります。
     </div>
 
     <div style="font-size:10px;color:var(--t3);margin-bottom:8px;letter-spacing:.08em;">入力（・＝短　−＝長）</div>
