@@ -873,6 +873,12 @@ const Shell = (() => {
 
     const content = document.getElementById('acontent');
     content.innerHTML = '';
+    // ★v3.6 修正：復元アプリが #acontent に display:flex / overflow:hidden をインラインで
+    //   設定したまま残り、その後に開いたアプリ（セクタマップ等）がスクロール不能になっていた。
+    //   アプリ切替時に必ず既定値へ戻す（renderBrowser は自分で flex に再設定する）。
+    content.style.display = 'block';
+    content.style.flexDirection = '';
+    content.style.overflow = '';
 
     const footer = document.getElementById('afooter');
     footer.style.display = 'none';
