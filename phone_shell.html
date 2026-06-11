@@ -820,6 +820,12 @@ const Shell = (() => {
 
   /* ── プッシュ通知（ダイナミックアイランド） ── */
   function pushNotif(emoji, name, msg, threadId) {
+    // ★v3.6 スレッドを持たない不明送信元の通知（照合完了・ヒント等）は通知ログに記録し、
+    //   メッセージアプリの「照合通知」スレッドから読み返せるようにする（0611指摘：消える通知）
+    if (!threadId && name === '繧ｿ◆縺薙％??') {
+      _appendNotifLog(msg);
+      threadId = 'notif_log';
+    }
     const isl  = document.getElementById('island');
     const av   = document.getElementById('island-avatar');
     const nm   = document.getElementById('island-name');
@@ -907,8 +913,8 @@ const Shell = (() => {
         <div id="bbar" style="display:flex;align-items:center;padding:9px 12px;gap:7px;border-bottom:1px solid var(--bd);background:var(--s1);">
           <div class="bnav-btn" id="bbtn-back" onclick="Shell.bBack()" title="戻る">‹</div>
           <div class="bnav-btn" id="bbtn-fwd"  onclick="Shell.bFwd()"  title="進む">›</div>
-          <input id="burl" placeholder="キーワードを入力して検索…" style="flex:1;background:var(--s3);border:1px solid var(--bd);border-radius:10px;padding:7px 11px;font-family:var(--mono);font-size:12px;color:var(--t1);outline:none;letter-spacing:.03em;" />
-          <button id="bgo" onclick="Shell.doSearch()" style="background:var(--gold-d);border:1px solid rgba(200,169,110,.28);border-radius:8px;padding:7px 13px;font-family:var(--mono);font-size:12px;color:var(--gold);cursor:pointer;letter-spacing:.05em;white-space:nowrap;">検索</button>
+          <input id="burl" placeholder="照合語を入力…" style="flex:1;background:var(--s3);border:1px solid var(--bd);border-radius:10px;padding:7px 11px;font-family:var(--mono);font-size:12px;color:var(--t1);outline:none;letter-spacing:.03em;" />
+          <button id="bgo" onclick="Shell.doSearch()" style="background:var(--gold-d);border:1px solid rgba(200,169,110,.28);border-radius:8px;padding:7px 13px;font-family:var(--mono);font-size:12px;color:var(--gold);cursor:pointer;letter-spacing:.05em;white-space:nowrap;">照合</button>
         </div>
         <div id="bsearch-result" style="display:none;padding:10px 14px;"></div>
       </div>
@@ -959,17 +965,22 @@ const Shell = (() => {
       </div>`;
 
     bview.innerHTML = `
-      <div style="padding:40px 20px 32px;display:flex;flex-direction:column;align-items:center;gap:0;">
-        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.2em;margin-bottom:28px;">── 記録躯体　接続済み ──</div>
-        <div style="font-family:var(--serif);font-size:28px;color:var(--t1);letter-spacing:.08em;margin-bottom:8px;text-align:center;line-height:1.3;">声は壁を透して</div>
-        <div style="font-family:var(--mono);font-size:11px;color:var(--t2);letter-spacing:.06em;text-align:center;line-height:1.9;margin-bottom:32px;">
-          記録されなかったものを、復元する。<br>
-          キーワードを入力してください。
+      <div style="padding:36px 20px 32px;display:flex;flex-direction:column;align-items:center;gap:0;">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.2em;margin-bottom:26px;">── 記録躯体　接続済み ──</div>
+        <div style="width:100%;max-width:320px;display:flex;gap:7px;margin-bottom:10px;">
+          <input id="bhome-kw" placeholder="照合語を入力…"
+            onkeydown="if(event.key==='Enter'){const b=document.getElementById('burl');if(b)b.value=this.value;Shell.doSearch();}"
+            style="flex:1;background:var(--s3);border:1px solid rgba(200,169,110,0.25);border-radius:12px;padding:12px 14px;font-family:var(--mono);font-size:13px;color:var(--t1);outline:none;letter-spacing:.03em;" />
+          <button onclick="const i=document.getElementById('bhome-kw');const b=document.getElementById('burl');if(i&&b)b.value=i.value;Shell.doSearch();"
+            style="background:var(--gold-d);border:1px solid rgba(200,169,110,.28);border-radius:12px;padding:12px 16px;font-family:var(--mono);font-size:12px;color:var(--gold);cursor:pointer;letter-spacing:.05em;white-space:nowrap;">照合</button>
+        </div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.08em;text-align:center;line-height:1.9;margin-bottom:28px;">
+          記録されなかったものを、復元する。
         </div>
         <div style="width:100%;max-width:320px;background:var(--s2);border:1px solid var(--bd);border-radius:14px;padding:20px 18px;">
           <div style="font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.15em;margin-bottom:12px;">使い方</div>
           <div style="font-size:12px;color:var(--t2);line-height:1.9;letter-spacing:.04em;font-family:var(--serif);">
-            アーカイブ各所に散らばったキーワードを見つけ、上部の入力欄に入力してください。一致すると封鎖されたページが復元されます。
+            アーカイブの各所に残る言葉（照合語）を見つけ、照合欄に入力してください。一致すると、封鎖されたセクタが復元されます。
           </div>
         </div>
         <div style="width:100%;max-width:320px;margin-top:14px;font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.08em;display:flex;justify-content:space-between;">
@@ -1101,21 +1112,21 @@ const Shell = (() => {
       // 「正しいが今は開かない」を無反応にしない（前提不足の明示）
       rbox.innerHTML = `<div class="sbox" style="border-color:rgba(200,169,110,.35);">
         <div class="sbox-label" style="color:var(--gold);">── 照合一致 ──</div>
-        <div class="sbox-desc">キーワードは記録と一致しました。ただし参照元の記録が不足しています。<br>復元済みの記録を読み進めてから、もう一度試してください。</div>
+        <div class="sbox-desc">照合語は記録と一致しました。ただし参照元の記録が不足しています。<br>復元済みの記録を読み進めてから、もう一度試してください。</div>
       </div>`;
       hideAfter = 6000;
     } else if (/オカエリ|おかえり|お帰り/.test(val)) {
       // ★v3.5 隠し断片の解読語を検索した場合の専用応答（検索では開かない。一行に書く）
       rbox.innerHTML = `<div class="sbox" style="border-color:rgba(200,169,110,.35);">
         <div class="sbox-label" style="color:var(--gold);">── 一致なし ──</div>
-        <div class="sbox-desc">📡 それは、検索する言葉ではありません。<br>書き足す言葉です。——あの一行に。</div>
+        <div class="sbox-desc">📡 それは、照合にかける言葉ではありません。<br>書き足す言葉です。——あの一行に。</div>
       </div>`;
       hideAfter = 7000;
     } else {
       const hint = _missHint(res.missStreak);
       rbox.innerHTML = `<div class="sbox ng">
         <div class="sbox-label">── 一致なし ──</div>
-        <div class="sbox-desc">該当するアーカイブが見つかりません。別のキーワードを試してください。</div>
+        <div class="sbox-desc">該当するアーカイブが見つかりません。別の照合語を試してください。</div>
         ${hint ? `<div class="sbox-desc" style="margin-top:8px;color:var(--red);font-family:var(--mono);font-size:11px;">📡 ${hint}</div>` : ''}
       </div>`;
       if(hint) {
@@ -1137,7 +1148,7 @@ const Shell = (() => {
       B: '写真の照合が未完了です。写真そのものに写り込んでいる情報を確認してください。',
       C: '掲示板の記録が未照合です。ビラと投書の文面を読み直してください。',
       D: '地図の黒塗りが未照合です。欠けた地名を推定してください。',
-      E: '電文の解読が未完了です。符号の名前（モールス）で検索すると、道具が見つかります。',
+      E: '電文の解読が未完了です。符号の名前（モールス）を照合にかけると、道具が見つかります。',
     };
     const sp = KoeOS.getSpokeProgress().find(s => !s.complete);
     if (sp) return SPOKE_HINTS[sp.group] || '';
@@ -1221,7 +1232,41 @@ const Shell = (() => {
   const _READ_KEY = 'koe_msgs_read';
   function _getRead() { try { return new Set(JSON.parse(localStorage.getItem(_READ_KEY)||'[]')); } catch { return new Set(); } }
   function _markRead(id) { const s=_getRead(); if(!s.has(id)) { s.add(id); localStorage.setItem(_READ_KEY, JSON.stringify([...s])); } }
-  function _visibleThreads() { return THREADS.filter(t => t.gate ? KoeOS.isRestored(t.gate) : true); }
+
+  /* ── ★v3.6 通知ログ（スレッドを持たない不明送信元の通知を蓄積・読み返し可能に） ── */
+  const _NOTIF_LOG_KEY = 'koe_notif_log';
+  function _getNotifLog() { try { return JSON.parse(localStorage.getItem(_NOTIF_LOG_KEY)||'[]'); } catch { return []; } }
+  function _appendNotifLog(msg) {
+    const log = _getNotifLog();
+    log.push({ t: Date.now(), msg });
+    while (log.length > 60) log.shift();
+    try { localStorage.setItem(_NOTIF_LOG_KEY, JSON.stringify(log)); } catch {}
+    // 新着が来たらスレッドを未読に戻す
+    try {
+      const s = _getRead();
+      if (s.has('notif_log')) { s.delete('notif_log'); localStorage.setItem(_READ_KEY, JSON.stringify([...s])); }
+    } catch {}
+  }
+  function _fmtNotifTime(ts) {
+    const d = new Date(ts);
+    return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }
+  const NOTIF_THREAD = {
+    id: 'notif_log', name: '繧ｿ◆縺薙％??', avatar: '📶', anomaly: true, gate: null,
+    get preview() { const l = _getNotifLog(); return l.length ? l[l.length-1].msg : ''; },
+    get date()    { const l = _getNotifLog(); return l.length ? _fmtNotifTime(l[l.length-1].t) : ''; },
+    body: () => {
+      const log = _getNotifLog();
+      return `<div class="mdate-sep">照合通知　── 自動記録</div>`
+        + log.map(e => _bub(e.msg, false, _fmtNotifTime(e.t))).join('');
+    },
+  };
+
+  function _visibleThreads() {
+    const base = THREADS.filter(t => t.gate ? KoeOS.isRestored(t.gate) : true);
+    if (_getNotifLog().length > 0) base.push(NOTIF_THREAD);
+    return base;
+  }
   function _unreadCount() { const r=_getRead(); return _visibleThreads().filter(t => !r.has(t.id)).length; }
   function deliverMessages(animate) {
     const done = _getDelivered();
@@ -1236,7 +1281,7 @@ const Shell = (() => {
   }
 
   function renderMessages(el) {
-    const visible = THREADS.filter(t => t.gate ? KoeOS.isRestored(t.gate) : true);
+    const visible = _visibleThreads();
 
     if (visible.length === 0) {
       el.innerHTML = '<div class="hempty">メッセージはまだありません。<br>アーカイブを読み進めると<br>ここに届きます。</div>';
@@ -1264,7 +1309,7 @@ const Shell = (() => {
     const mv    = document.getElementById('msgview');
     const title = document.getElementById('mvnav-title');
     const body  = document.getElementById('mvcontent');
-    const t = THREADS.find(t=>t.id===threadId);
+    const t = THREADS.find(t=>t.id===threadId) || (threadId === 'notif_log' ? NOTIF_THREAD : null);
     title.textContent = t ? t.name : threadId;
 
     const content = (t && t.body) ? t.body()

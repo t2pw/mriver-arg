@@ -51,7 +51,7 @@ PAGE_CONTENT['telegram_001'] = () => {
       </div>
       <div style="font-size:10px;color:var(--t3);margin-top:10px;line-height:1.8;">
         ── ヘッダの2桁の値を読み解けば、この記録が「何に」刻まれたのかが分かる。<br>
-        　　数字の読み方が分からなければ、形式の名前でこのブラウザを検索する。
+        　　数字の読み方が分からなければ、形式の名前を照合にかける。
       </div>
     </div>
   </div>
@@ -73,7 +73,7 @@ PAGE_CONTENT['telegram_001'] = () => {
       </div>
       <div style="font-size:10px;color:var(--t3);margin-top:10px;line-height:1.8;">
         ── 一行が、ひとつの数字。短い点と長い線。これも符号だ。<br>
-        　　符号の名前で検索すれば、読む道具が見つかるかもしれない。
+        　　符号の名前を照合にかければ、読む道具が見つかるかもしれない。
       </div>
     </div>
   </div>
@@ -92,7 +92,7 @@ PAGE_CONTENT['telegram_001'] = () => {
   <div class="bpage-body">
     <p style="font-family:var(--mono);font-size:11px;color:var(--t3);line-height:1.9;">
       ── 四つの行は、四つの数字。<br>
-      　　読み解いた4桁を、最後にこのブラウザで検索する。
+      　　読み解いた4桁を、最後に照合にかける。
     </p>
     <p class="anom">
       鍵そのものは、アーカイブのどこにも書かれていない。<br>

@@ -181,7 +181,7 @@
       埋めたメモリには鍵がかかっている。その<span data-kwtag="暗号キー" style="color:var(--gold);border-bottom:1px solid rgba(200,169,110,0.4);cursor:pointer;">暗号キー</span>は、電文の中に残した。
     </p>
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;line-height:1.9;">
-      ── 鍵のかかったファイルを開くには、「暗号キー」でこのブラウザを検索する。
+      ── 鍵のかかったファイルを開くには、「暗号キー」を照合にかける。
     </p>
     <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:1.9;">
       「いつかこれを読む人へ──<br>

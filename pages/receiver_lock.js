@@ -107,7 +107,7 @@ PAGE_CONTENT['receiver_lock'] = () => {
   <div class="bpage-body">
     <p style="font-family:var(--mono);font-size:11px;color:var(--t3);line-height:1.9;">
       ── 自動復号、不能。手で読むしかない。<br>
-      　　読み解けた言葉を、このブラウザに入力する。
+      　　読み解けた言葉を、照合にかける。
     </p>
     <p class="anom">
       読み方は、このアーカイブがもう教えている。<br>

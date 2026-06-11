@@ -109,7 +109,7 @@ PAGE_CONTENT['hub_002'] = () => `<div class="bpage">
       記録の中に、その答えを残した——<span style="color:var(--red);">なぜ冤罪は生まれたか</span>、と。
     </div>
     <div style="padding:0 14px 14px;font-size:10px;color:var(--t3);letter-spacing:.06em;line-height:1.8;">
-      ── この語を検索することから、第2層は始まる。<br>
+      ── この語を照合にかけることから、第2層は始まる。<br>
       　　資料棚の五冊は、このページを閉じた時には、もう並んでいる。
     </div>
   </div>

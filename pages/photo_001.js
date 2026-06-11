@@ -68,7 +68,7 @@ PAGE_CONTENT['photo_001'] = () => `<div class="bpage">
 
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;line-height:1.9;">
       ── 壁の新聞の発行日が読める。<br>
-      　　読み取れた年号で、このブラウザを検索する。
+      　　読み取れた年号を、照合にかける。
     </p>
   </div>
 </div>`;

@@ -166,7 +166,7 @@
     </p>
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;line-height:1.9;">
       ── 最後の印の言葉に従って、地図の北をさがす。<br>
-      　　青く塗られた場所。版面に残るその名前で、このブラウザを検索する。
+      　　青く塗られた場所。版面に残るその名前を、照合にかける。
     </p>
     <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:1.9;">
       「桜の花は毎年咲く。<br>

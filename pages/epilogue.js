@@ -300,7 +300,7 @@ PAGE_CONTENT['epilogue'] = () => {
       "
     >符号列をコピー</div>
     <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;line-height:1.9;margin-top:8px;">
-      ── 読み解いた言葉は、検索する言葉ではありません。<br>
+      ── 読み解いた言葉は、照合にかける言葉ではありません。<br>
       　　書き足す言葉です。
     </div>
   </div>`}

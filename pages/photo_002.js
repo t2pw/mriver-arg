@@ -68,7 +68,7 @@ PAGE_CONTENT['photo_002'] = () => `<div class="bpage">
 
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;line-height:1.9;">
       ── 一枚目を拡大して、駅名標に残る駅の名前を読む。<br>
-      　　読めた駅名で、このブラウザを検索する。
+      　　読めた駅名を、照合にかける。
     </p>
   </div>
 </div>`;
