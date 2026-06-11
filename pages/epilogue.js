@@ -284,21 +284,6 @@ PAGE_CONTENT['epilogue'] = () => {
       word-spacing:.45em;
       user-select:text;
     ">・・・・−　・・・・・<br>・−−−−　・・−−−<br>・・・・−　・・・・−<br>・・−−−　・・・・−<br>・・−−−　・−−−−<br>・・・・・　・−−−−<br>・・・・−　・・−−−</div>
-    <div
-      data-morse="・・・・− ・・・・・ ・−−−− ・・−−− ・・・・− ・・・・− ・・−−− ・・・・− ・・−−− ・−−−− ・・・・・ ・−−−− ・・・・− ・・−−−"
-      onclick="try{navigator.clipboard.writeText(this.getAttribute('data-morse'))}catch{};var b=this;b.textContent='コピー済み';setTimeout(function(){b.textContent='符号列をコピー'},1100)"
-      style="
-        display:inline-block;
-        background:rgba(200,169,110,0.08);
-        border:1px solid rgba(200,169,110,0.25);
-        border-radius:8px;
-        padding:7px 10px;
-        font-size:10px;
-        color:var(--gold);
-        cursor:pointer;
-        letter-spacing:.06em;
-      "
-    >符号列をコピー</div>
     <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;line-height:1.9;margin-top:8px;">
       ── 読み解いた言葉は、照合にかける言葉ではありません。<br>
       　　書き足す言葉です。

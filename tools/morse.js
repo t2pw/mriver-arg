@@ -22,6 +22,18 @@ TOOL_UI['morse'] = () => {
     const out = document.getElementById('morse-output');
     if (!inp || !btn || !out) return;
 
+    // ★入力パッド（2026-06-11 制作者要望）：タップで ・／−／区切り（半角スペース）を打てる。
+    //   ページ側のコピーボタンは廃止し、符号を自分の指で打ち写す体験に寄せる。
+    //   focus を奪わない（モバイルでソフトキーボードを出さない）。
+    document.querySelectorAll('[data-morse-key]').forEach(b => {
+      b.addEventListener('click', () => {
+        const k = b.getAttribute('data-morse-key');
+        if (k === 'BS') inp.value = inp.value.slice(0, -1);
+        else inp.value += k;
+        inp.scrollTop = inp.scrollHeight;
+      });
+    });
+
     btn.addEventListener('click', () => {
       const raw = inp.value;
       if (!raw.trim()) { out.textContent = '—'; out.style.color = 'var(--t3)'; return; }
@@ -37,16 +49,39 @@ TOOL_UI['morse'] = () => {
     <div style="color:var(--blue);font-size:11px;letter-spacing:.12em;margin-bottom:4px;">── 解析ツール</div>
     <div style="font-family:var(--serif);font-size:19px;color:var(--t1);letter-spacing:.04em;margin-bottom:6px;">モールス読取機</div>
     <div style="font-size:10px;color:var(--t3);letter-spacing:.06em;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--bd);line-height:1.7;">
-      記録の符号列を読み取り、短点（・）と長点（−）で入力してください。<br>一文字（一行）ごとに改行またはスペースで区切ります。
+      記録の符号列を読み取り、短点（・）と長点（−）で打ち写してください。<br>一文字ごとに「区切り」を打ちます。下のキーで入力できます。
     </div>
 
     <div style="font-size:10px;color:var(--t3);margin-bottom:8px;letter-spacing:.08em;">入力（・＝短　−＝長）</div>
-    <textarea id="morse-input" placeholder="例：&#10;−−−−−&#10;・・・−−" style="
+    <textarea id="morse-input" placeholder="例：−−−−− ・・・−−" style="
       width:100%;box-sizing:border-box;background:#070709;
       border:1px solid rgba(255,255,255,0.12);border-radius:8px;
       padding:12px 14px;font-family:var(--mono);font-size:15px;color:var(--t1);
-      letter-spacing:.1em;outline:none;margin-bottom:12px;height:96px;resize:none;line-height:1.8;
+      letter-spacing:.1em;outline:none;margin-bottom:10px;height:96px;resize:none;line-height:1.8;
     "></textarea>
+
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <div data-morse-key="・" style="
+        flex:1.2;background:#070709;border:1px solid rgba(200,169,110,0.3);border-radius:10px;
+        padding:13px 0;text-align:center;cursor:pointer;user-select:none;
+        color:var(--t1);font-size:19px;line-height:1;
+      ">・</div>
+      <div data-morse-key="−" style="
+        flex:1.2;background:#070709;border:1px solid rgba(200,169,110,0.3);border-radius:10px;
+        padding:13px 0;text-align:center;cursor:pointer;user-select:none;
+        color:var(--t1);font-size:19px;line-height:1;
+      ">−</div>
+      <div data-morse-key=" " style="
+        flex:1;background:#070709;border:1px solid rgba(255,255,255,0.14);border-radius:10px;
+        padding:13px 0;text-align:center;cursor:pointer;user-select:none;
+        color:var(--t2);font-size:11px;letter-spacing:.08em;line-height:1.6;
+      ">区切り</div>
+      <div data-morse-key="BS" style="
+        flex:1;background:#070709;border:1px solid rgba(255,255,255,0.14);border-radius:10px;
+        padding:13px 0;text-align:center;cursor:pointer;user-select:none;
+        color:var(--t2);font-size:14px;line-height:1.2;
+      ">⌫</div>
+    </div>
 
     <div id="morse-convert" style="
       background:var(--gold-d);border:1px solid rgba(200,169,110,0.3);

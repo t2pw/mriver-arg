@@ -9,15 +9,6 @@ PAGE_CONTENT['receiver_lock'] = () => {
     document.querySelectorAll('[data-kwtag]').forEach(el => {
       el.addEventListener('click', () => Shell.setSearchAndFocus(el.getAttribute('data-kwtag')));
     });
-    const copy = document.getElementById('recv-copy-morse');
-    if (copy) {
-      copy.addEventListener('click', () => {
-        const text = copy.getAttribute('data-morse') || '';
-        try { navigator.clipboard.writeText(text); } catch {}
-        copy.textContent = 'コピー済み';
-        setTimeout(() => { copy.textContent = 'モールス列をコピー'; }, 1100);
-      });
-    }
   }, 0);
 
   const kwTag = (kw) =>
@@ -88,17 +79,6 @@ PAGE_CONTENT['receiver_lock'] = () => {
       ">${morse.map((m,i) => `${m}${(i+1)%2===0 ? '<br>' : '　'}`).join('')}</div>
 
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;">
-        <div id="recv-copy-morse" data-morse="${morse.join(' ')}" style="
-          background:rgba(200,169,110,0.08);
-          border:1px solid rgba(200,169,110,0.25);
-          border-radius:8px;
-          padding:7px 10px;
-          font-family:var(--mono);
-          font-size:10px;
-          color:var(--gold);
-          cursor:pointer;
-          letter-spacing:.06em;
-        ">モールス列をコピー</div>
         ${kwTag('モールス')}${kwTag('16進')}
       </div>
     </div>
