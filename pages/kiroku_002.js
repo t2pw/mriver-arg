@@ -12,6 +12,7 @@ PAGE_CONTENT['kiroku_002'] = () => `<div class="bpage">
   <div style="font-family:var(--mono);font-size:10px;color:var(--t3);padding:6px 0 4px;letter-spacing:.06em;">
     ── 月湯温泉　湯宿外観（当時）
   </div>
+  <div style="font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.06em;padding:4px 0 0;">── 復元画像（声の描写より）</div>
 
   <div class="bpage-body">
     <p>

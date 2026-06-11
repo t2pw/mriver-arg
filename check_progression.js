@@ -103,8 +103,8 @@ function storyMsgs() {
 
 const norm = s => String(s).replace(/\s+/g, '');
 
-/* 意図的な一括解放（資料棚。hub_002 閲覧で4冊同時に開くのは仕様） */
-const INTENDED_BULK = { hub_002: new Set(['voices', 'tegami', 'sns', 'momo']) };
+/* 意図的な一括解放（資料棚。hub_002 閲覧で5冊同時に開くのは仕様） */
+const INTENDED_BULK = { hub_002: new Set(['voices', 'memo', 'tegami', 'sns', 'momo']) };
 
 /* ── ページ内ボタンによる解放（os.js の prereq 連鎖外）──
    phone_shell.html の bNavigate → _loadPage(markRestored) を模倣する。 */
@@ -112,6 +112,10 @@ const MANUAL_NAV = {
   choice:    ['wiki_add', 'wiki_skip'],
   wiki_add:  ['epilogue'],
   wiki_skip: ['epilogue'],
+  // ★v3.5 隠し（TRUE END）：エピローグの「返信を開く」ボタン。
+  //   実際には「あなたの一行」に解読語（おかえり）を書いた場合のみボタンが出るが、
+  //   到達経路としてはページ内ボタン解放なのでここに登録する。
+  epilogue:  ['okaeri'],
 };
 
 /* PAGES 外で正しいファイル（メッセージスレッド等） */

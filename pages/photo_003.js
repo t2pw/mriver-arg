@@ -11,6 +11,8 @@ PAGE_CONTENT['photo_003'] = () => `<div class="bpage">
          style="width:100%;height:240px;object-fit:cover;object-position:center;display:block;"
          onerror="this.parentElement.innerHTML='<div style=\'height:240px;background:#111;display:flex;align-items:center;justify-content:center;color:#444;font-size:11px;letter-spacing:2px;\'>[ 画像データなし ]</div>'">
 
+    <div style="font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.06em;padding:4px 0 0;">── 復元画像（声の描写より）。余白の手書きも、描写のとおりに復元されている。</div>
+
     <p style="margin-top:1.4em;">
       茅葺き屋根の家。前に菜園がある。大根、白菜、支柱に絡んだ何か。
       秋の野菜だ。

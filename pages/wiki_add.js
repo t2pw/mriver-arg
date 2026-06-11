@@ -20,6 +20,11 @@ PAGE_CONTENT['wiki_add'] = () => {
       const ta = document.getElementById('wiki-user-line');
       const line = ((ta && ta.value) || '').trim() || '猫塚清治と蛸川小蘭は、ここにいた。';
       try { localStorage.setItem('koe_fumi_note', line); } catch {}
+      // 隠し：未復号の断片（エピローグ補記）を解読した言葉が一行に含まれていれば、返信が開く
+      try {
+        if (/おかえり|オカエリ|お帰り/.test(line)) localStorage.setItem('koe_true_end', '1');
+        else localStorage.removeItem('koe_true_end');
+      } catch {}
 
       const container = document.getElementById('wiki-edit-container');
       if (!container) { Shell.bNavigate('epilogue'); return; }

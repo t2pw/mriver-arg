@@ -7,6 +7,8 @@
  *       choice内ボタン解放ページ（manual:true）を連鎖対象外に
  * v3.3: 第2層を背骨＋資料棚に再構成。data_trace は黒塗り復元謎（バックアップ）の検索解放
  * v3.4: セクタマップ（タコ躯体図）用の getLegProgress を追加
+ * v3.5: 隠しページ okaeri（TRUE END・manual）／telegram_001 に「電文」、freesoft に
+ *       「モールス符号・電信符号」キーワード追加（0611テストプレイレビュー対応）
  */
 'use strict';
 
@@ -45,7 +47,7 @@ const KoeOS = (() => {
     // photo_002: photo_001 末尾「昭和二十四年八月の一枚」
     { id:'photo_002', title:'写真②　同じ場所・70年の隔たり', locked:true, keywords:['昭和24年','昭和二十四年','昭和24年8月16日','昭和二十四年八月十六日','1949年8月16日'], prereqs:['photo_001'], phase:1, spokeGroup:'B', icon:'📷' },
     // photo_003: photo_002 末尾「M川駅そばの家、暖簾のそばに」
-    { id:'photo_003', title:'写真③　菜園のある家',           locked:true, keywords:['M川駅','松川駅'], prereqs:['photo_002'], phase:1, spokeGroup:'B', icon:'📷' },
+    { id:'photo_003', title:'写真③　菜園のある家',           locked:true, keywords:['M川駅','松川駅','MKAWA'], prereqs:['photo_002'], phase:1, spokeGroup:'B', icon:'📷' },
 
     // スポークC 掲示板
     // bbs_001: archive_about「翌朝、新聞でM川事件を知りました」（松川事件は実在語フック）
@@ -65,7 +67,7 @@ const KoeOS = (() => {
 
     // スポークE 電文（謎解きスポーク）
     // telegram_001: soran_intro 添付ファイルに「復号キー：N-0816」
-    { id:'telegram_001', title:'電文①　暗号データ',     locked:true, keywords:['復号キー','暗号キー','復号'],   prereqs:[],                phase:1, spokeGroup:'E', icon:'📡' },
+    { id:'telegram_001', title:'電文①　暗号データ',     locked:true, keywords:['復号キー','暗号キー','復号','電文'],   prereqs:[],                phase:1, spokeGroup:'E', icon:'📡' },
     // telegram_002: telegram_001 謎解き答え ── hexconv＋モールス両方の解答「0816」
     { id:'telegram_002', title:'電文②　N-0816の意味',   locked:true, keywords:['0816','N-0816'], prereqs:['telegram_001'], phase:1, spokeGroup:'E', icon:'📡' },
     // telegram_003: telegram_002 末尾「一冊の文集の名前──『声は壁を透して』」
@@ -73,7 +75,7 @@ const KoeOS = (() => {
 
     // ツール配布サイト（スポーク進捗には数えない / telegram_001 の kwTag クリックで検索）
     { id:'freesoft', title:"T.Watanabe's Tools Page", locked:true,
-      keywords:['バイナリ','モールス','16進','符号','解析ツール','フリーソフト'],
+      keywords:['バイナリ','モールス','モールス符号','電信符号','16進','符号','解析ツール','フリーソフト'],
       prereqs:['telegram_001'], phase:1, spokeGroup:null, icon:'💾' },
 
     // 第2層ハブ（全スポーク完了で自動解放）
@@ -89,6 +91,7 @@ const KoeOS = (() => {
     { id:'tegami',       title:'声は壁を透して（文集）', locked:true, keywords:[], prereqs:['hub_002'],  phase:2, spokeGroup:null, icon:'📖' },
     { id:'sns',          title:'声の速さと重さ',        locked:true, keywords:[], prereqs:['hub_002'],   phase:2, spokeGroup:null, icon:'📄' },
     { id:'momo',         title:'芙島市の現在と桃見山',  locked:true, keywords:[], prereqs:['hub_002'],   phase:2, spokeGroup:null, icon:'🌸' },
+    { id:'memo',         title:'一冊の大学ノート',      locked:true, keywords:[], prereqs:['hub_002'],   phase:2, spokeGroup:null, icon:'📓' },
     { id:'loop',         title:'記録の行方',            locked:true, keywords:[], prereqs:['inochi'],    phase:2, spokeGroup:null, icon:'🔄' },
     { id:'data_trace',   title:'小蘭のデータ痕跡の全容', locked:true, keywords:['バックアップ','データのバックアップ'], prereqs:['loop'], phase:2, spokeGroup:null, icon:'💾' },
 
@@ -104,6 +107,10 @@ const KoeOS = (() => {
     { id:'wiki_add',    title:'M川事件（編集）',        locked:true, keywords:[], prereqs:['choice'],     manual:true, phase:3, spokeGroup:null, icon:'📝' },
     { id:'wiki_skip',   title:'追記しない選択',         locked:true, keywords:[], prereqs:['choice'],     manual:true, phase:3, spokeGroup:null, icon:'📝' },
     { id:'epilogue',    title:'エピローグ',             locked:true, keywords:[], prereqs:['choice'],     manual:true, phase:3, spokeGroup:null, icon:'🌸' },
+    // ★v3.5 隠し（TRUE END）：クリア後の未復号断片（モールス→数字→16進）を解読し、
+    //   wiki の「あなたの一行」に書いて保存すると、エピローグの「返信を開く」ボタン
+    //   （bNavigate → markRestored）で解放される。検索キーワードでは開かない。
+    { id:'okaeri',      title:'返信',                   locked:true, keywords:[], prereqs:['epilogue'],   manual:true, phase:3, spokeGroup:null, icon:'🐙' },
   ];
 
   const SPOKES = ['A','B','C','D','E'];
@@ -116,7 +123,7 @@ const KoeOS = (() => {
     { id:'D',     label:'地図',     pages:['map_001','map_002','map_003'] },
     { id:'E',     label:'電文',     pages:['telegram_001','telegram_002','telegram_003'] },
     { id:'spine', label:'深層記録', pages:['hub_002','inochi','loop','data_trace'] },
-    { id:'shelf', label:'資料棚',   pages:['voices','tegami','sns','momo'] },
+    { id:'shelf', label:'資料棚',   pages:['voices','memo','tegami','sns','momo'] },
     { id:'core',  label:'最深部',   pages:['receiver_lock','hidden','fumi_tegami','choice','epilogue'] },
   ];
   // freesoft（壁のこちら側のツールサイト）と wiki_add/wiki_skip（choice の分岐演出）は躯体図に含めない

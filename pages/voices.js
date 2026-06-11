@@ -27,13 +27,20 @@ PAGE_CONTENT['voices'] = () => `<div class="bpage">
       color:var(--gold);font-size:10px;letter-spacing:.12em;
     ">── ██████　作家</div>
     <div style="padding:13px 14px;font-size:12px;color:var(--t2);line-height:2;">
-      裁判記録を読んで、おかしいと思った。
+      きっかけは、一冊の文集だった。
+      獄中から届いた手紙を読んで、おかしいと思った。
       それだけのことだ、と██████は後のインタビューで語っている。<br><br>
-      全国紙に寄稿した。証拠の疑義を指摘した。
-      「文学者が口を出すな」と批判された。
-      出版社から圧力がかかった。友人の多くが距離を置いた。<br><br>
-      それでも書き続けた。四面楚歌の中で、10年以上書き続けた。
-      ██████の文章が世論を動かした、と後の研究者は評価している。
+      全国誌で判決文の矛盾を、一つずつ数えはじめた。
+      「文士裁判」と新聞は書いた。
+      「素人が法廷を汚す」と高名な法律家が書いた。
+      出版社に圧力がかかり、友人の多くが距離を置いた。
+      そして、いちばん高い法服からは、
+      「雑音」という言葉が降ってきた。<br><br>
+      ██████は誌面で答えた。雑音で結構。
+      判決文を誰も読まないのなら、雑音が読む。<br><br>
+      四面楚歌の中で、十年書き続けた。
+      例の大学ノート（別冊参照）が表に出たとき、
+      その意味をいちばん早く世間に説いたのも、この作家だった。
     </div>
   </div>
 
@@ -119,16 +126,25 @@ PAGE_CONTENT['voices'] = () => `<div class="bpage">
     <p>
       声を上げた人々の言葉は、消えずに残った。一冊の文集に。被告と家族と支援者から寄せられた、三百通の手紙として。
     </p>
+    <p>
+      そして——声がどれだけ積み上がっても動かなかった法廷を、最後に動かしたのは、
+      声ではなかった。一冊の、事務のノートだった。
+    </p>
   </div>
 
   <div style="margin:18px 0 4px;">
-    <div onclick="Shell.bNavigate('tegami')" style="display:flex;align-items:center;gap:10px;background:#0d0d10;border:1px solid rgba(200,169,110,0.22);border-radius:12px;padding:13px 14px;cursor:pointer;user-select:none;">
-      <span style="font-size:18px;">📖</span>
-      <div style="font-family:var(--mono);font-size:11px;line-height:1.7;">
-        <div style="color:var(--gold);letter-spacing:.04em;">資料棚：次の資料</div>
-        <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">声は壁を透して（文集）</div>
+    <div style="background:#0d0d10;border:1px solid rgba(200,169,110,0.22);border-radius:12px;overflow:hidden;font-family:var(--mono);">
+      <div style="padding:9px 14px;border-bottom:1px solid rgba(200,169,110,0.12);font-size:10px;color:var(--gold);letter-spacing:.12em;">── 資料棚：次の資料</div>
+      <div onclick="Shell.bNavigate('memo')" style="display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;user-select:none;border-top:1px solid rgba(255,255,255,0.04);">
+        <span style="font-size:15px;">📓</span>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--t2);letter-spacing:.04em;">別冊　一冊の大学ノート</div>
+        <span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span>
       </div>
-      <span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span>
+      <div onclick="Shell.bNavigate('tegami')" style="display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;user-select:none;border-top:1px solid rgba(255,255,255,0.04);">
+        <span style="font-size:15px;">📖</span>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--t2);letter-spacing:.04em;">声は壁を透して（文集）</div>
+        <span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span>
+      </div>
     </div>
   </div>
 </div>`;

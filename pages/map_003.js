@@ -5,8 +5,10 @@
 (function () {
 
   const IMG_BOUNDS = [[37.67, 140.38], [37.83, 140.60]];
-  // 蒼沼（右上）を中心に表示
-  const CENTER     = [37.7946, 140.5395];
+  // 蒼沼の南岸（右上）を中心に表示
+  // v5（0611レビュー項目4）：遊園地は「沼の南岸を埋め立てて造成」設定に変更し、
+  // 印と敷地を水面の中から南岸の陸側へ移動。
+  const CENTER     = [37.7755, 140.5440];
   const ZOOM_INIT  = 12;
   const ZOOM_MIN   = 11;
   const ZOOM_MAX   = 13;
@@ -55,25 +57,25 @@
     // 蒼沼周辺の保管記録
     const POINTS = [
       {
-        lat: 37.7946, lng: 140.5395,
+        lat: 37.7745, lng: 140.5430,
         label: '蒼沼ブルーランド　正門跡',
         note: '人で賑わう場所を選んだ。ぬいぐるみが一つ埋まっていても、誰も掘り返さない。──小蘭、最後の記録より。',
         anom: false, size: 12, color: '#5a8fd4',
       },
       {
-        lat: 37.7970, lng: 140.5360,
+        lat: 37.7765, lng: 140.5395,
         label: '観覧車支柱　根元',
         note: '「観覧車の根元の地面を、二十センチ掘った」──詳細は data_trace に記録。',
         anom: false, size: 10, color: '#5a8fd4',
       },
       {
-        lat: 37.7920, lng: 140.5420,
+        lat: 37.7720, lng: 140.5460,
         label: '旧管理棟',
         note: '床板の下。防水ケースに収めたメモリを埋めた。',
         anom: true, size: 10, color: '#c85858',
       },
       {
-        lat: 37.7980, lng: 140.5460,
+        lat: 37.7775, lng: 140.5500,
         label: '███',
         note: '対応する記録なし。この印だけが他のファイルと一致する。',
         anom: true, size: 10, color: '#c85858',
@@ -105,9 +107,9 @@
       L.marker([p.lat, p.lng], { icon }).addTo(map).bindPopup(popup);
     });
 
-    // 敷地輪郭
+    // 敷地輪郭（沼の南岸の埋立地。北辺だけが沼に接する）
     L.rectangle(
-      [[37.7895, 140.5340], [37.7995, 140.5480]],
+      [[37.7695, 140.5360], [37.7800, 140.5520]],
       { color:'#5a8fd4', fillColor:'#5a8fd4', fillOpacity:0.04,
         weight:1, dashArray:'3 5', opacity:0.35 }
     ).addTo(map);
@@ -118,6 +120,9 @@
   PAGE_CONTENT['map_003'] = () => {
     setTimeout(() => {
       ensureLeaflet(_init);
+      document.querySelectorAll('[data-kwtag]').forEach(el => {
+        el.addEventListener('click', () => Shell.setSearchAndFocus(el.getAttribute('data-kwtag')));
+      });
     }, 0);
 
     return `<div class="bpage">
@@ -143,7 +148,7 @@
   <div class="bpage-body">
     <p>私が最後にデータを隠した場所。</p>
     <p>人で賑わう場所を選んだ。新しくできた遊園地は、毎日たくさんの人が訪れる。ぬいぐるみが一つ埋まっていても、誰も掘り返したりしない。誰も気に留めない。</p>
-    <p>1973年、蒼沼ブルーランドが開いた年。私はその雑踏に紛れて、最後の記録を埋めた。無罪が確定してから、十年が経っていた。</p>
+    <p>1973年。蒼沼の南岸を埋め立てて、沼の名前を取った遊園地が開いた年だ。私はその雑踏に紛れて、最後の記録を埋めた。無罪が確定してから、十年が経っていた。</p>
     <p>その後のことは、ここには書いていない。</p>
   </div>
 
@@ -154,6 +159,7 @@
     <img src="images/photo_tsanuma_1960.jpg"
          style="width:100%;height:200px;object-fit:cover;border-radius:6px;display:block;"
          onerror="this.style.display='none'">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.06em;padding:4px 0 0;">── 復元画像（声の描写より）</div>
     <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.06em;margin:10px 0 6px;">
       ── 同地点　現在
     </div>
@@ -172,7 +178,10 @@
     <p class="anom">
       正門跡から旧管理棟まで、直線距離で約35メートル。<br>
       この区画に紐付いているファイルが、まだ残っている。<br>
-      埋めたメモリには鍵がかかっている。その暗号キーは、電文の中に残した。
+      埋めたメモリには鍵がかかっている。その<span data-kwtag="暗号キー" style="color:var(--gold);border-bottom:1px solid rgba(200,169,110,0.4);cursor:pointer;">暗号キー</span>は、電文の中に残した。
+    </p>
+    <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;line-height:1.9;">
+      ── 鍵のかかったファイルを開くには、「暗号キー」でこのブラウザを検索する。
     </p>
     <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:1.9;">
       「いつかこれを読む人へ──<br>

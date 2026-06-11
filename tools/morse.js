@@ -62,13 +62,17 @@ TOOL_UI['morse'] = () => {
       line-height:1.45;white-space:normal;overflow-wrap:anywhere;word-break:break-all;
     ">—</div>
 
-    <div style="font-size:10px;color:var(--t3);margin-bottom:8px;letter-spacing:.1em;">── 内蔵モールス数字表（参照用）</div>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0;">
-      ${Object.entries(MORSE_MAP).map(([m,d]) => `
-        <div style="padding:3px 4px;line-height:1.9;border-bottom:1px solid rgba(255,255,255,0.04);">
-          <span style="color:var(--t3);font-size:11px;">${d} → </span><span style="color:var(--t1);font-size:11px;letter-spacing:-0.5px;">${m}</span>
-        </div>
-      `).join('')}
+    <div style="font-size:9px;color:var(--t3);margin-bottom:6px;">無料版のため、広告が表示されます。</div>
+    <div style="
+      width:100%;box-sizing:border-box;height:60px;
+      background:#e7ede4;border:1px solid #a8b8a2;border-radius:4px;
+      display:flex;flex-direction:column;justify-content:center;
+      padding:0 12px;cursor:default;user-select:none;
+    ">
+      <div style="font-family:var(--serif);color:#3a4a38;line-height:1.5;">
+        <span style="font-size:9px;background:#a8b8a2;color:#3a4a38;padding:0 3px;border-radius:2px;margin-right:6px;vertical-align:middle;">広告</span><span style="font-size:15px;letter-spacing:.06em;">芙島市観光協会</span>
+      </div>
+      <div style="font-family:var(--serif);font-size:10px;color:#3a4a38;letter-spacing:.04em;">桃見山　花のシーズンは三月下旬から</div>
     </div>
   </div>`;
 };

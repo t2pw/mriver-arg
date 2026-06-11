@@ -54,6 +54,7 @@ PAGE_CONTENT['inochi'] = () => `<div class="bpage">
         弁護団が証拠開示を求めても、「捜査上の理由」で拒否された。
         現場の実況見分記録に不自然な修正痕があった。
         指摘しても、採用されなかった。
+        <span style="color:var(--t3);font-size:11px;">──この壁が最後にどう破られたかは、資料棚の別冊に記した。</span>
       </div>
     </div>
 
@@ -144,6 +145,10 @@ PAGE_CONTENT['inochi'] = () => `<div class="bpage">
       <div onclick="Shell.bNavigate('voices')" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;user-select:none;border-top:1px solid rgba(255,255,255,0.04);">
         <span style="font-size:15px;">📄</span>
         <div style="font-family:var(--mono);font-size:11px;color:var(--t2);letter-spacing:.04em;">声を上げた人々</div>
+      </div>
+      <div onclick="Shell.bNavigate('memo')" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;user-select:none;border-top:1px solid rgba(255,255,255,0.04);">
+        <span style="font-size:15px;">📓</span>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--t2);letter-spacing:.04em;">別冊　一冊の大学ノート</div>
       </div>
       <div onclick="Shell.bNavigate('tegami')" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;user-select:none;border-top:1px solid rgba(255,255,255,0.04);">
         <span style="font-size:15px;">📖</span>

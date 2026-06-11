@@ -55,7 +55,7 @@ PAGE_CONTENT['hub_002'] = () => `<div class="bpage">
       letter-spacing:.08em;
       font-size:11px;
     ">
-      UNLOCK：第2層　7ファイル（背骨 3 ＋ 資料棚 4）
+      UNLOCK：第2層　8ファイル（背骨 3 ＋ 資料棚 5）
     </div>
   </div>
 
@@ -78,7 +78,7 @@ PAGE_CONTENT['hub_002'] = () => `<div class="bpage">
     <p class="anom">
       ここから先、背骨になる記録は三つ。<br>
       一つ読めば、次が見えてくる。<br>
-      残りの四つは資料棚に置いた。読む順番は、あなたが決めていい。
+      残りの五つは資料棚に置いた。読む順番は、あなたが決めていい。
     </p>
 
     <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:2;margin-top:2em;">
@@ -110,7 +110,7 @@ PAGE_CONTENT['hub_002'] = () => `<div class="bpage">
     </div>
     <div style="padding:0 14px 14px;font-size:10px;color:var(--t3);letter-spacing:.06em;line-height:1.8;">
       ── この語を検索することから、第2層は始まる。<br>
-      　　資料棚の四冊は、このページを閉じた時には、もう並んでいる。
+      　　資料棚の五冊は、このページを閉じた時には、もう並んでいる。
     </div>
   </div>
 </div>`;

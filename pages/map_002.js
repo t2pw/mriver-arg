@@ -75,7 +75,7 @@
       {
         lat: 37.7240, lng: 140.5380,
         label: '観察記録　1973年3月',
-        note: '最後に来た三月。この年、蒼沼ブルーランドが開いた。私はその雑踏に紛れて、最後の記録を隠した。',
+        note: '最後の三月。今年は、山に登らなかった。北の沼のほとり、人の集まる場所にいた。最後の記録は、その雑踏に紛れて隠した。',
         anom: true,
       },
     ];
@@ -152,6 +152,7 @@
     <img src="images/photo_hmiyama.jpg"
          style="width:100%;border-radius:6px;display:block;"
          onerror="this.style.display='none'">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.06em;padding:4px 0 0;">── 復元画像（声の描写より）</div>
   </div>
 
   <div class="bpage-body" style="margin-top:12px;">
@@ -161,7 +162,11 @@
     </p>
     <p class="anom">
       1973年3月の記録は、他の年と筆跡が違う。<br>
-      書き直した跡がある。消された地名の下に、もう一つの地名が透けて見える──蒼沼ブルーランド。
+      書き直した跡がある。場所も、山ではない。
+    </p>
+    <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;line-height:1.9;">
+      ── 最後の印の言葉に従って、地図の北をさがす。<br>
+      　　青く塗られた場所。版面に残るその名前で、このブラウザを検索する。
     </p>
     <p style="font-style:italic;font-size:12px;color:var(--t3);line-height:1.9;">
       「桜の花は毎年咲く。<br>

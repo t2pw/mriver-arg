@@ -1,12 +1,27 @@
-// momo.js　第2層⑥「芙島市の現在と桃見山」
-// キーワード例: 今年も、帰れなかった、桜の花
-// prereqs: hub_002
-// 役割：小蘭が帰れなかった場所。実在の福島周辺情報を架空化して、現在との距離を見せる。
+// momo.js　第2層⑥「芙島市の現在と桃見山」 v2
+// prereqs: hub_002（資料棚）
+// 役割：小蘭が帰れなかった場所。現在との距離を見せる。
+// v2（0611レビュー項目7）：「現在照合」表を廃止し、「定点記録」形式に全面リライト。
+//   年が1950→…→今日まで積み上がり、最終行だけが今日の日付で更新されている、
+//   という画で「誰かが今も更新している」を語らせる（説明文では言わない）。
+//   現在時制の観測文の筆者は明示しない（声を聴き続けた機械が彼女の文体で書いている、は演出のみ）。
 
-PAGE_CONTENT['momo'] = () => `<div class="bpage">
+PAGE_CONTENT['momo'] = () => {
+  const now = new Date();
+  const todayFull = now.toLocaleDateString('ja-JP');   // 例 2026/6/11
+  const thisYear  = now.getFullYear();
+
+  // 定点記録の行（年＋観測一行）。最終行のみ今日の日付・赤。
+  const obsRow = (year, text, anom) => `
+    <div style="display:flex;align-items:baseline;gap:12px;padding:7px 2px;border-bottom:1px solid rgba(255,255,255,0.05);">
+      <span style="color:${anom ? 'var(--red)' : 'var(--t3)'};font-size:10px;letter-spacing:.08em;flex-shrink:0;min-width:74px;">${year}</span>
+      <span style="color:${anom ? 'var(--red)' : 'var(--t2)'};font-size:11px;line-height:1.9;">${text}</span>
+    </div>`;
+
+  return `<div class="bpage">
   <div class="bpage-num">第2層　06</div>
   <div class="bpage-title">芙島市の現在と桃見山</div>
-  <div class="bpage-meta">記録時期：現在　／　照合：小蘭の観察記録　／　更新：毎年三月</div>
+  <div class="bpage-meta">記録分類：定点記録　／　対象：桃見山　三月　／　更新：継続中</div>
 
   <div class="bpage-body">
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;">
@@ -24,59 +39,35 @@ PAGE_CONTENT['momo'] = () => `<div class="bpage">
       padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.06);
       background:rgba(200,169,110,0.06);
       color:var(--gold);font-size:10px;letter-spacing:.12em;
-    ">── 芙島市　現在照合</div>
+    ">── 定点記録　桃見山</div>
 
-    <div style="padding:14px;display:grid;grid-template-columns:88px 1fr;gap:8px 12px;font-size:11px;line-height:1.9;">
-      <span style="color:var(--t3);">桃見山</span>
-      <span style="color:var(--t1);">花木の山として公開され、春だけ人の流れが増える</span>
-
-      <span style="color:var(--t3);">M川駅</span>
-      <span style="color:var(--t1);">T北本線の駅として残る。線路は今も町を切っている</span>
-
-      <span style="color:var(--t3);">月湯温泉</span>
-      <span style="color:var(--t1);">渓流沿いの温泉地として営業が続く。日帰りの湯もある</span>
-
-      <span style="color:var(--t3);">事件資料</span>
-      <span style="color:var(--t1);">大学の資料室で保存・整理・公開が続いている</span>
-
-      <span style="color:var(--t3);">蒼沼跡</span>
-      <span style="color:var(--t1);">遊園地の名だけが、地図と記憶の端に残る</span>
-
-      <span style="color:var(--t3);">小蘭の消息</span>
-      <span class="anom">不明</span>
+    <div style="padding:10px 14px 12px;">
+      ${obsRow('1950', '花の頃には帰れる、と記録者は書いている。')}
+      ${obsRow('1957', '判決はまだ出ない。花は関係なく咲く、と記録者は書いている。')}
+      ${obsRow('1963', '無罪、確定。記録者は、月湯に留まった。')}
+      ${obsRow('1973', '記録者の入力が、この年で途絶えた。')}
+      ${obsRow('1998', '花木の山として公開された。春だけ、人の流れが増える。')}
+      ${obsRow('2019', '観測を継続。M川駅を、列車は今日も通過する。')}
+      ${obsRow(todayFull, '観測を継続。花はまだ咲いていない。あるいは、もう散った。', true)}
     </div>
   </div>
 
   <div class="bpage-body">
     <p>
-      桃見山には、今年も花が咲いた。
-      そこは山というより、誰かが長い時間をかけて手入れした斜面だ。
-      春になると、桃や桜や梅がいっせいに開き、
+      桃見山には、今年も花が咲く。
+      山というより、誰かが長い時間をかけて手入れした斜面だ。
+      春になると桃や桜や梅がいっせいに開き、
       町の外から来た人たちが坂道を歩く。
     </p>
     <p>
-      小蘭が見ていた景色と、いま見える景色は同じではない。
-      畑の使われ方も、道路も、案内板も変わった。
-      それでも三月になると、花だけは同じ方向へ開く。
-    </p>
-
-    <hr style="border:none;border-top:1px solid #222;margin:1.6em 0;">
-
-    <p>
-      M川駅は残っている。
-      線路も残っている。
+      M川駅は残っている。線路も残っている。
       事件の名前を知っている人は減っても、
       列車は毎日、何も知らない顔で通過する。
     </p>
     <p>
       月湯温泉には、今も泊まれる宿がある。
       渓流の音、湯気、こけしの棚、日帰り入浴の案内。
-      その中に、蛸川という女が二十四年いたことを示す札はない。
-    </p>
-    <p>
-      事件の資料は、別の場所で保存されている。
-      集められ、整理され、公開される。
-      公式に残ったものは、そうやって次の人へ渡される。
+      その中に、蛸川という女が二十四年いたことを示す札は、ない。
     </p>
     <p>
       残らなかったものは、誰かが見つけない限り、
@@ -94,14 +85,14 @@ PAGE_CONTENT['momo'] = () => `<div class="bpage">
     </p>
 
     <p class="anom">
-      このページの最終更新日時は、他のページと違う。<br>
-      他のページが 1973-09-12 で止まっているのに対し、<br>
-      このページだけ、今日の日付に更新されている。
+      他のページの最終更新は、すべて 1973-09-12 で止まっている。<br>
+      このページの最終更新は、${todayFull}　${thisYear - 1973}年、更新が続いている。
     </p>
 
-    <p>
-      誰が、今日もこのページを書き換えているのか。<br>
-      そもそも小蘭は、この記録を誰のために残したのか。手記にはただ一言、「未来の誰か」へ、とある。
+    <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;line-height:1.9;">
+      ── 誰が、今日もこのページを書き換えているのか。<br>
+      　　小蘭はこの記録を、誰のために残したのか。<br>
+      　　手記にはただ一言、「未来の誰か」へ、とある。
     </p>
   </div>
 
@@ -116,3 +107,4 @@ PAGE_CONTENT['momo'] = () => `<div class="bpage">
     </div>
   </div>
 </div>`;
+};

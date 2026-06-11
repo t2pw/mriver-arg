@@ -16,6 +16,8 @@ PAGE_CONTENT['photo_001'] = () => `<div class="bpage">
        style="width:100%;height:220px;object-fit:cover;object-position:center top;display:block;"
        onerror="this.parentElement.innerHTML='<div style=\'height:220px;background:#111;display:flex;align-items:center;justify-content:center;color:#444;font-size:11px;letter-spacing:2px;\'>[ 画像データ 破損 ]</div>'">
 
+  <div style="font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.06em;padding:4px 0 0;">── 復元画像（声の描写より）</div>
+
   <div class="bpage-body">
     <p>
       この一枚を手に入れるまでに、六年かかった。

@@ -466,6 +466,7 @@ html,body{
 @keyframes takoGlow{0%,100%{opacity:.7;filter:drop-shadow(0 0 6px rgba(200,169,110,.5));}50%{opacity:1;filter:drop-shadow(0 0 18px rgba(200,169,110,.9));}}
 .sector-unread{animation:sectorBlink 2s infinite;}
 .tako-complete-svg{animation:takoGlow 2.5s ease infinite;}
+.tako-head-true{animation:takoGlow 2.4s ease infinite;}
 .tako-wrap{padding:14px 0 20px;}
 .tako-status{font-family:var(--mono);font-size:10px;letter-spacing:.08em;margin:0 16px 6px;line-height:1.6;}
 .tako-subhead{font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.1em;margin:0 16px 8px;}
@@ -1103,6 +1104,13 @@ const Shell = (() => {
         <div class="sbox-desc">キーワードは記録と一致しました。ただし参照元の記録が不足しています。<br>復元済みの記録を読み進めてから、もう一度試してください。</div>
       </div>`;
       hideAfter = 6000;
+    } else if (/オカエリ|おかえり|お帰り/.test(val)) {
+      // ★v3.5 隠し断片の解読語を検索した場合の専用応答（検索では開かない。一行に書く）
+      rbox.innerHTML = `<div class="sbox" style="border-color:rgba(200,169,110,.35);">
+        <div class="sbox-label" style="color:var(--gold);">── 一致なし ──</div>
+        <div class="sbox-desc">📡 それは、検索する言葉ではありません。<br>書き足す言葉です。——あの一行に。</div>
+      </div>`;
+      hideAfter = 7000;
     } else {
       const hint = _missHint(res.missStreak);
       rbox.innerHTML = `<div class="sbox ng">
@@ -1349,6 +1357,8 @@ const Shell = (() => {
   function _renderTako(el) {
     const legs = KoeOS.getLegProgress();
     const isClear = KoeOS.isViewed('epilogue') && (localStorage.getItem('koe_fumi_note')||'').trim() !== '';
+    // ★v3.5 TRUE END（隠しページ「返信」閲覧済み）：タコの頭が金色に点灯する
+    const isTrue = KoeOS.isViewed('okaeri');
 
     /* ─ (1) ステータス行 ─ */
     const statusHtml = isClear
@@ -1452,11 +1462,20 @@ const Shell = (() => {
     });
 
     // 胴体（足の根元を覆うよう最後に描く）。目は胴体の塗りに隠れないよう、さらに後に描く
-    const bodySvg = `<circle cx="${cx}" cy="${cy}" r="${bodyR}" fill="#0d0d10" stroke="rgba(200,169,110,0.25)" stroke-width="1.5"/>`
-      + `<circle cx="${cx-12}" cy="${cy-6}" r="3" fill="none" stroke="rgba(200,169,110,0.5)" stroke-width="1.2"/>`
-      + `<circle cx="${cx+12}" cy="${cy-6}" r="3" fill="none" stroke="rgba(200,169,110,0.5)" stroke-width="1.2"/>`;
+    // ★v3.5 TRUE END時は頭（胴体＋目）が金色に点灯する
+    const headFill   = isTrue ? 'rgba(200,169,110,0.22)' : '#0d0d10';
+    const headStroke = isTrue ? 'var(--gold)' : 'rgba(200,169,110,0.25)';
+    const eyeFill    = isTrue ? 'var(--gold)' : 'none';
+    const eyeStroke  = isTrue ? 'var(--gold)' : 'rgba(200,169,110,0.5)';
+    const bodySvg = `<g class="${isTrue ? 'tako-head-true' : ''}">`
+      + `<circle cx="${cx}" cy="${cy}" r="${bodyR}" fill="${headFill}" stroke="${headStroke}" stroke-width="1.5"/>`
+      + `<circle cx="${cx-12}" cy="${cy-6}" r="3" fill="${eyeFill}" stroke="${eyeStroke}" stroke-width="1.2"/>`
+      + `<circle cx="${cx+12}" cy="${cy-6}" r="3" fill="${eyeFill}" stroke="${eyeStroke}" stroke-width="1.2"/>`
+      + `</g>`;
 
-    const completeNote = isClear ? `<div class="tako-complete-note">── 全セクタ、固定されました。</div>` : '';
+    const completeNote = isTrue
+      ? `<div class="tako-complete-note">── 躯体、応答。声は、帰ってきた。</div>`
+      : (isClear ? `<div class="tako-complete-note">── 全セクタ、固定されました。</div>` : '');
     const svgClass = isClear ? 'tako-complete-svg' : '';
 
     const svgHtml = `

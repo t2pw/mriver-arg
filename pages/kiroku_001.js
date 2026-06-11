@@ -22,6 +22,8 @@ PAGE_CONTENT['kiroku_001'] = () => `<div class="bpage">
       いまここで書くものは、この紙の上にしかない。
       濡れたら消える。燃えたら終わる。
       それでも、書かずにはいられなかった。
+      同じものを二つの場所に置かないと安心できないのは、
+      前の仕事で身についた性分だ。
     </p>
     <p style="font-size:10px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;">── 赤い黒塗り語句は原文のまま。現代語と思われるが特定不能。</p>
     <p>

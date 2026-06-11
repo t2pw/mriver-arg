@@ -21,43 +21,50 @@ PAGE_CONTENT['epilogue'] = () => {
   const userLine = flag.trim();
 
   const recorded = flag.trim().length > 0;
+  const trueEnd = (() => {
+    try { return localStorage.getItem('koe_true_end') === '1'; } catch { return false; }
+  })();
   const today = new Date().toLocaleDateString('ja-JP');
-  const shareText = encodeURIComponent('「声は壁を透して」を読了しました。記録されなかった手紙をめぐるARG。');
+  const shareText = encodeURIComponent('『声は壁を透して』を読み終えました。1949年から届いた、記録されなかった手紙の話。');
   const shareUrl = encodeURIComponent(location.href.split('#')[0]);
-  const googleUrl = 'https://www.google.com/search?q=%E6%9D%BE%E5%B7%9D%E4%BA%8B%E4%BB%B6';
+  // 0611レビュー項目15・18：実在事件名はゲーム内のどこにも表示しない。
+  // 切断ED の送還先も「名前を出さない記述形クエリ」に変更（検索結果がプレイヤーを橋へ運ぶ）。
+  const googleUrl = 'https://www.google.com/search?q=' + encodeURIComponent('1949年 列車転覆 冤罪 事件');
 
   try {
     if (window.KOE_EPILOGUE_REDIRECT) clearTimeout(window.KOE_EPILOGUE_REDIRECT);
   } catch {}
 
   if (!recorded) {
-    // 切断シーケンス（約8秒）を見せてから現実側へ送還
+    // 切断シーケンス（10行・約9秒）を見せてから現実側へ送還
     window.KOE_EPILOGUE_REDIRECT = setTimeout(() => {
       try { window.location.href = googleUrl; } catch {}
-    }, 10500);
+    }, 12000);
   }
 
-  /* ── 追記しない：切断と送還 ── */
+  /* ── 追記しない：切断と送還 ──
+     0611レビュー項目17：「現実を守る」選択として尊重する文言に。咎めない。 */
   if (!recorded) {
     const seq = [
-      '受信者登録：拒否。',
-      '照合を終了します。',
-      '読まれた記録の固定を、解除しました。',
-      '手記、写真、掲示板の声、地図、電文、手紙——',
-      '損耗が再開しま▒。█▒…',
-      'この記録は、壁のそちら側からは、見つかりません。',
-      'かわりに、そちら側で最も近い記録を照合しました。',
-      '照合先：「松川事件」──実在の記録です。',
-      '転送します。',
+      { t: '受信者登録：拒否。',                                            c: 'var(--t2)' },
+      { t: '照合を終了します。',                                            c: 'var(--t2)' },
+      { t: '読まれた記録の固定を、解除しました。',                          c: 'var(--t2)' },
+      { t: '手記、写真、掲示板の声、地図、電文、手紙——',                  c: 'var(--t2)' },
+      { t: '損耗が再開しま▒。█▒…',                                        c: 'var(--red)' },
+      { t: 'この記録は、壁のそちら側からは、見つかりません。',              c: 'var(--red)' },
+      { t: 'あなたは、そちら側の確かなものを選んだ。',                      c: 'var(--t2)' },
+      { t: 'それを咎める権利は、こちら側の誰にも、ありません。',            c: 'var(--t2)' },
+      { t: '記録は、読まれました。読まれたぶんだけ、軽くなりました。',      c: 'var(--t2)' },
+      { t: '転送します。——あなたの、元居た場所へ。',                      c: 'var(--gold)' },
     ];
     const seqHtml = seq.map((line, i) => `
       <div style="
         opacity:0;
         animation:fadeUp .6s ease ${(0.4 + i * 0.85).toFixed(2)}s forwards;
         font-family:var(--mono);font-size:12px;line-height:2.2;
-        color:${i >= 5 ? 'var(--red)' : 'var(--t2)'};
+        color:${line.c};
         letter-spacing:.06em;
-      ">${line}</div>`).join('');
+      ">${line.t}</div>`).join('');
 
     return `<div class="bpage">
   <div class="bpage-num">── 切断 ──</div>
@@ -164,6 +171,10 @@ PAGE_CONTENT['epilogue'] = () => {
       いた、と書いてくれた。
     </p>
     <p>
+      消えてほしくない、と思ってくれたこと。
+      それがこの記録の、最後の部品でした。
+    </p>
+    <p>
       私が未来に向けて送ったものは、
       未来の誰かに届きました。
       その誰かが、あなたでした。
@@ -191,7 +202,7 @@ PAGE_CONTENT['epilogue'] = () => {
   </div>
 
   <div style="
-    margin:0 0 20px;
+    margin:0 0 14px;
     background:#0d0d10;
     border:1px solid rgba(200,88,88,0.18);
     border-radius:8px;
@@ -204,22 +215,95 @@ PAGE_CONTENT['epilogue'] = () => {
     <div style="color:var(--red);font-size:10px;letter-spacing:.12em;margin-bottom:8px;">📡 繧ｿ◆縺薙％??　── 補記</div>
     損耗率：0.0%。全セクタ、固定されました。<br>
     転送完了。受信者：あなた。<br>
-    照合補記：この事件には、壁のそちら側に、写し元となった実在の記録があります。<br>
-    名前は「松川事件」。そこにも、名簿に載らなかった人が、いたかもしれません。<br>
-    <a
-      href="${googleUrl}"
-      target="_blank"
-      rel="noopener"
+    照合補記：この事件には、壁のそちら側に、写し元になった記録があります。<br>
+    名前は、ここには記しません。あなたはもう、こちら側の名前を知っています。<br>
+    いつか、そちら側でも、探してみてください。<br>
+    名簿に載らなかった人は、そちら側にも、いたかもしれません。
+  </div>
+
+  ${trueEnd ? `
+  <!-- 断片、復号済み：返信が開く -->
+  <div style="
+    margin:0 0 20px;
+    background:#0c0b08;
+    border:1px solid rgba(200,169,110,0.4);
+    border-radius:8px;
+    padding:16px;
+    font-family:var(--mono);
+    font-size:11px;
+    line-height:2.1;
+    color:var(--t2);
+    animation:takoGlow 2.4s ease infinite;
+  ">
+    <div style="color:var(--gold);font-size:10px;letter-spacing:.12em;margin-bottom:8px;">📡 繧ｿ◆縺薙％??　── 断片、復号</div>
+    未復号の断片は、あなたの一行が受け取りました。<br>
+    返信が、開きます。
+    <div
+      onclick="Shell.bNavigate('okaeri')"
+      style="
+        margin-top:10px;
+        display:flex;align-items:center;gap:10px;
+        background:#0d0d10;
+        border:1px solid rgba(200,169,110,0.45);
+        border-radius:10px;
+        padding:12px 14px;
+        cursor:pointer;
+        user-select:none;
+      "
+    >
+      <span style="font-size:17px;">🐙</span>
+      <span style="color:var(--gold);font-size:12px;letter-spacing:.1em;">▸ 返信を開く</span>
+      <span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span>
+    </div>
+  </div>` : `
+  <!-- 未復号の断片（隠し：モールス→数字→16進。読み解いた言葉は「一行」に書く） -->
+  <div style="
+    margin:0 0 20px;
+    background:#0d0d10;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:8px;
+    padding:16px;
+    font-family:var(--mono);
+    font-size:11px;
+    line-height:2.1;
+    color:var(--t2);
+  ">
+    <div style="color:var(--t3);font-size:10px;letter-spacing:.12em;margin-bottom:8px;">📡 繧ｿ◆縺薙％??　── 未復号の断片</div>
+    ひとつだけ、復号できない断片が残っています。<br>
+    これは、記録ではありません。——返信です。
+    <div style="
+      margin:10px 0 8px;
+      background:#070709;
+      border:1px solid rgba(255,255,255,0.07);
+      border-radius:6px;
+      padding:12px;
+      font-size:14px;
+      color:var(--t1);
+      line-height:2.05;
+      letter-spacing:.04em;
+      word-spacing:.45em;
+      user-select:text;
+    ">・・・・−　・・・・・<br>・−−−−　・・−−−<br>・・・・−　・・・・−<br>・・−−−　・・・・−<br>・・−−−　・−−−−<br>・・・・・　・−−−−<br>・・・・−　・・−−−</div>
+    <div
+      data-morse="・・・・− ・・・・・ ・−−−− ・・−−− ・・・・− ・・・・− ・・−−− ・・・・− ・・−−− ・−−−− ・・・・・ ・−−−− ・・・・− ・・−−−"
+      onclick="try{navigator.clipboard.writeText(this.getAttribute('data-morse'))}catch{};var b=this;b.textContent='コピー済み';setTimeout(function(){b.textContent='符号列をコピー'},1100)"
       style="
         display:inline-block;
-        margin-top:8px;
+        background:rgba(200,169,110,0.08);
+        border:1px solid rgba(200,169,110,0.25);
+        border-radius:8px;
+        padding:7px 10px;
+        font-size:10px;
         color:var(--gold);
-        text-decoration:none;
+        cursor:pointer;
         letter-spacing:.06em;
-        border-bottom:1px solid rgba(200,169,110,0.35);
       "
-    >▸ そちら側で検索する：松川事件</a>
-  </div>
+    >符号列をコピー</div>
+    <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;line-height:1.9;margin-top:8px;">
+      ── 読み解いた言葉は、検索する言葉ではありません。<br>
+      　　書き足す言葉です。
+    </div>
+  </div>`}
 
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 18px;">
     <a

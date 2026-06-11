@@ -10,6 +10,7 @@ TOOL_UI['hexconv'] = () => {
     '51':'サ','52':'シ','53':'ショ','56':'ス','57':'セ','58':'ソ',
     '4A':'ジ','5E':'ン',
     '10':'コ','16':'タ','21':'ナ','22':'ニ','26':'ハ',
+    '12':'カ','24':'リ', // 追補（非表示）
   };
 
   setTimeout(() => {
@@ -63,13 +64,17 @@ TOOL_UI['hexconv'] = () => {
       font-family:var(--serif);
     ">—</div>
 
-    <div style="font-size:10px;color:var(--t3);margin-bottom:8px;letter-spacing:.1em;">── 内蔵変換表（参照用）</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;">
-      ${Object.entries(HEX_MAP).map(([h,k]) => `
-        <div style="padding:3px 4px;line-height:1.9;border-bottom:1px solid rgba(255,255,255,0.04);">
-          <span style="color:var(--t3);font-size:11px;">${h} → </span><span style="color:var(--t1);font-size:11px;">${k}</span>
-        </div>
-      `).join('')}
+    <div style="font-size:9px;color:var(--t3);margin-bottom:6px;">無料版のため、広告が表示されます。</div>
+    <div style="
+      width:100%;box-sizing:border-box;height:60px;
+      background:#efe9d8;border:1px solid #b8ad92;border-radius:4px;
+      display:flex;flex-direction:column;justify-content:center;
+      padding:0 12px;cursor:default;user-select:none;
+    ">
+      <div style="font-family:var(--serif);color:#4a4234;line-height:1.5;">
+        <span style="font-size:9px;background:#b8ad92;color:#4a4234;padding:0 3px;border-radius:2px;margin-right:6px;vertical-align:middle;">広告</span><span style="font-size:15px;letter-spacing:.06em;">月湯温泉旅館組合</span>
+      </div>
+      <div style="font-family:var(--serif);font-size:10px;color:#4a4234;letter-spacing:.04em;">渓流の音と、こけしの宿。──日帰り入浴、受付中</div>
     </div>
   </div>`;
 };

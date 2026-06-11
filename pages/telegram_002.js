@@ -13,36 +13,10 @@ PAGE_CONTENT['telegram_002'] = () => `<div class="bpage">
       最初は受信者識別子の一部だと思っていた。
       だが、違った。
     </p>
-  </div>
-
-  <!-- 解析結果 -->
-  <div style="
-    margin:0 0 20px;
-    background:#0d0d10;
-    border:1px solid rgba(200,169,110,0.25);
-    border-radius:10px;overflow:hidden;
-    font-family:var(--mono);
-  ">
-    <div style="
-      padding:9px 14px;
-      border-bottom:1px solid rgba(200,169,110,0.12);
-      background:rgba(200,169,110,0.07);
-      color:var(--gold);font-size:10px;letter-spacing:.12em;
-    ">── 照合結果</div>
-    <div style="padding:16px 14px;line-height:2.2;">
-      <div style="font-size:13px;color:var(--t1);letter-spacing:.12em;margin-bottom:10px;">
-        N-0816　＝　八月十六日
-      </div>
-      <div style="font-size:11px;color:var(--t3);line-height:1.9;">
-        昭和二十四年（1949年）八月十六日<br>
-        M川事件が起きた夜。
-      </div>
-    </div>
-  </div>
-
-  <div class="bpage-body">
     <p>
-      0816は、あの夜の日付だった。
+      読み解いてしまえば、ただの日付だ。
+      八月十六日。昭和二十四年の、あの夜。
+      M川事件が起きた夜。
     </p>
     <p>
       この数字を覚えていたのは、暗号のためではなかった。
@@ -65,8 +39,10 @@ PAGE_CONTENT['telegram_002'] = () => `<div class="bpage">
     <p class="anom">
       ── 記録に残らなかった人物のために、記録を作る人がいた。
     </p>
-    <p>
-      電文の末尾に、一冊の文集の名前が繰り返し現れる。「声は壁を透して」。M川事件の被告と家族の手紙を集めた文集だ。小蘭はその中に、一通だけ「ない手紙」があると書き残している。
+    <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;line-height:1.9;">
+      ── 電文の末尾に、一冊の文集の名前が繰り返し現れる。「声は壁を透して」。<br>
+      　　M川事件の被告と家族の手紙を集めた文集。小蘭はその中に、<br>
+      　　一通だけ「ない手紙」があると書き残している。
     </p>
   </div>
 </div>`;

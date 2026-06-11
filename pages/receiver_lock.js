@@ -106,14 +106,12 @@ PAGE_CONTENT['receiver_lock'] = () => {
 
   <div class="bpage-body">
     <p style="font-family:var(--mono);font-size:11px;color:var(--t3);line-height:1.9;">
-      ── 手順をひとつ間違えると、言葉にならない。<br>
-      　　まず符号を<span style="color:var(--gold);">モールス</span>として読み、数字に直す。<br>
-      　　その数字を、今度は<span style="color:var(--gold);">16進</span>として2桁ずつ区切って変換する。<br>
-      　　現れたカタカナの言葉を、このブラウザに入力する。
+      ── 自動復号、不能。手で読むしかない。<br>
+      　　読み解けた言葉を、このブラウザに入力する。
     </p>
     <p class="anom">
-      順番を、間違えないこと。<br>
-      先にモールス。それから、16進。
+      読み方は、このアーカイブがもう教えている。<br>
+      鍵を教えたときと、同じ順番で。——指が先、数字があと。
     </p>
   </div>
 </div>`;

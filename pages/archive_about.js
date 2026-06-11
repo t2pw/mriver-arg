@@ -19,11 +19,18 @@ PAGE_CONTENT['archive_about'] = () => `<div class="bpage">
     </p>
   </div>
 
-  <img src="images/photo_takkope.jpg"
-       style="width:100%;height:200px;object-fit:cover;object-position:center top;display:block;border-radius:6px;"
-       onerror="this.style.display='none'">
-  <div style="font-family:var(--mono);font-size:10px;color:var(--t3);padding:6px 0 12px;letter-spacing:.06em;">
-    ── 所持品　タコのぬいぐるみ（アーカイブより）
+  <div style="margin:0 0 14px;background:#0d0d10;border:1px solid rgba(255,255,255,0.08);border-radius:8px;overflow:hidden;font-family:var(--mono);">
+    <div style="padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.06);color:var(--t3);font-size:10px;letter-spacing:.12em;">── 記録躯体　仕様（自動付記）</div>
+    <div style="padding:12px 14px;display:grid;grid-template-columns:88px 1fr;gap:6px 12px;font-size:11px;line-height:1.9;">
+      <span style="color:var(--t3);">外装</span>
+      <span style="color:var(--t1);">タコ型　布製　八肢</span>
+      <span style="color:var(--t3);">内部</span>
+      <span style="color:var(--t1);">機械（詳細不明）</span>
+      <span style="color:var(--t3);">記録セクタ</span>
+      <span style="color:var(--t1);">30</span>
+      <span style="color:var(--t3);">状態</span>
+      <span class="anom">損耗進行中</span>
+    </div>
   </div>
 
   <div class="bpage-body">
@@ -35,6 +42,12 @@ PAGE_CONTENT['archive_about'] = () => `<div class="bpage">
       本名かどうかは、書きません。
       戸籍はありません。身元を証明するものも、何ひとつありません。
       所持品は、タコのぬいぐるみがひとつ。ここへ来た時から。
+    </p>
+
+    <p>
+      前にしていた仕事のことも、まだ書きません。
+      記録を扱う仕事だった、とだけ。
+      控えのない記録を信じない癖は、そこで身につきました。
     </p>
 
     <p>
