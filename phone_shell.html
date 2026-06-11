@@ -1380,6 +1380,9 @@ const Shell = (() => {
     const hist = KoeOS.getHistory();
     const footer = document.getElementById('afooter');
 
+    // ★公開準備（2026-06-11）：デバッグパネルは URL に ?dev を付けたときだけ表示する。
+    //   例 https://…/phone_shell.html?dev　（公開ビルドでもコードは残るが、通常導線からは見えない）
+    const devMode = /[?&]dev\b/.test(location.search);
     if(hist.length > 0) {
       footer.style.display = 'flex';
       footer.innerHTML = `
@@ -1387,13 +1390,13 @@ const Shell = (() => {
           flex:1;background:var(--red-d);border:1px solid rgba(200,88,88,.22);
           border-radius:10px;padding:10px;font-family:var(--mono);font-size:11px;
           color:var(--red);letter-spacing:.06em;cursor:pointer;text-align:center;
-        ">履歴をクリア</button>
+        ">履歴をクリア</button>` + (devMode ? `
         <button onclick="Shell.openDebug()" style="
           background:rgba(90,143,212,.1);border:1px solid rgba(90,143,212,.22);
           border-radius:10px;padding:10px 14px;font-family:var(--mono);font-size:11px;
           color:var(--blue);letter-spacing:.06em;cursor:pointer;white-space:nowrap;
-        ">DEV</button>`;
-    } else {
+        ">DEV</button>` : '');
+    } else if(devMode) {
       footer.style.display = 'flex';
       footer.innerHTML = `
         <button onclick="Shell.openDebug()" style="
@@ -1401,6 +1404,9 @@ const Shell = (() => {
           border-radius:10px;padding:10px;font-family:var(--mono);font-size:11px;
           color:var(--blue);letter-spacing:.06em;cursor:pointer;
         ">DEV ── デバッグパネル</button>`;
+    } else {
+      footer.style.display = 'none';
+      footer.innerHTML = '';
     }
 
     if(hist.length === 0) {
