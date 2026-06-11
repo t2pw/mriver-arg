@@ -235,8 +235,8 @@ PAGE_CONTENT['epilogue'] = () => {
     color:var(--t2);
     animation:takoGlow 2.4s ease infinite;
   ">
-    <div style="color:var(--gold);font-size:10px;letter-spacing:.12em;margin-bottom:8px;">📡 繧ｿ◆縺薙％??　── 断片、復号</div>
-    未復号の断片は、あなたの一行が受け取りました。<br>
+    <div style="color:var(--gold);font-size:10px;letter-spacing:.12em;margin-bottom:8px;">📡 繧ｿ◆縺薙％??　── 応答</div>
+    あなたの一行に、応答があります。<br>
     返信が、開きます。
     <div
       onclick="Shell.bNavigate('okaeri')"

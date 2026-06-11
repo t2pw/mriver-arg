@@ -73,10 +73,9 @@ const KoeOS = (() => {
     // telegram_003: telegram_002 末尾「一冊の文集の名前──『声は壁を透して』」
     { id:'telegram_003', title:'電文③　声は壁を透して', locked:true, keywords:['声は壁を透して','文集','未収録'], prereqs:['telegram_002'],  phase:1, spokeGroup:'E', icon:'📡' },
 
-    // ツール配布サイト（スポーク進捗には数えない / telegram_001 の kwTag クリックで検索）
-    { id:'freesoft', title:"T.Watanabe's Tools Page", locked:true,
-      keywords:['バイナリ','モールス','モールス符号','電信符号','16進','符号','解析ツール','フリーソフト'],
-      prereqs:['telegram_001'], phase:1, spokeGroup:null, icon:'💾' },
+    // ★v3.6 freesoft（ツール配布サイトページ）は廃止。解析ツールはホームの
+    //   ストアアプリ（phone_shell renderStore・開発者＝蛸川小蘭）から入手する。
+    //   ツール関連語（モールス・16進等）の照合は doSearch がストアへ橋渡しする。
 
     // 第2層ハブ（全スポーク完了で自動解放）
     { id:'hub_002', title:'第2層が開く', locked:true, keywords:[], prereqs:[], phase:2, spokeGroup:null, icon:'🔓' },
@@ -126,7 +125,7 @@ const KoeOS = (() => {
     { id:'shelf', label:'資料棚',   pages:['voices','memo','tegami','sns','momo'] },
     { id:'core',  label:'最深部',   pages:['receiver_lock','hidden','fumi_tegami','choice','epilogue'] },
   ];
-  // freesoft（壁のこちら側のツールサイト）と wiki_add/wiki_skip（choice の分岐演出）は躯体図に含めない
+  // wiki_add/wiki_skip（choice の分岐演出）と okaeri（TRUE END）は躯体図に含めない
   const getLegProgress = () => TAKO_LEGS.map(leg => {
     const sectors = leg.pages.map(pid => {
       const p = PAGES.find(pg => pg.id === pid);

@@ -1,9 +1,14 @@
-// pages/telegram_001.js v7
-// 暗号ページ。0611テストプレイレビュー項目5により機械ログ路線でゼロベース再設計。
+// pages/telegram_001.js v8
+// 暗号ページ。0611テストプレイレビュー項目5により機械ログ路線でゼロベース再設計（v7）。
 // 体裁：アーカイブ中で唯一「小蘭が書かなかった」ファイル。本体は暗号のまま読めず、
 //       読めるのは機械（タコ内部）が自動保存した「鍵登録ログ」の付録だけ。
 // 物語は装飾でなくログの数字で語る（日付の間隔・試行回数＝ひとつの数字に何晩もかけた）。
-// 謎は v6 と同一：第1段 16進ヘッダ 16 10（→タコ）／第2段 接触記録モールス4行（→0816）。
+// v8（2026-06-11 制作者指摘）：16進ヘッダの解読結果を「タコ」（進行上無意味）から
+//   「オカエリコラン」（45 12 44 24 10 23 5E）に変更。躯体が暗号本体の末尾に書き足した
+//   未送信の一行＝機械が声を聴いて覚えた言葉。TRUE END（「あなたの一行」に「おかえり」を
+//   書くと okaeri が開く）への早期の導線になる。クリア後の断片（オカエリナサイ）は
+//   見逃した人への救済として残る。
+// 謎の構成：第1段 16進の末尾付記（→オカエリコラン・記憶用）／第2段 接触記録モールス4行（→0816・照合用）。
 // 照合語チップ（kwTag）は廃止。検索語はログの文中に裸で置く（モールス・符号・16進）。
 // 小蘭の声は「併録音声の自動文字起こし」一行のみ（機械は声を聴いていた、の伏線）。
 
@@ -37,20 +42,24 @@ PAGE_CONTENT['telegram_001'] = () => {
     </p>
   </div>
 
-  <!-- 本体：暗号化データ＋16進ヘッダ -->
+  <!-- 本体：暗号化データ＋末尾の自動付記（16進） -->
   <div style="margin:0 0 8px;background:#0d0d10;border:1px solid rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;font-family:var(--mono);">
     <div style="padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(90,143,212,0.07);color:var(--blue);font-size:10px;letter-spacing:.12em;">本体　── 暗号化データ</div>
     <div style="padding:14px;">
       <div style="background:#070709;border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:12px 14px;">
         <div style="color:var(--t3);font-size:9px;letter-spacing:.12em;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:8px;">
-          HDR　記録元識別子（部分復号）：<span style="color:var(--t1);font-size:14px;letter-spacing:.14em;">16　10</span><span style="color:rgba(226,224,218,0.3);font-size:14px;letter-spacing:.14em;">　██　██</span><br>
-          形式：16進　／　自動復号：失敗
+          HDR　暗号化方式：不明　／　自動復号：失敗
         </div>
         ${garble}
         <div style="color:var(--t3);font-size:9px;letter-spacing:.1em;padding-top:8px;">以下 ７１４ 行、同様。</div>
+        <div style="border-top:1px solid rgba(255,255,255,0.07);margin-top:8px;padding-top:10px;">
+          <div style="color:var(--t3);font-size:9px;letter-spacing:.12em;margin-bottom:6px;">末尾付記（本体と筆跡が異なる・暗号化なし）</div>
+          <div style="color:var(--t1);font-size:15px;letter-spacing:.16em;">45　12　44　24　10　23　5E</div>
+        </div>
       </div>
       <div style="font-size:10px;color:var(--t3);margin-top:10px;line-height:1.8;">
-        ── ヘッダの2桁の値を読み解けば、この記録が「何に」刻まれたのかが分かる。<br>
+        ── 末尾の一行だけ、暗号化されずに残されている。小蘭の書き込みではない。<br>
+        　　形式：16進。照合語ではない。けれど、読み解いて、覚えておくこと。<br>
         　　数字の読み方が分からなければ、形式の名前を照合にかける。
       </div>
     </div>
@@ -92,7 +101,7 @@ PAGE_CONTENT['telegram_001'] = () => {
   <div class="bpage-body">
     <p style="font-family:var(--mono);font-size:11px;color:var(--t3);line-height:1.9;">
       ── 四つの行は、四つの数字。<br>
-      　　読み解いた4桁を、最後に照合にかける。
+      　　照合にかけるのは、読み解いた4桁——こちらだけだ。
     </p>
     <p class="anom">
       鍵そのものは、アーカイブのどこにも書かれていない。<br>

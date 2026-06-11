@@ -10,7 +10,7 @@ TOOL_UI['hexconv'] = () => {
     '51':'サ','52':'シ','53':'ショ','56':'ス','57':'セ','58':'ソ',
     '4A':'ジ','5E':'ン',
     '10':'コ','16':'タ','21':'ナ','22':'ニ','26':'ハ',
-    '12':'カ','24':'リ', // 追補（非表示）
+    '12':'カ','24':'リ','23':'ラ', // 追補（非表示）
   };
 
   setTimeout(() => {
@@ -30,6 +30,10 @@ TOOL_UI['hexconv'] = () => {
       const result = tokens.map(t => HEX_MAP[t] ?? '?').join('');
       out.textContent = result;
       out.style.color = result.includes('?') ? 'var(--red)' : 'var(--gold)';
+      // 躯体の自動付記（45 12 44 24 10 23 5E＝オカエリコラン）を解読した瞬間に応答を返す。
+      // 機械が声を聴いて覚えた未送信の一行＝TRUE END への早期導線（2026-06-11 制作者発案）。
+      const note = document.getElementById('hex-ident-note');
+      if (note) note.style.display = (result === 'オカエリコラン') ? 'block' : 'none';
     });
 
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') btn.click(); });
@@ -60,9 +64,15 @@ TOOL_UI['hexconv'] = () => {
     <div id="hex-output" style="
       background:#070709;border:1px solid rgba(200,169,110,0.2);
       border-radius:8px;padding:16px;font-size:22px;color:var(--t3);
-      letter-spacing:.15em;text-align:center;min-height:56px;margin-bottom:24px;
+      letter-spacing:.15em;text-align:center;min-height:56px;margin-bottom:10px;
       font-family:var(--serif);
     ">—</div>
+    <div id="hex-ident-note" style="
+      display:none;
+      background:rgba(200,169,110,0.06);border:1px solid rgba(200,169,110,0.25);
+      border-radius:8px;padding:10px 12px;margin-bottom:14px;
+      font-size:10px;color:var(--gold);letter-spacing:.06em;line-height:1.9;
+    ">── 躯体の自動付記と一致。<br>宛先：記録者。送信：未完了。</div>
 
     <div style="font-size:9px;color:var(--t3);margin-bottom:6px;">無料版のため、広告が表示されます。</div>
     <div style="

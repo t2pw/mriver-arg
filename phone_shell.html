@@ -566,6 +566,12 @@ html,body{
           </div>
           <span class="ailabel">メッセージ</span>
         </div>
+        <div class="aico" onclick="Shell.open('store')">
+          <div class="aibox" style="background:linear-gradient(135deg,#1f3526 0%,#0d1812 100%);color:#7ec88f;font-weight:700;">
+            ▶
+          </div>
+          <span class="ailabel">ストア</span>
+        </div>
         <div class="aico" onclick="Shell.open('history')">
           <div class="aibox" style="background:linear-gradient(135deg,#1e1a10 0%,#100e08 100%);">
             🕐
@@ -859,7 +865,7 @@ const Shell = (() => {
     KoeOS.clearNotif(appId);
     updateBadges();
 
-    const titles = { browser:'復元', messages:'メッセージ', history:'履歴', tako:'セクタマップ' };
+    const titles = { browser:'復元', messages:'メッセージ', history:'履歴', tako:'セクタマップ', store:'ストア' };
     document.getElementById('anav-title').textContent = titles[appId] || appId;
 
     const old = document.getElementById('bbar-wrap');
@@ -876,6 +882,7 @@ const Shell = (() => {
     else if(appId === 'messages') renderMessages(content);
     else if(appId === 'history') renderHistory(content);
     else if(appId === 'tako') _renderTako(content);
+    else if(appId === 'store') renderStore(content);
   }
 
   /* ── アプリを閉じる ── */
@@ -1071,6 +1078,23 @@ const Shell = (() => {
     }
     if(!val) return;
 
+    // ★v3.6 解析ツール関連語：freesoft ページ廃止に伴い、アーカイブ照合ではなく
+    //   ストア（あなたの時代の側）へ橋渡しする。missStreak を汚さないよう submitKeyword 前に判定。
+    const TOOL_WORDS = ['モールス','モールス符号','電信符号','16進','バイナリ','符号','解析ツール','フリーソフト','ツール','解析'];
+    if (TOOL_WORDS.includes(val)) {
+      const tbox = document.getElementById('bsearch-result');
+      if (tbox) {
+        tbox.style.display = 'block';
+        tbox.innerHTML = `<div class="sbox" style="border-color:rgba(200,169,110,.35);">
+          <div class="sbox-label" style="color:var(--gold);">── 照合一致：アーカイブ外 ──</div>
+          <div class="sbox-desc">該当する道具は、このアーカイブの中にありません。<br>あなたの端末のストアに、あります。</div>
+          <div class="sbox-link" onclick="Shell.open('store')">▸ ストアを開く</div>
+        </div>`;
+        setTimeout(() => { if(tbox) tbox.style.display='none'; }, 9000);
+      }
+      return;
+    }
+
     const _before = KoeOS.getSpokeProgress();
     const res = KoeOS.submitKeyword(val);
     const rbox = document.getElementById('bsearch-result');
@@ -1116,10 +1140,14 @@ const Shell = (() => {
       </div>`;
       hideAfter = 6000;
     } else if (/オカエリ|おかえり|お帰り/.test(val)) {
-      // ★v3.5 隠し断片の解読語を検索した場合の専用応答（検索では開かない。一行に書く）
+      // ★v3.6 「おかえり」系（telegram_001 の末尾付記＝オカエリコラン／クリア後断片＝オカエリナサイ）を
+      //   照合した場合の専用応答。照合では開かず「一行」に書く。choice 到達前は場所を伏せて含みだけ残す。
+      const _afterChoice = KoeOS.isRestored('choice');
       rbox.innerHTML = `<div class="sbox" style="border-color:rgba(200,169,110,.35);">
         <div class="sbox-label" style="color:var(--gold);">── 一致なし ──</div>
-        <div class="sbox-desc">📡 それは、照合にかける言葉ではありません。<br>書き足す言葉です。——あの一行に。</div>
+        <div class="sbox-desc">${_afterChoice
+          ? '📡 それは、照合にかける言葉ではありません。<br>書き足す言葉です。——あの一行に。'
+          : '📡 それは、照合にかける言葉ではありません。<br>まだ、受け取れる場所がありません。覚えておいてください。'}</div>
       </div>`;
       hideAfter = 7000;
     } else {
@@ -1399,6 +1427,121 @@ const Shell = (() => {
   /* ═══════════════════════════════════
      ★v3.4 セクタマップ（タコ躯体図）
   ═══════════════════════════════════ */
+  /* ═══════════════════════════════════
+     ストアアプリ（★v3.6）
+     freesoft ページ（復元アプリ内の配布サイト）を廃止し、ホームの独立アプリに昇格。
+     解析ツールの開発者は蛸川小蘭（現代にいたときの個人開発アプリ、という設定）。
+     ダミーアプリはツール内広告（月湯温泉・芙島観光）と世界を共有する。
+  ═══════════════════════════════════ */
+  function renderStore(el) {
+    el.style.display = 'block';
+    el.style.flexDirection = '';
+    el.style.overflow = 'auto';
+
+    const hexDone   = KoeOS.isInstalled('hexconv');
+    const morseDone = KoeOS.isInstalled('morse');
+    const stars = n => '★'.repeat(n) + '☆'.repeat(5-n);
+
+    const installBtn = (id, done) => done
+      ? `<div style="display:inline-block;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:4px;padding:6px 16px;font-size:12px;color:#388e3c;font-family:'Roboto',sans-serif;">✓ インストール済み</div>`
+      : `<div data-install="${id}" style="display:inline-block;cursor:pointer;background:#fff;border:1px solid #dadce0;border-radius:4px;padding:6px 16px;font-size:12px;color:#1a73e8;font-family:'Roboto',sans-serif;">インストール</div>`;
+    const naBtn = `<div style="display:inline-block;background:#f1f3f4;border:1px solid #e0e0e0;border-radius:4px;padding:6px 16px;font-size:11px;color:#9aa0a6;font-family:'Roboto',sans-serif;">この端末には対応していません</div>`;
+
+    const card = ({icon, iconBg, name, dev, rate, dl, desc, badges, footer, review}) => `
+      <div class="fs-card">
+        <div class="fs-card-main">
+          <div class="fs-icon" style="background:${iconBg};">${icon}</div>
+          <div class="fs-info">
+            <div class="fs-app-name">${name}</div>
+            <div class="fs-developer">${dev}</div>
+            <div class="fs-rating-row"><span class="fs-stars">${stars(rate)}</span><span>${rate}.0</span><span>・</span><span>${dl}</span></div>
+          </div>
+        </div>
+        <div class="fs-card-desc">${desc}</div>
+        ${review ? `<div class="fs-review">${review}</div>` : ''}
+        <div class="fs-card-footer">
+          <div>${badges.map(b=>`<span class="fs-badge">${b}</span>`).join('')}</div>
+          ${footer}
+        </div>
+      </div>`;
+
+    el.innerHTML = `
+<style>
+  #fs-wrap { background:#f2f2f2; font-family:'Roboto','Noto Sans JP',sans-serif; font-size:13px; min-height:100%; color:#202124; }
+  #fs-topbar { background:#1a73e8; padding:10px 14px; }
+  #fs-topbar-logo { font-size:15px; font-weight:700; color:#fff; letter-spacing:.03em; }
+  #fs-topbar-sub { font-size:11px; color:rgba(255,255,255,.75); margin-top:1px; }
+  #fs-tabs { background:#fff; border-bottom:1px solid #e0e0e0; display:flex; font-size:12px; color:#5f6368; padding:0 14px; }
+  .fs-tab { padding:10px 12px; letter-spacing:.04em; cursor:default; }
+  .fs-tab.active { color:#1a73e8; border-bottom:2px solid #1a73e8; font-weight:700; }
+  #fs-body { padding:10px 12px 24px; }
+  .fs-section-label { font-size:11px; color:#5f6368; letter-spacing:.08em; margin:14px 0 8px; padding-left:2px; }
+  .fs-card { background:#fff; border-radius:8px; box-shadow:0 1px 2px rgba(0,0,0,.12); margin-bottom:10px; overflow:hidden; }
+  .fs-card-main { display:flex; align-items:flex-start; gap:12px; padding:14px; }
+  .fs-icon { width:52px; height:52px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; }
+  .fs-info { flex:1; min-width:0; }
+  .fs-app-name { font-size:14px; font-weight:700; color:#202124; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .fs-developer { font-size:11px; color:#1a73e8; margin:2px 0 4px; }
+  .fs-rating-row { display:flex; align-items:center; gap:6px; font-size:11px; color:#5f6368; }
+  .fs-stars { color:#f9ab00; font-size:12px; letter-spacing:1px; }
+  .fs-card-desc { font-size:12px; color:#3c4043; line-height:1.7; padding:0 14px 12px; }
+  .fs-review { font-size:11px; color:#5f6368; line-height:1.7; padding:0 14px 12px; border-top:1px dashed #eceef0; margin:0 0 0; padding-top:10px; }
+  .fs-card-footer { border-top:1px solid #f1f3f4; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; font-size:11px; color:#5f6368; }
+  .fs-badge { display:inline-block; background:#f1f3f4; border-radius:4px; padding:2px 7px; font-size:10px; color:#5f6368; margin-right:4px; }
+</style>
+<div id="fs-wrap">
+  <div id="fs-topbar">
+    <div id="fs-topbar-logo">▶ Pray ストア</div>
+    <div id="fs-topbar-sub">おすすめのアプリとゲーム</div>
+  </div>
+  <div id="fs-tabs">
+    <div class="fs-tab active">ツール</div>
+    <div class="fs-tab">地域</div>
+    <div class="fs-tab">ゲーム</div>
+  </div>
+  <div id="fs-body">
+
+    <div class="fs-section-label">▼ お近くのおすすめ</div>
+    ${card({ icon:'♨️', iconBg:'#7a4a2b', name:'月湯温泉 公式', dev:'月湯温泉旅館組合', rate:4, dl:'5,000+ ダウンロード',
+      desc:'渓流の音と、こけしの宿。空室照会と日帰り入浴の受付はこちらから。',
+      badges:['無料','全年齢'], footer:naBtn })}
+    ${card({ icon:'🌸', iconBg:'#b06a8a', name:'芙島観光ナビ', dev:'芙島市観光協会', rate:4, dl:'10,000+ ダウンロード',
+      desc:'桃見山の開花情報をプッシュ通知でお届け。モデルコースと駐車場マップを収録。',
+      badges:['無料','全年齢'], footer:naBtn })}
+    ${card({ icon:'🎎', iconBg:'#5a5246', name:'こけし図鑑', dev:'個人開発者', rate:3, dl:'100+ ダウンロード',
+      desc:'東北のこけしを産地別に収録。あなたのこけしの系統が分かります。',
+      badges:['無料','広告あり'], footer:naBtn })}
+
+    <div class="fs-section-label">▼ バックアップとストレージ</div>
+    ${card({ icon:'☁️', iconBg:'#3b6ea5', name:'おもいでクラウド', dev:'オモイデ電子', rate:4, dl:'100,000+ ダウンロード',
+      desc:'大切な写真もメモも、消えない場所へ。どこからでも取り出せます。',
+      badges:['無料','アプリ内課金'], footer:naBtn })}
+    ${card({ icon:'💾', iconBg:'#4a5568', name:'まるごとバックアップ', dev:'フシマ電算', rate:4, dl:'50,000+ ダウンロード',
+      desc:'同じものを、もう一つ、別の場所に。端末が壊れても、あなたの記録は失われません。',
+      badges:['無料','広告あり'], footer:naBtn })}
+
+    <div class="fs-section-label">▼ ユーティリティ</div>
+    ${card({ icon:'🔢', iconBg:'#1565c0', name:'HexConv — 16進変換器', dev:'蛸川小蘭', rate:4, dl:'1,000+ ダウンロード',
+      desc:'16進数（Hex）をカタカナに変換します。対応表は作者の独自規格です。スペースがなくても2桁ずつ自動で区切ります。',
+      review:'★★★☆☆　用途不明。でも、ちゃんと動く。',
+      badges:['無料','広告あり','v1.2.0'], footer:installBtn('hexconv', hexDone) })}
+    ${card({ icon:'📻', iconBg:'#1b5e20', name:'MorseReader — モールス読取機', dev:'蛸川小蘭', rate:4, dl:'500+ ダウンロード',
+      desc:'符号列（・と−）を数字に変換します。一文字ごとに改行またはスペースで区切って入力。',
+      review:'★★★★★　問い合わせに返信がありません。更新を待っています。',
+      badges:['無料','広告あり','v0.9.4 β'], footer:installBtn('morse', morseDone) })}
+
+  </div>
+</div>`;
+
+    el.querySelectorAll('[data-install]').forEach(b => {
+      b.addEventListener('click', () => {
+        const id = b.getAttribute('data-install');
+        if (KoeOS.isInstalled(id)) return;
+        installTool(id);
+      });
+    });
+  }
+
   function _renderTako(el) {
     const legs = KoeOS.getLegProgress();
     const isClear = KoeOS.isViewed('epilogue') && (localStorage.getItem('koe_fumi_note')||'').trim() !== '';

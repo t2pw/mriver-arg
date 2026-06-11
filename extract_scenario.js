@@ -75,17 +75,18 @@ function extractPhoneMessages() {
   return out;
 }
 
+// v3.6: freesoft（ページ廃止→ストアアプリ化）と soran_profile（v11でarchive_aboutに統合・
+//        ファイル削除済み）を除去。memo（資料棚 別冊）と okaeri（TRUE END）を追加。
 const ORDER = [
-  'archive_about','soran_profile','soran_intro',
+  'archive_about','soran_intro',
   'kiroku_001','kiroku_002','kiroku_003','kiroku_004',
   'photo_001','photo_002','photo_003',
   'bbs_001','bbs_002','bbs_003',
   'map_001','map_002','map_003',
   'telegram_001','telegram_002','telegram_003',
-  'freesoft',
   'hub_002',
-  'inochi','voices','tegami','sns','momo','loop','data_trace',
-  'receiver_lock','hidden','fumi_tegami','choice','wiki_add','wiki_skip','epilogue',
+  'inochi','voices','memo','tegami','sns','momo','loop','data_trace',
+  'receiver_lock','hidden','fumi_tegami','choice','wiki_add','wiki_skip','epilogue','okaeri',
 ];
 
 let out = '# 「声は壁を透して」シナリオテキスト\n';
