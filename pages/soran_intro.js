@@ -27,7 +27,7 @@ MSG_THREADS['soran_intro'] = () => `
   <div class="mbubble-row" style="margin-top:6px;">
     <div class="mbubble-av">📡</div>
     <div>
-      <div class="mbubble anom">まず、このアーカイブの内容を確認してください。<br>ブラウザからアクセスできます。</div>
+      <div class="mbubble anom">まず、このアーカイブの内容を確認してください。<br>復元アプリからアクセスできます。</div>
       <div class="mbubble-time anom">1973-09-12 09:04</div>
     </div>
   </div>
@@ -48,7 +48,7 @@ MSG_THREADS['soran_intro'] = () => `
       <span style="font-size:20px;">📁</span>
       <div style="font-family:var(--mono);font-size:11px;line-height:1.7;">
         <div style="color:var(--t1);letter-spacing:.04em;">このアーカイブについて</div>
-        <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">ブラウザで開く</div>
+        <div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">復元アプリで開く</div>
       </div>
       <span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span>
     </div>

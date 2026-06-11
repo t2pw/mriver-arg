@@ -554,10 +554,10 @@ html,body{
       <div id="grid">
         <div class="aico" onclick="Shell.open('browser')">
           <div class="aibox" style="background:linear-gradient(135deg,#162840 0%,#0a1520 100%);">
-            🔍
+            📁
             <div class="nbadge" id="b-browser"></div>
           </div>
-          <span class="ailabel">ブラウザ</span>
+          <span class="ailabel">復元</span>
         </div>
         <div class="aico" onclick="Shell.open('messages')">
           <div class="aibox" style="background:linear-gradient(135deg,#182848 0%,#0d1a30 100%);">
@@ -859,7 +859,7 @@ const Shell = (() => {
     KoeOS.clearNotif(appId);
     updateBadges();
 
-    const titles = { browser:'ブラウザ', messages:'メッセージ', history:'履歴', tako:'セクタマップ' };
+    const titles = { browser:'復元', messages:'メッセージ', history:'履歴', tako:'セクタマップ' };
     document.getElementById('anav-title').textContent = titles[appId] || appId;
 
     const old = document.getElementById('bbar-wrap');
@@ -1194,7 +1194,7 @@ const Shell = (() => {
         + _bub('損耗率：14%。破損は止まっていません。急がなくていい。でも、止まらないでください。')
         + _bub('ここまでが「外側」です。ここから先は、記録が誰のために残されたのか、という話になります。')
         + _bub('もう少しだけ、続けてください。', true, '1973-09-11')
-    + `<div style="margin:10px 4px 0;"><div onclick="Shell.open('browser');setTimeout(()=>Shell.bNavigate('hub_002'),80);" style="display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid rgba(200,88,88,0.2);border-radius:12px;padding:13px 14px;cursor:pointer;user-select:none;"><span style="font-size:20px;">🔓</span><div style="font-family:var(--mono);font-size:11px;line-height:1.7;"><div style="color:var(--t1);letter-spacing:.04em;">第2層が開く</div><div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">ブラウザで開く</div></div><span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span></div></div>`,
+    + `<div style="margin:10px 4px 0;"><div onclick="Shell.open('browser');setTimeout(()=>Shell.bNavigate('hub_002'),80);" style="display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid rgba(200,88,88,0.2);border-radius:12px;padding:13px 14px;cursor:pointer;user-select:none;"><span style="font-size:20px;">🔓</span><div style="font-family:var(--mono);font-size:11px;line-height:1.7;"><div style="color:var(--t1);letter-spacing:.04em;">第2層が開く</div><div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">復元アプリで開く</div></div><span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span></div></div>`,
     },
     {
       id:'msg_receiver', gate:'hidden', name:'繧ｿ◆縺薙％??', avatar:'📡',
@@ -1370,7 +1370,7 @@ const Shell = (() => {
     }
 
     if(hist.length === 0) {
-      el.innerHTML = '<div class="hempty">閲覧履歴はありません。<br>ブラウザでページを開くと<br>ここに記録されます。</div>';
+      el.innerHTML = '<div class="hempty">閲覧履歴はありません。<br>復元アプリでページを開くと<br>ここに記録されます。</div>';
       return;
     }
 
