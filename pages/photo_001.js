@@ -1,52 +1,47 @@
-// photo_001.js　写真①「記録されなかった人物」
-// B-4: 小蘭が清治を調べて入手した写真として書き直し・第一人称化
+// photo_001.js　写真①「記録されなかった人物」 v3
+// 2026-06-11: 制作者が photo_koaru.jpg を再生成（女性のポートレート・壁に脱線の新聞貼付）。
+//   被写体を清治から「アーカイブの記録者自身」（本文では明言しない）に変更。
+//   清治の写真は「一枚も残っていない」設定に統一（kiroku_003「写真はない」と整合。inochi も修正）。
+//   壁の新聞の発行日（昭和二十四年八月十八日）＝ photo_002 解錠語「昭和24年」の観察素材
+//   （④-b の役割をこの画像が兼ねる）。裏面メモ「この人はここにいた」は不変条件
+//   （hidden「あなたはここにいた」の前振り）として保持。メモから年号は外し、年は画像から読ませる。
 
 PAGE_CONTENT['photo_001'] = () => `<div class="bpage">
   <div class="bpage-num">写真　01</div>
   <div class="bpage-title">記録されなかった人物</div>
-  <div class="bpage-meta">入手：昭和三十年頃　／　出典：不明　／　裏面にメモあり</div>
+  <div class="bpage-meta">撮影：行商の写真師　／　撮影日：不明（壁の新聞が日付の代わりになる）　／　裏面にメモあり</div>
 
   <div class="bpage-body">
     <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;">
-      ── 以下、蛸川小蘭の調査メモ。当該写真に同封されていた。
+      ── 当該写真には、記録者自身のメモが同封されていた。<br>
+      　　アーカイブの中で、人の顔が写っている写真は、これ一枚しかない。
     </p>
   </div>
 
   <img src="images/photo_koaru.jpg"
        style="width:100%;height:220px;object-fit:cover;object-position:center top;display:block;"
-       onerror="this.parentElement.innerHTML='<div style=\'height:220px;background:#111;display:flex;align-items:center;justify-content:center;color:#444;font-size:11px;letter-spacing:2px;\'>[ 画像データ 破損 ]</div>'">
+       onerror="this.parentElement.innerHTML='<div style=\\'height:220px;background:#111;display:flex;align-items:center;justify-content:center;color:#444;font-size:11px;letter-spacing:2px;\\'>[ 画像データ 破損 ]</div>'">
 
   <div style="font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.06em;padding:4px 0 0;">── 復元画像（声の描写より）</div>
 
   <div class="bpage-body">
     <p>
-      この一枚を手に入れるまでに、六年かかった。
+      写っている女のことを、書いておく。
     </p>
     <p>
-      脱線事故から六年。私はずっと彼の消息を追っていた。
-      芙島市の図書館、守る会の記録、地域の古い新聞。
-      どこにも清治さんの名前は出てこなかった。
+      撮られたのは、事故から十日ばかりあとだ。
+      宿に行商の写真師が来て、主人が「働きはじめの記念に」と言って、女を座らせた。
+      名字を訊かれて、女は、すぐには答えられなかった。
     </p>
     <p>
-      ある日、宿の近くに住む老婆が話しかけてきた。
-      「あんた、M川の方をよく歩いているね」と。
-      なんでもない世間話のつもりで「知り合いがいたんです、あのあたりに」と答えた。
-      老婆は少し考えてから、「これは要らないものだ」と言って、この写真をくれた。
+      壁の新聞は、主人が貼ったものだ。
+      脱線。けが人二十名。
+      町じゅうがその話をしていた、八月だった。
     </p>
     <p>
-      事故の前年に撮られたものだと老婆は言った。
-      誰が撮ったのかは分からない、と。
-    </p>
-    <p>
-      作業服。頭に巻いた布。下を向いた目。
-      背後に市場らしき建物が並んでいる。
-      芙島市内と思われるが、確認できていない。
-    </p>
-    <p>
-      一点だけ、気になることがある。
-      撮影のアングルが低い。地面すれすれに近い高さから撮られている。
-      まるで草むらに伏せたまま、カメラだけを持ち上げたような構図だ。
-      あの夜、私が草むらに伏せていたように。
+      この一枚は、この女がこの土地に存在したことを示す、最初の記録になった。
+      そして長いあいだ、唯一の記録だった。
+      戸籍にも、名簿にも、この顔に該当するものはない。
     </p>
 
     <hr style="border:none;border-top:1px solid #2a2a2a;margin:1.4em 0;">
@@ -55,15 +50,25 @@ PAGE_CONTENT['photo_001'] = () => `<div class="bpage">
 
     <p class="anom" style="font-family:var(--mono);font-size:13px;line-height:2;padding:12px;background:#1a0000;border-radius:6px;">
       この人はここにいた<br>
-      昭和24年8月16日の夜<br>
+      八月十六日の夜<br>
       現場にいた<br>
       でも記録にはいない
     </p>
 
     <p>
-      この人が清治さんかどうか、私には分からない。
-      でも、あの夜の作業着姿と、構図と、撮影者の視点は——
-      どれも、あの夜と重なる。
+      裏のメモは、写真の女が自分で書いた。
+      三人称で書いた。
+      記録というものは、そう書くものだから。
+    </p>
+    <p>
+      なぜ笑っているのかは、書かれていない。
+      たぶん写真師が、笑ってください、と言ったのだ。
+      それだけのことが、難しい八月だった。
+    </p>
+
+    <p style="font-size:11px;color:var(--t3);font-family:var(--mono);letter-spacing:.06em;line-height:1.9;">
+      ── 壁の新聞の発行日が読める。<br>
+      　　読み取れた年号で、このブラウザを検索する。
     </p>
   </div>
 </div>`;

@@ -960,7 +960,7 @@ const Shell = (() => {
 
     bview.innerHTML = `
       <div style="padding:40px 20px 32px;display:flex;flex-direction:column;align-items:center;gap:0;">
-        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.2em;margin-bottom:28px;">M川事件アーカイブ</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.2em;margin-bottom:28px;">── 記録躯体　接続済み ──</div>
         <div style="font-family:var(--serif);font-size:28px;color:var(--t1);letter-spacing:.08em;margin-bottom:8px;text-align:center;line-height:1.3;">声は壁を透して</div>
         <div style="font-family:var(--mono);font-size:11px;color:var(--t2);letter-spacing:.06em;text-align:center;line-height:1.9;margin-bottom:32px;">
           記録されなかったものを、復元する。<br>
@@ -1614,6 +1614,16 @@ const Shell = (() => {
             border-radius:8px;padding:10px;color:var(--t2);cursor:pointer;
             font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-align:left;
           ">▸ 第2層まで解放</button>
+          <button onclick="_devSetClear()" style="
+            background:var(--s2);border:1px solid var(--bd);
+            border-radius:8px;padding:10px;color:var(--t2);cursor:pointer;
+            font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-align:left;
+          ">▸ クリア状態にする（追記ED・全閲覧済み）</button>
+          <button onclick="_devSetTrueEnd()" style="
+            background:var(--s2);border:1px solid var(--bd);
+            border-radius:8px;padding:10px;color:var(--t2);cursor:pointer;
+            font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-align:left;
+          ">▸ TRUE END状態にする（タコの頭点灯）</button>
           <button onclick="_devReset()" style="
             background:var(--red-d);border:1px solid rgba(200,88,88,.22);
             border-radius:8px;padding:10px;color:var(--red);cursor:pointer;
@@ -1689,6 +1699,23 @@ const Shell = (() => {
       loadToolScript(`tools/${id}.js`);
     }
     Shell.renderToolGrid();
+    Shell.openDebug();
+  };
+  // ★v3.5 実ブラウザテスト支援：クリア状態／TRUE END状態をワンタップで再現
+  window._devSetClear = () => {
+    KoeOS.PAGES.filter(p => p.locked && p.id !== 'okaeri').forEach(p => { KoeOS.markRestored(p.id); KoeOS.markViewed(p.id); });
+    try {
+      localStorage.setItem('koe_fumi_note', '猫塚清治と蛸川小蘭は、ここにいた。');
+      localStorage.removeItem('koe_true_end');
+    } catch {}
+    Shell.openDebug();
+  };
+  window._devSetTrueEnd = () => {
+    KoeOS.PAGES.filter(p => p.locked).forEach(p => { KoeOS.markRestored(p.id); KoeOS.markViewed(p.id); });
+    try {
+      localStorage.setItem('koe_fumi_note', 'おかえりなさい。');
+      localStorage.setItem('koe_true_end', '1');
+    } catch {}
     Shell.openDebug();
   };
   window._devReset = () => {

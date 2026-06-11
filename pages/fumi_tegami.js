@@ -88,7 +88,7 @@ PAGE_CONTENT['fumi_tegami'] = () => `<div class="bpage">
 
     <p style="margin-bottom:1.6em;">
       理由は何も言わなかった。
-      翌朝、新聞を見て、何が起きていたか、私は初めて理解した。
+      あとから新聞を読んで、あの夜、何が起きていたか、私は初めて理解した。
     </p>
 
     <p style="margin-bottom:1.6em;">
