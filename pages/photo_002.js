@@ -39,8 +39,8 @@ PAGE_CONTENT['photo_002'] = () => `<div class="bpage">
          style="width:100%;height:200px;object-fit:cover;object-position:center;display:block;"
          onerror="this.parentElement.innerHTML='<div style=\'height:200px;background:#0d1a0d;display:flex;align-items:center;justify-content:center;color:#444;font-size:11px;letter-spacing:2px;\'>[ 現在　画像データなし ]</div>'">
     <div style="font-family:var(--mono);font-size:9px;color:var(--t3);padding:4px 2px 0;letter-spacing:.04em;line-height:1.6;">
-      Photo: "<a href="https://commons.wikimedia.org/wiki/File:JR_T%C5%8Dhoku_Line_Matsukawa_Station_Platform_1%E3%83%BB2.jpg" target="_blank" style="color:var(--t3);text-decoration:underline;">JR Tōhoku Line Matsukawa Station Platform 1・2</a>" by Mister0124,
-      <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" style="color:var(--t3);text-decoration:underline;">CC BY-SA 4.0</a>, via Wikimedia Commons
+      Photo: "<a href="https://commons.wikimedia.org/wiki/File:JR_T%C5%8Dhoku_Line_Matsukawa_Station_Platform_1%E3%83%BB2.jpg" target="_blank" rel="noopener" style="color:var(--t3);text-decoration:underline;">JR Tōhoku Line Matsukawa Station Platform 1・2</a>" by Mister0124,
+      <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener" style="color:var(--t3);text-decoration:underline;">CC BY-SA 4.0</a>, via Wikimedia Commons
     </div>
 
     <p style="margin-top:1em;">

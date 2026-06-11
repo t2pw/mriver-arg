@@ -17,12 +17,14 @@
       const lk = document.createElement('link');
       lk.id = '_leaflet_css'; lk.rel = 'stylesheet';
       lk.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
+      lk.integrity = 'sha512-h9FcoyWjHcOcmEVkxOfTLnmZFWIH0iZhZT1H2TbOq55xssQGEJHEaIm+PgoUaZbRvQTNTluNOEfb1ZRy6D3BOw=='; lk.crossOrigin = 'anonymous';
       document.head.appendChild(lk);
     }
     if (!document.getElementById('_leaflet_js')) {
       const ls = document.createElement('script');
       ls.id = '_leaflet_js';
       ls.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
+      ls.integrity = 'sha512-puJW3E/qXDqYp9IfhAI54BJEaWIfloJ7JWs7OeD5i6ruC9JZL1gERT1wjtwXFlh7CjE7ZJ+/vcRZRkIYIb6p4g=='; ls.crossOrigin = 'anonymous';
       ls.onload = () => { window._leafletReady = true; cb(); };
       document.head.appendChild(ls);
     } else if (window.L) {
