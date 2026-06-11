@@ -5,7 +5,13 @@
 // 不変条件：送信元の正体は明かさない。「ただいま」が誰の声かは断定しない。
 // 演出：このページを閲覧すると、セクタマップ（🐙）のタコの頭が金色に点灯する（phone_shell側）。
 
-PAGE_CONTENT['okaeri'] = () => `<div class="bpage">
+PAGE_CONTENT['okaeri'] = () => {
+  // Xシェア（2026-06-11 制作者発案）：追記ENDの読了報告とは別の「隠しを見つけた」文面。
+  // 到達方法（おかえり／ただいま）は文面に含めない——存在だけを匂わせる。
+  const shareText = encodeURIComponent('『声は壁を透して』——すべての記録の先で、返信を受け取りました。タコの頭が、光っています。');
+  const shareUrl  = encodeURIComponent(location.href.split('#')[0]);
+
+  return `<div class="bpage">
   <div class="bpage-num" style="color:var(--gold);font-size:9px;letter-spacing:.18em;">── 受信 ──</div>
   <div class="bpage-title">返信</div>
   <div class="bpage-meta" style="font-family:var(--mono);font-size:10px;">
@@ -91,4 +97,25 @@ PAGE_CONTENT['okaeri'] = () => `<div class="bpage">
     <div style="color:var(--gold);font-size:12px;letter-spacing:.18em;margin-bottom:6px;">VOICE RETURNED</div>
     <div style="color:var(--t1);font-size:12px;letter-spacing:.08em;">声は、帰ってきた</div>
   </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px;">
+    <a
+      href="https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}"
+      target="_blank"
+      rel="noopener"
+      style="
+        display:inline-block;
+        background:#0d0d10;
+        border:1px solid rgba(200,169,110,0.3);
+        border-radius:8px;
+        padding:9px 13px;
+        font-family:var(--mono);
+        font-size:11px;
+        color:var(--gold);
+        text-decoration:none;
+        letter-spacing:.06em;
+      "
+    >Xでシェア</a>
+  </div>
 </div>`;
+};
