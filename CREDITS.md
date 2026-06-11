@@ -10,7 +10,8 @@
 |---|---|---|---|
 | photo_mkawa_now.jpg | photo_002（M川駅・現在） | "JR Tōhoku Line Matsukawa Station Platform 1・2" by Mister0124, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:JR_T%C5%8Dhoku_Line_Matsukawa_Station_Platform_1%E3%83%BB2.jpg)。ゲーム内（photo_002）にクレジット表示あり | **改変なし（2026-06-11 制作者確認）**。「（改変あり）」表記は不要。今後改変する場合はゲーム内クレジットに追記すること |
 | photo_mkawa_1949.jpg | photo_002（M川駅・1949年） | AI生成（自作） | 確認済み（2026-06-11 制作者申告） |
-| photo_takkope.jpg | index.html／archive_about | AI生成（自作） | 確認済み（同上） |
+| photo_takkope.jpg | index.html／archive_about | AI生成（自作）。2026-06-12 再生成（かわいい寄りに調整） | 確認済み（2026-06-12 制作者申告） |
+| ogp.jpg | OGP・サムネイル（index.html og:image） | AI生成（自作）。プロンプト⑥（1731×909、比率1.91:1）。タイトル文字なし版 | 確認済み（2026-06-12 制作者申告） |
 | photo_koaru.jpg | photo_001 | AI生成（自作）。2026-06-11 再々生成（プロンプト⑤「時代違和」版：結わない髪・自然な微笑。壁に脱線の新聞＝④-b の日付素材を兼ねる） | 確認済み（2026-06-11 制作者申告・チェックリスト⑤合格） |
 | photo_koaru_ie.jpg | photo_003 | AI生成（自作） | 確認済み（同上） |
 | photo_hmiyama.jpg | map_002 | AI生成（自作） | 確認済み（同上） |
