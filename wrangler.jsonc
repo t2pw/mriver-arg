@@ -1,0 +1,11 @@
+// Cloudflare Workers 用設定（Git 連携の自動デプロイで使用）
+// ビルドコマンド `node build_dist.js` が dist/ を生成し、
+// デプロイコマンド `npx wrangler deploy` が本ファイルを読んで dist/ を静的アセットとして配信する。
+// Worker スクリプトは無し（assets のみ）。
+{
+  "name": "mriver",
+  "compatibility_date": "2026-06-01",
+  "assets": {
+    "directory": "./dist"
+  }
+}

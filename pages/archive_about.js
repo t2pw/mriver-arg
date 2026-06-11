@@ -28,6 +28,8 @@ PAGE_CONTENT['archive_about'] = () => `<div class="bpage">
       <span style="color:var(--t1);">機械（詳細不明）</span>
       <span style="color:var(--t3);">記録セクタ</span>
       <span style="color:var(--t1);">30</span>
+      <span style="color:var(--t3);">配列</span>
+      <span style="color:var(--t1);">八肢分散　各肢独立</span>
       <span style="color:var(--t3);">状態</span>
       <span class="anom">損耗進行中</span>
     </div>
