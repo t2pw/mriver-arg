@@ -18,7 +18,9 @@ if (path.dirname(DIST) !== ROOT || path.basename(DIST) !== 'dist') {
 // 同梱するもの（ホワイトリスト方式）
 const FILES = [
   'index.html',
+  'remote.html',
   'phone_shell.html',
+  'koran-os.js',
   'os.js',
   'robots.txt',
   'sitemap.xml',

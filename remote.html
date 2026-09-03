@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="渡利直哉が公開した隔離接続の中継画面。実機への読み取り専用セッション。">
+<meta name="robots" content="noindex">
+<title>WATARI REMOTE NODE｜隔離接続</title>
+<style>
+  :root{
+    --bg:#0b0b0d; --panel:#111114; --line:#26262c;
+    --t1:#d8d8dc; --t2:#8b8b93; --t3:#55555e;
+    --ok:#9a9aa2;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--t1);font-family:var(--mono);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;}
+  .node{width:100%;max-width:520px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:28px 26px 24px;}
+  .head{font-size:11px;letter-spacing:.22em;color:var(--t2);margin-bottom:22px;display:flex;justify-content:space-between;gap:10px;}
+  .rows{font-size:13px;line-height:2.1;letter-spacing:.06em;margin-bottom:8px;}
+  .rows .k{display:inline-block;width:7em;color:var(--t3);}
+  .rows .v{color:var(--t1);}
+  .blink{display:inline-block;width:8px;height:12px;background:#c9c9cf;vertical-align:baseline;animation:blink 1.2s steps(1) infinite;margin-left:6px;}
+  @keyframes blink{50%{opacity:0;}}
+  .desc{font-size:11px;line-height:2.0;color:var(--t2);letter-spacing:.04em;margin:18px 0 22px;border-top:1px solid var(--line);padding-top:16px;}
+  .btn{display:block;width:100%;text-align:center;background:#1c1c21;border:1px solid #34343c;color:var(--t1);text-decoration:none;padding:15px;border-radius:8px;font-size:14px;letter-spacing:.3em;font-weight:600;}
+  .btn:active{transform:translateY(1px);}
+  .sub{margin-top:12px;font-size:10px;letter-spacing:.08em;color:var(--t3);text-align:center;line-height:1.9;}
+  .back{display:block;margin-top:18px;text-align:center;font-size:11px;letter-spacing:.1em;color:var(--t2);text-decoration:none;}
+  .foot{margin-top:22px;padding-top:12px;border-top:1px solid var(--line);font-size:9px;color:var(--t3);letter-spacing:.05em;line-height:1.8;}
+</style>
+</head>
+<body>
+  <div class="node">
+    <div class="head"><span>WATARI REMOTE NODE</span><span>v1.2</span></div>
+    <div class="rows">
+      TARGET&nbsp;&nbsp;: T-08<br>
+      LINK&nbsp;&nbsp;&nbsp;&nbsp;: STABLE<br>
+      MODE&nbsp;&nbsp;&nbsp;&nbsp;: READ ONLY<br>
+      INPUT&nbsp;&nbsp;&nbsp;: RELAY ENABLED<span class="blink"></span>
+    </div>
+    <div class="desc">
+      公開しているのは実機の直接操作ではない。<br>
+      映像と入力を中継する、隔離された読み取り用セッションである。<br>
+      中で動く画面は回収時から入っていたものだ。渡利は修復も制作もしていない。
+    </div>
+    <a class="btn" href="phone_shell.html" id="connect">[ CONNECT ]</a>
+    <div class="sub">書き込みは中継されない。<br>接続先の表示が変わっても、実機は変更されない。</div>
+    <a class="back" href="index.html">‹ 技術記録に戻る</a>
+    <div class="foot">本作はフィクションです。登場する事件・地名・人物・団体は実在のものとは関係ありません。</div>
+  </div>
+  <script>
+    (function(){
+      var a = document.getElementById('connect');
+      a.addEventListener('click', function(e){
+        if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+        e.preventDefault();
+        a.textContent = '[ LINKING ]';
+        setTimeout(function(){ window.location.href = a.getAttribute('href'); }, 450);
+      });
+    })();
+  </script>
+</body>
+</html>
