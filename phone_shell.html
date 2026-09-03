@@ -2,1863 +2,849 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="1973年9月12日で止まった回収端末のアーカイブ。">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="蛸川小蘭の自作OS。たこつぼ捜査ボード（試作）。">
 <meta name="robots" content="noindex">
-<title>声は壁を透して</title>
-<script src="os.js"></script>
+<title>KORAN OS — 第一幕ボード</title>
+<script src="koran-os.js?v=c1"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@300;400&family=IBM+Plex+Mono:wght@300;400&display=swap');
-
-:root {
-  --bg:       #0c0c0f;
-  --s1:       #131318;
-  --s2:       #1b1b24;
-  --s3:       #23232f;
-  --s4:       #2c2c3a;
-  --bd:       rgba(255,255,255,0.07);
-  --bd2:      rgba(255,255,255,0.13);
-  --t1:       #e2e0da;
-  --t2:       #86849a;
-  --t3:       #46445c;
-  --gold:     #c8a96e;
-  --gold-d:   rgba(200,169,110,0.14);
-  --red:      #c85858;
-  --red-d:    rgba(200,88,88,0.12);
-  --blue:     #5a8fd4;
-  --blue-d:   rgba(90,143,212,0.14);
-  --green:    #5aad7a;
-  --mono:     'IBM Plex Mono', monospace;
-  --sans:     'Noto Sans JP', sans-serif;
-  --serif:    'Noto Serif JP', serif;
-  --pw:       390px;
-  --ph:       844px;
-  --pr:       48px;
-}
-
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-
-html,body{
-  width:100%;height:100%;
-  background:#050508;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--sans);
-  overflow:hidden;
-}
-
-/* ══ 電話フレーム ══════════════════════ */
-#phone{
-  width:var(--pw);height:var(--ph);
-  background:var(--bg);
-  border-radius:var(--pr);
-  border:1px solid rgba(255,255,255,0.11);
-  box-shadow:0 0 0 1px rgba(0,0,0,0.8),0 40px 80px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.07);
-  position:relative;overflow:hidden;
-  display:flex;flex-direction:column;
-}
-
-/* ダイナミックアイランド */
-#island{
-  position:absolute;top:13px;left:50%;transform:translateX(-50%);
-  width:120px;height:34px;
-  background:#000;border-radius:20px;
-  z-index:300;
-  transition:width .45s cubic-bezier(.16,1,.3,1),height .45s cubic-bezier(.16,1,.3,1);
-  overflow:hidden;
-}
-#island.exp{ width:320px;height:66px; }
-#island-inner{
-  display:none;
-  padding:10px 16px;
-  gap:10px;
-  align-items:center;
-}
-#island.exp #island-inner{ display:flex; }
-#island-avatar{
-  width:38px;height:38px;border-radius:50%;
-  background:var(--s3);border:1px solid var(--bd2);
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;flex-shrink:0;
-}
-#island-text{ flex:1;min-width:0; }
-#island-name{
-  font-family:var(--mono);font-size:10px;color:var(--t2);
-  letter-spacing:.08em;margin-bottom:2px;
-}
-#island-msg{
-  font-size:11px;color:var(--t1);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  letter-spacing:.03em;
-}
-
-/* ステータスバー */
-#sbar{
-  height:56px;display:flex;align-items:flex-end;justify-content:space-between;
-  padding:0 28px 10px;flex-shrink:0;position:relative;z-index:100;
-}
-#sbar .t{font-family:var(--mono);font-size:15px;color:var(--t1);}
-#sbar .ic{display:flex;gap:6px;align-items:center;}
-#sbar .ic svg{fill:var(--t1);}
-
-/* スクリーン */
-#screen{flex:1;position:relative;overflow:hidden;}
-
-/* ホームインジケーター */
-#hind{
-  height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-#hind div{
-  width:130px;height:5px;
-  background:rgba(255,255,255,0.22);border-radius:3px;
-  cursor:pointer;transition:background .2s;
-}
-#hind div:hover{background:rgba(255,255,255,0.38);}
-
-/* ══ ホーム画面 ═══════════════════════ */
-#home{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;
-  transition:transform .4s cubic-bezier(.16,1,.3,1),opacity .3s;
-  overflow-y:auto;scrollbar-width:none;
-}
-#home::-webkit-scrollbar{display:none;}
-#home.hidden{transform:scale(.93);opacity:0;pointer-events:none;}
-
-#wallpaper{
-  position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 80% 60% at 25% 20%,rgba(35,25,75,.65) 0%,transparent 60%),
-    radial-gradient(ellipse 60% 80% at 80% 75%,rgba(15,35,55,.55) 0%,transparent 60%),
-    var(--bg);
-  z-index:0;
-}
-#wallpaper::after{
-  content:'';position:absolute;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
-  opacity:.7;
-}
-
-/* 時計ウィジェット */
-#clk{
-  position:relative;z-index:1;
-  text-align:center;padding:36px 0 24px;
-}
-#clk-time{
-  font-family:var(--mono);font-size:68px;font-weight:300;
-  color:var(--t1);letter-spacing:-.02em;line-height:1;
-  text-shadow:0 2px 20px rgba(0,0,0,.5);
-}
-#clk-date{font-family:var(--mono);font-size:13px;color:var(--t2);margin-top:6px;letter-spacing:.06em;}
-#clk-anom{
-  font-family:var(--mono);font-size:10px;color:var(--red);
-  margin-top:5px;letter-spacing:.1em;opacity:0;transition:opacity .6s;
-}
-#clk-anom.vis{opacity:1;}
-
-/* アプリグリッド（4アプリ） */
-#grid{
-  position:relative;z-index:1;
-  display:flex;justify-content:center;gap:18px;
-  padding:40px 0 20px;
-  flex-wrap:wrap;
-}
-
-.aico{
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-  cursor:pointer;-webkit-tap-highlight-color:transparent;
-}
-.aico:active .aibox{transform:scale(.88);}
-
-.aibox{
-  width:72px;height:72px;border-radius:18px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:30px;
-  border:1px solid var(--bd);
-  transition:transform .15s;
-  position:relative;
-}
-.ailabel{
-  font-size:11px;color:var(--t1);
-  text-shadow:0 1px 4px rgba(0,0,0,.8);
-  letter-spacing:.03em;
-}
-
-/* ★v3.1 解析アプリ用グリッド */
-#tool-grid{
-  position:relative;z-index:1;
-  display:flex;justify-content:center;flex-wrap:wrap;gap:28px;
-  padding:8px 24px 30px;
-}
-#tool-grid:empty{display:none;}
-/* ツールアイコンの外観（解析アプリらしい配色） */
-.tool-icon{
-  background:linear-gradient(135deg,#1a2438 0%,#0d141f 100%);
-}
-/* 通知バッジ */
-.nbadge{
-  position:absolute;top:-5px;right:-5px;
-  background:var(--red);color:#fff;
-  font-family:var(--mono);font-size:9px;
-  min-width:17px;height:17px;border-radius:9px;
-  display:none;align-items:center;justify-content:center;
-  padding:0 3px;border:1.5px solid var(--bg);
-}
-.nbadge.vis{display:flex;}
-
-/* ═══ アプリ画面 ══════════════════════ */
-#appscr{
-  position:absolute;inset:0;
-  background:var(--s1);
-  transform:translateY(102%);
-  transition:transform .45s cubic-bezier(.16,1,.3,1);
-  display:flex;flex-direction:column;z-index:50;
-}
-#appscr.open{transform:translateY(0);}
-
-/* アプリナビバー */
-#anav{
-  height:54px;display:flex;align-items:center;
-  padding:0 16px;gap:10px;
-  border-bottom:1px solid var(--bd);flex-shrink:0;
-  background:var(--s1);
-}
-#anav-back{color:var(--blue);font-size:15px;cursor:pointer;padding:8px;margin-left:-8px;user-select:none;}
-#anav-back:hover{opacity:.7;}
-#anav-title{flex:1;font-size:16px;font-weight:500;color:var(--t1);text-align:center;letter-spacing:.02em;}
-#anav-r{width:40px;}
-
-#acontent{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
-#acontent::-webkit-scrollbar{display:none;}
-
-/* ═══ ブラウザ ════════════════════════ */
-#bbar{
-  display:flex;align-items:center;padding:9px 12px;gap:8px;
-  border-bottom:1px solid var(--bd);flex-shrink:0;
-  background:var(--s1);
-}
-#burl{
-  flex:1;background:var(--s3);border:1px solid var(--bd);border-radius:10px;
-  padding:7px 12px;font-family:var(--mono);font-size:12px;
-  color:var(--t1);outline:none;letter-spacing:.03em;transition:border-color .2s;
-}
-#burl:focus{border-color:var(--bd2);}
-#burl::placeholder{color:var(--t3);}
-#bgo{
-  background:var(--gold-d);border:1px solid rgba(200,169,110,.28);
-  border-radius:8px;padding:7px 14px;
-  font-family:var(--mono);font-size:12px;color:var(--gold);
-  cursor:pointer;letter-spacing:.05em;white-space:nowrap;transition:background .2s;
-}
-#bgo:hover{background:rgba(200,169,110,.24);}
-/* 戻る・進むボタン */
-#bnav-btns{
-  display:flex;gap:4px;
-}
-.bnav-btn{
-  width:30px;height:30px;border-radius:8px;
-  background:var(--s3);border:1px solid var(--bd);
-  color:var(--t2);font-size:15px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:background .15s;user-select:none;
-  flex-shrink:0;
-}
-.bnav-btn:hover{background:var(--s4);}
-.bnav-btn:disabled,.bnav-btn[disabled]{opacity:.3;pointer-events:none;}
-
-/* ブラウザコンテンツ枠 */
-#bview{flex:1;overflow-y:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
-#bview::-webkit-scrollbar{display:none;}
-
-/* 検索結果ボックス */
-.sbox{
-  margin:12px 16px;border-radius:12px;padding:14px 16px;
-  background:var(--s2);border:1px solid var(--bd);
-}
-.sbox.ok{border-color:rgba(90,173,122,.35);}
-.sbox.ng{border-color:rgba(200,88,88,.28);}
-.sbox-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;margin-bottom:6px;}
-.sbox.ok .sbox-label{color:var(--green);}
-.sbox.ng .sbox-label{color:var(--red);}
-.sbox-desc{font-size:12px;color:var(--t2);line-height:1.7;letter-spacing:.02em;}
-.sbox-link{
-  display:inline-block;margin-top:10px;
-  font-family:var(--mono);font-size:11px;color:var(--gold);
-  cursor:pointer;letter-spacing:.06em;
-}
-.sbox-link:hover{opacity:.7;}
-
-/* ─ ブラウザページ内コンテンツ ─ */
-.bpage{padding:22px 20px 48px;}
-.bpage-num{font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.12em;margin-bottom:8px;}
-.bpage-title{font-family:var(--serif);font-size:20px;color:var(--t1);line-height:1.4;letter-spacing:.04em;margin-bottom:6px;}
-.bpage-meta{font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.07em;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--bd);}
-.bpage-body{font-family:var(--serif);font-size:14px;color:var(--t1);line-height:2.1;letter-spacing:.06em;}
-.bpage-body p{margin-bottom:1.4em;}
-.bpage-body .red{background:var(--t1);color:var(--t1);border-radius:2px;padding:0 2px;user-select:none;}
-.bpage-body .anom{color:var(--red);font-family:var(--mono);font-size:12px;letter-spacing:.06em;}
-
-/* ═══ 誰のスマホか 導入オーバーレイ ══ */
-#intro-overlay{
-  position:absolute;inset:0;z-index:500;
-  background:#080610;
-  display:none;align-items:center;justify-content:center;
-  cursor:pointer;user-select:none;
-  transition:opacity .7s ease;
-}
-#intro-overlay.show{display:flex;}
-#intro-overlay.fadeout{opacity:0;pointer-events:none;}
-#intro-inner{
-  text-align:center;padding:0 28px;font-family:var(--mono);
-}
-#intro-status{
-  font-size:9px;color:rgba(200,88,88,.7);
-  letter-spacing:.25em;margin-bottom:36px;
-  text-transform:uppercase;
-}
-#intro-msg{
-  font-size:14px;color:var(--t1);
-  line-height:2.4;letter-spacing:.04em;margin-bottom:44px;
-}
-#intro-sub{
-  font-size:9px;color:var(--t3);letter-spacing:.14em;
-  animation:pulse-sub 2.2s ease infinite;
-}
-@keyframes pulse-sub{0%,100%{opacity:.35;}50%{opacity:.9;}}
-
-/* ═══ メッセージアプリ ════════════════ */
-.mthread{
-  display:flex;align-items:center;padding:13px 16px;gap:12px;
-  border-bottom:1px solid var(--bd);cursor:pointer;transition:background .14s;
-}
-.mthread:hover{background:var(--s2);}
-.mthread.locked{opacity:.35;pointer-events:none;}
-.mthread-av{
-  width:46px;height:46px;border-radius:50%;
-  background:var(--s3);border:1px solid var(--bd);
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;flex-shrink:0;
-}
-.mthread-body{flex:1;min-width:0;}
-.mthread-name{font-size:14px;font-weight:500;color:var(--t1);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.mthread-prev{font-size:12px;color:var(--t2);margin-top:2px;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.mthread-meta{font-family:var(--mono);font-size:10px;color:var(--t3);text-align:right;flex-shrink:0;}
-.mthread-dot{width:8px;height:8px;background:var(--blue);border-radius:50%;margin:4px auto 0;}
-
-/* ─ メッセージ本文ビュー ─ */
-#msgview{
-  position:absolute;inset:0;background:var(--s1);
-  transform:translateX(102%);transition:transform .4s cubic-bezier(.16,1,.3,1);
-  display:flex;flex-direction:column;z-index:60;
-}
-#msgview.open{transform:translateX(0);}
-#mvnav{
-  height:50px;display:flex;align-items:center;
-  padding:0 14px;gap:10px;border-bottom:1px solid var(--bd);
-  flex-shrink:0;background:var(--s1);
-}
-#mvnav-back{color:var(--blue);font-size:15px;cursor:pointer;padding:8px;margin-left:-8px;}
-#mvnav-back:hover{opacity:.7;}
-#mvnav-title{flex:1;font-size:15px;font-weight:500;color:var(--t1);text-align:center;letter-spacing:.02em;}
-#mvcontent{
-  flex:1;overflow-y:auto;scrollbar-width:none;padding:16px;
-  display:flex;flex-direction:column;gap:14px;
-}
-#mvcontent::-webkit-scrollbar{display:none;}
-
-.mbubble-row{display:flex;align-items:flex-end;gap:8px;max-width:84%;}
-.mbubble-row.me{align-self:flex-end;flex-direction:row-reverse;}
-.mbubble-av{
-  width:28px;height:28px;border-radius:50%;
-  background:var(--s3);border:1px solid var(--bd);
-  display:flex;align-items:center;justify-content:center;
-  font-size:12px;flex-shrink:0;
-}
-.mbubble{
-  background:var(--s2);border:1px solid var(--bd);
-  border-radius:18px 18px 18px 4px;
-  padding:10px 14px;font-size:13px;line-height:1.7;
-  color:var(--t1);letter-spacing:.03em;
-}
-.mbubble.me{background:#173060;border-color:#1e3d7a;border-radius:18px 18px 4px 18px;color:#cce0ff;}
-.mbubble.anom{background:rgba(200,80,80,.08);border-color:rgba(200,80,80,.3);}
-.mbubble-time{font-family:var(--mono);font-size:10px;color:var(--t3);padding:0 4px;margin-top:2px;}
-.mbubble-time.anom{color:var(--red);opacity:.7;}
-.mdate-sep{
-  text-align:center;font-family:var(--mono);font-size:10px;
-  color:var(--t3);letter-spacing:.08em;align-self:center;
-}
-
-/* ═══ 履歴アプリ ══════════════════════ */
-.hrow{
-  display:flex;align-items:center;padding:12px 16px;gap:12px;
-  border-bottom:1px solid var(--bd);cursor:pointer;transition:background .14s;
-}
-.hrow:hover{background:var(--s2);}
-.hrow-icon{font-size:20px;flex-shrink:0;}
-.hrow-body{flex:1;min-width:0;}
-.hrow-title{font-size:13px;font-weight:500;color:var(--t1);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.hrow-time{font-family:var(--mono);font-size:10px;color:var(--t3);margin-top:2px;}
-.hempty{padding:48px 20px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--t3);letter-spacing:.1em;line-height:1.8;}
-.hclear{
-  margin:10px 16px;
-  background:var(--red-d);border:1px solid rgba(200,88,88,.22);
-  border-radius:10px;padding:11px;
-  font-family:var(--mono);font-size:11px;color:var(--red);
-  letter-spacing:.06em;cursor:pointer;text-align:center;transition:background .2s;
-}
-.hclear:hover{background:rgba(200,88,88,.2);}
-
-/* ═══ アニメーション ══════════════════ */
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.45;}}
-
-/* ★v3.4 セクタマップ */
-@keyframes sectorBlink{0%,100%{opacity:.25;}50%{opacity:1;}}
-@keyframes takoGlow{0%,100%{opacity:.7;filter:drop-shadow(0 0 6px rgba(200,169,110,.5));}50%{opacity:1;filter:drop-shadow(0 0 18px rgba(200,169,110,.9));}}
-.sector-unread{animation:sectorBlink 2s infinite;}
-.tako-complete-svg{animation:takoGlow 2.5s ease infinite;}
-.tako-head-true{animation:takoGlow 2.4s ease infinite;}
-.tako-wrap{padding:14px 0 20px;}
-.tako-status{font-family:var(--mono);font-size:10px;letter-spacing:.08em;margin:0 16px 6px;line-height:1.6;}
-.tako-subhead{font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.1em;margin:0 16px 8px;}
-.tako-svg-wrap{display:flex;justify-content:center;margin-bottom:4px;}
-.tako-list{margin:0 16px;}
-.tako-leg-row{border-bottom:1px solid var(--bd);padding:10px 0;cursor:pointer;user-select:none;}
-.tako-leg-row:last-child{border-bottom:none;}
-.tako-leg-header{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--t1);}
-.tako-leg-header.dimmed{color:var(--t3);}
-.tako-leg-sectors{margin-top:8px;display:none;flex-direction:column;gap:4px;}
-.tako-leg-sectors.open{display:flex;}
-.tako-sector-item{font-family:var(--mono);font-size:11px;padding:3px 0 3px 10px;display:flex;align-items:center;gap:6px;}
-.tako-foot{font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.06em;line-height:1.9;margin:16px 16px 32px;padding-top:12px;border-top:1px solid var(--bd);}
-.tako-complete-note{font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:.1em;text-align:center;padding:10px 0 4px;}
-
-/* ══ スマートフォン実機対応 ══════════════ */
-@media (max-width: 430px) {
-  html, body {
-    align-items: flex-start;
-    justify-content: flex-start;
-    background: var(--bg);
+  :root{
+    --desk1:#0f2e33; --desk2:#0a1d21;
+    --win:#f2efe8; --win-ink:#23211d; --win-sub:#7a756a;
+    --title1:#274b52; --title2:#162e33;
+    --task:#0e1c20; --task-line:rgba(127,212,193,.22);
+    --amber:#b97f1f; --teal:#1f7a6d;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"MS Gothic",monospace;
+    --sans:system-ui,-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",sans-serif;
   }
-  #phone {
-    width: 100vw;
-    height: 100dvh;
-    border-radius: 0;
-    border: none;
-    box-shadow: none;
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:var(--sans); color:#eef3f1; overflow:hidden;
+    background:
+      radial-gradient(90% 70% at 80% 10%, rgba(64,150,150,.25) 0%, transparent 60%),
+      radial-gradient(70% 60% at 15% 85%, rgba(30,110,110,.28) 0%, transparent 60%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,.022) 0 2px, transparent 2px 4px),
+      linear-gradient(160deg, var(--desk1), var(--desk2));
+    user-select:none; -webkit-user-select:none;
   }
-  #afooter {
-    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  #desktop{position:fixed; inset:0 0 68px 0; overflow:hidden;}
+  #taskbar{
+    position:fixed; left:10px; right:10px; bottom:10px; height:48px;
+    background:rgba(14,28,32,.78); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+    border:1px solid var(--task-line); border-radius:14px;
+    display:flex; align-items:stretch; gap:6px; padding:0 8px; z-index:200;
+    font-family:var(--mono); box-shadow:0 10px 30px rgba(0,0,0,.45);
   }
-  #hind {
-    padding-bottom: env(safe-area-inset-bottom);
+  #startbtn{
+    display:flex; align-items:center; gap:8px; background:rgba(224,180,106,.12); color:#ffd9a8;
+    border:1px solid rgba(224,180,106,.35); border-radius:10px; margin:7px 0; padding:0 14px;
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.08em; cursor:pointer;
   }
-}
+  #startbtn:hover{background:rgba(224,180,106,.22);}
+  #startbtn:active{transform:translateY(1px);}
+  #tasks{flex:1; display:flex; align-items:center; gap:6px; overflow-x:auto; scrollbar-width:none;}
+  #tasks::-webkit-scrollbar{display:none;}
+  .taskbtn{
+    white-space:nowrap; background:rgba(255,255,255,.05); color:#cfe0dc; border:1px solid transparent;
+    border-radius:9px; font-size:11px; padding:6px 12px; cursor:pointer; font-family:var(--mono);
+  }
+  .taskbtn:hover{background:rgba(255,255,255,.1);}
+  .taskbtn.active{background:rgba(127,212,193,.16); color:#fff; border-color:rgba(127,212,193,.35);}
+  #clock{margin:7px 0; padding:0 12px; display:flex; flex-direction:column; justify-content:center;
+    border:none; border-radius:9px; font-size:11px; color:#9fb8b4; text-align:right; line-height:1.5;}
+  #clock b{color:#e8ece7; font-size:12px;}
+  #clock .blink{animation:blink 1s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0;}}
+
+  /* デスクトップアイコン */
+  #icons{position:absolute; top:14px; left:14px; display:flex; flex-direction:column; gap:16px; z-index:5;}
+  @media (pointer:coarse), (max-width:560px){
+    #icons{flex-direction:row; top:10px; left:10px; right:10px; overflow-x:auto; padding-bottom:4px;}
+  }
+  .dicon{width:86px; text-align:center; cursor:pointer; padding:6px 2px; border:1px solid transparent; border-radius:6px; position:relative;}
+  .dicon.sel{background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.25);}
+  .dicon .glyph{font-size:34px; line-height:1; filter:drop-shadow(0 3px 6px rgba(0,0,0,.5)); transition:transform .15s ease;}
+  .dicon:hover .glyph{transform:translateY(-2px);}
+  .dicon .cap{font-size:11px; margin-top:5px; line-height:1.5; text-shadow:0 1px 4px #000;}
+  .dicon .hint{display:inline-block; font-size:9px; background:#b97f1f; color:#fff; border-radius:8px; padding:0 7px; margin-top:3px; font-family:var(--mono);}
+  .dicon .bdg{position:absolute; top:0; right:6px; background:#b97f1f; color:#fff; font-family:var(--mono);
+    font-size:10px; min-width:18px; height:18px; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    padding:0 4px; border:1.5px solid #0a1d21;}
+
+  /* ウィンドウ */
+  .win{
+    position:absolute; background:rgba(242,239,232,.98);
+    color:var(--win-ink);
+    border:1px solid rgba(10,15,17,.6); border-radius:14px;
+    box-shadow:0 24px 70px rgba(0,0,0,.55), 0 2px 8px rgba(0,0,0,.3);
+    display:none; flex-direction:column; overflow:hidden; min-width:0;
+  }
+  .win.open{display:flex;}
+  .win.focus{box-shadow:0 28px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(111,163,171,.55);}
+  .win.min{display:none;}
+  .titlebar{
+    background:transparent;
+    color:var(--win-ink); display:flex; align-items:center; gap:8px;
+    padding:10px 8px 8px 16px; font-size:12.5px; cursor:default; flex-shrink:0;
+  }
+  .titlebar .ticon{font-size:14px;}
+  .titlebar .t{flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:.03em; font-weight:600;}
+  .titlebar .btns{display:flex; gap:2px;}
+  .titlebar .btns button{
+    width:32px; height:24px; border:none; border-radius:6px;
+    background:transparent; color:#8a857d; font-size:11px; cursor:pointer; font-family:var(--mono); line-height:1;
+  }
+  .titlebar .btns button:hover{background:rgba(0,0,0,.07); color:var(--win-ink);}
+  .titlebar .btns .x:hover{background:#c0392b; border-color:#c0392b; color:#fff;}
+  .menubar{display:flex; gap:14px; padding:2px 16px 6px; font-size:11px; color:var(--win-sub);
+    background:transparent; flex-shrink:0;}
+  .addrbar{display:flex; gap:6px; align-items:center; padding:0 12px 8px; font-size:11px;
+    background:transparent; font-family:var(--mono); color:#55514a; flex-shrink:0;}
+  .addrbar .path{flex:1; background:rgba(255,255,255,.7); border:1px solid #d8d2c2; border-radius:8px; padding:4px 10px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .wbody{padding:6px 16px 18px; overflow:auto; font-size:13.5px; line-height:2.0;}
+  .wbody.mono{font-family:var(--mono); font-size:12px; background:#10181a; color:#bcd4cf;}
+  .statusbar{background:transparent; font-size:10px; color:#a09a8c;
+    padding:6px 16px 10px; font-family:var(--mono); flex-shrink:0; letter-spacing:.04em;}
+
+  /* メモ帳 */
+  .notepad{background:#fffdf4; border:1px solid #d8d2c2; padding:16px 18px; font-size:13.5px; line-height:2.1;
+    box-shadow:inset 0 0 30px rgba(190,170,130,.12);}
+  .notepad .date{font-family:var(--mono); font-size:11px; color:var(--win-sub);}
+  .notepad .sign{text-align:right; color:#55514a;}
+
+  /* 付箋 */
+  .sticky{background:#fff3b0; border:1px solid #e0cf7a; padding:10px 12px; font-size:12px; line-height:1.9;
+    transform:rotate(-.6deg); box-shadow:0 4px 10px rgba(0,0,0,.18); color:#4d4420; margin:0 0 12px;}
+
+  /* フォルダ一覧（断片） */
+  .folders{display:grid; gap:8px; margin-top:10px;}
+  @media(min-width:560px){.folders{grid-template-columns:1fr 1fr;}}
+  .folder{border:1px solid #cfc8b8; border-radius:6px; background:#fff; padding:9px 11px;}
+  .folder.unread{border:2px solid var(--amber); background:#fffaf0;}
+  .folder .fh{display:flex; align-items:center; gap:7px; font-weight:700; font-size:13px;}
+  .folder .tag{margin-left:auto; font-family:var(--mono); font-size:10px; padding:1px 8px; border-radius:10px; border:1px solid #bbb; color:#777;}
+  .folder.unread .tag{border-color:var(--amber); color:var(--amber); animation:blink 1.6s steps(1) infinite; font-weight:700;}
+  .folder.read .tag{border-color:var(--teal); color:var(--teal);}
+  .filebtn{display:block; width:100%; text-align:left; margin-top:7px; background:#f4f1ea; border:1px solid #d8d2c2;
+    border-radius:5px; padding:7px 10px; font-size:12.5px; cursor:pointer; line-height:1.7; color:var(--win-ink); font-family:var(--sans);}
+  .filebtn .st{font-family:var(--mono); font-size:10px; color:#8a857d; display:block;}
+  .filebtn.new .st{color:var(--amber); font-weight:700;}
+  .filebtn.done .st{color:var(--teal);}
+  .filebtn:disabled{opacity:.6; cursor:default;}
+
+  /* マネージャ */
+  .actq{background:var(--title1); color:#ffd9a8; border-radius:6px; padding:9px 14px; font-size:12.5px;
+    letter-spacing:.04em; margin-bottom:10px;}
+  .actq .q{font-family:var(--mono); font-size:9px; letter-spacing:.2em; color:#9fb8b4; display:block; margin-bottom:2px;}
+  .mgr-next{border:2px solid var(--amber); background:#fffaf0; border-radius:6px; padding:12px 14px; margin-bottom:10px;}
+  .mgr-next .q{font-family:var(--mono); font-size:10px; letter-spacing:.2em; color:var(--amber); margin-bottom:4px;}
+  .mgr-next .t{font-size:16px; font-weight:700;}
+  .mgr-next button{margin-top:10px; width:100%; padding:11px; font-size:14px; font-weight:700; cursor:pointer;
+    background:var(--title1); color:#fff; border:none; border-radius:6px; letter-spacing:.08em;}
+  .mgr-log{font-family:var(--mono); font-size:11px; color:#3f6b64; line-height:1.9;}
+
+  /* 文書ビューア */
+  .doc-kind{font-family:var(--mono); font-size:10px; letter-spacing:.18em; color:var(--win-sub); margin-bottom:4px;}
+  .doc-title{font-size:17px; font-weight:700; margin:0 0 10px;}
+  .doc-body{background:#fff; border:1px solid #d8d2c2; padding:14px 16px; font-size:13.5px; line-height:2.05; white-space:pre-wrap; font-family:var(--sans);}
+  .doc-btns{display:flex; gap:8px; margin-top:12px;}
+  .doc-btns button{flex:1; padding:11px; font-size:13px; border-radius:6px; cursor:pointer; border:1px solid #c9c2b2; background:#f4f1ea;}
+  .doc-btns button:disabled{opacity:.45; cursor:default;}
+  .doc-btns .primary{background:#14131a; color:#f3efe6; border-color:#14131a; font-weight:700;}
+  .doc-btns input{flex:2; min-width:0; padding:11px 12px; font-size:14px; border-radius:6px;
+    border:1px solid #c9c2b2; background:#fff; font-family:var(--sans);
+    user-select:text; -webkit-user-select:text;}
+
+  /* 写真・地図・外部 */
+  .doc-photo{width:100%; display:block; border-radius:6px; border:1px solid #d8d2c2; background:#111;}
+  .doc-imgbroken{padding:40px 10px; text-align:center; background:#111; color:#555; font-family:var(--mono); font-size:11px; letter-spacing:.2em; border-radius:6px;}
+  .zoombox{margin-top:10px; background:#130b0d; border:1px solid rgba(200,88,88,.35); border-radius:6px;
+    padding:12px 14px; font-family:var(--mono); font-size:12px; line-height:2; color:#e8ece7;}
+  .zoombox .z-h{font-size:9px; color:#8a857d; letter-spacing:.15em; margin-bottom:4px;}
+  .extbox{margin:0 0 10px; background:#10181a; border:1px solid #33565d; border-radius:6px;
+    padding:12px 14px; font-family:var(--mono); font-size:11.5px; line-height:2; color:#bcd4cf;}
+  .extbox .q{font-size:10px; letter-spacing:.18em; color:#e0b46a; margin-bottom:4px;}
+  .extbox .ok{color:#7fd4c1;}
+  #dz-map{width:100%; height:auto; display:block; background:#e9e3d1; border:1px solid #cfc8b8; border-radius:6px;}
+  .mapspot{cursor:pointer;}
+  .mapmsg{margin-top:8px; font-family:var(--mono); font-size:11px; color:#3f6b64; line-height:1.9;}
+  .mapmsg.bad{color:#a03a3a;}
+  .mapmsg.good{color:#1f7a6d; font-weight:700;}
+
+  /* ボード */
+  .slot{border:1px solid #cfc8b8; border-radius:8px; background:#fff; padding:11px 13px; margin-bottom:10px;}
+  .slot.fixed{border-color:var(--teal); background:#f4faf8;}
+  .slot .sq{font-size:13.5px; font-weight:700; margin-bottom:8px;}
+  .slot .sq .qn{font-family:var(--mono); font-size:10px; color:var(--win-sub); font-weight:400; margin-right:6px;}
+  .slot .qok{font-family:var(--mono); font-size:10px; color:var(--teal); font-weight:700;}
+  .slot .sfix{font-family:var(--mono); font-size:12px; color:var(--teal);}
+  .slot .slock{font-family:var(--mono); font-size:11px; color:#8a857d; margin-bottom:4px;}
+  .slot .opts{display:grid; gap:6px;}
+  .slot .opts button{text-align:left; background:#f4f1ea; border:1px solid #d8d2c2; border-radius:6px;
+    padding:9px 12px; font-size:13px; cursor:pointer; color:var(--win-ink); font-family:var(--sans);}
+  .slot .opts button:hover{border-color:var(--amber);}
+  .emptyframe{border:2px dashed #b0a894; border-radius:8px; padding:12px 14px; margin:14px 0 4px; text-align:center;}
+  .emptyframe .ef-h{font-family:var(--mono); font-size:10px; letter-spacing:.15em; color:var(--win-sub); margin-bottom:6px;}
+  .emptyframe .ef-box{display:inline-block; border:1px solid #b0a894; border-radius:4px; padding:14px 26px;
+    font-family:var(--mono); font-size:12px; color:#8a857d; background:#f7f4ec;}
+  .complete{margin-top:14px; border:2px solid var(--teal); background:#eef7f4; border-radius:8px;
+    padding:14px; text-align:center; font-size:16px; font-weight:700; color:var(--teal);}
+  .complete span{display:block; margin-top:6px; font-size:11px; font-weight:400; color:#3f6b64; font-family:var(--mono); line-height:2;}
+
+  /* タコ */
+  .tako-box{text-align:center; background:linear-gradient(180deg,#0e2226,#0b1b1f); border-radius:6px; padding:8px 4px 2px; margin-bottom:4px;}
+  svg.tako{width:100%; max-width:330px; height:auto;}
+  .tako-arm{cursor:pointer;}
+  .tako-arm .limb{fill:none; stroke:#c65a64; stroke-width:24;}
+  .tako-arm[data-state="undiscovered"] .limb{stroke:#3d5457; stroke-dasharray:6 5;}
+  .tako-arm[data-state="undiscovered"] .sucker{fill:none;}
+  .tako-arm[data-state="has-unread"] .limb{stroke:#e08a7a; animation:armPulse 1.6s ease infinite;}
+  @keyframes armPulse{0%,100%{opacity:1;}50%{opacity:.55;}}
+  .tako-arm[data-state="read"] .limb{stroke:#b05560;}
+  .tako-arm[data-state="external-wait"] .limb{stroke:#c9a227; stroke-dasharray:10 6;}
+  .tako-arm text{font-family:var(--mono); font-size:9px; fill:#9fb8b4;}
+
+  /* トースト（機械通知） */
+  #toasts{position:fixed; right:10px; bottom:60px; display:flex; flex-direction:column; gap:8px; z-index:300; max-width:min(330px, 90vw);}
+  .toast{background:#0d1517; border:1px solid #33565d; border-left:4px solid var(--amber); color:#cfe0dc;
+    border-radius:6px; padding:9px 12px; font-family:var(--mono); font-size:11px; line-height:1.8;
+    box-shadow:0 8px 24px rgba(0,0,0,.5); animation:slideIn .3s ease;}
+  @keyframes slideIn{from{transform:translateX(20px); opacity:0;}to{transform:none; opacity:1;}}
+
+  /* スタートメニュー */
+  #startmenu{position:fixed; left:8px; bottom:64px; width:270px; background:var(--win); color:var(--win-ink);
+    border:1px solid #0a0f11; border-radius:8px; box-shadow:0 18px 50px rgba(0,0,0,.6); z-index:250; display:none; overflow:hidden;}
+  #startmenu.open{display:block;}
+  #startmenu .sm-h{background:linear-gradient(180deg,var(--title1),var(--title2)); color:#ffd9a8; font-family:var(--mono);
+    font-size:11px; letter-spacing:.15em; padding:10px 14px;}
+  #startmenu button{display:flex; gap:10px; align-items:center; width:100%; text-align:left; background:none; border:none;
+    padding:11px 14px; font-size:13px; cursor:pointer; color:var(--win-ink); font-family:var(--sans);}
+  #startmenu button:hover{background:#e3eefe;}
+  #startmenu .sm-f{border-top:1px solid #ddd6c8; padding:8px 14px; font-size:9.5px; color:var(--win-sub); font-family:var(--mono); line-height:1.8;}
+
+  /* 起動画面 */
+  #boot{position:fixed; inset:0; background:#060d0e; z-index:500; display:flex; align-items:center; justify-content:center; font-family:var(--mono);}
+  #boot.hide{display:none;}
+  #boot .in{text-align:center; width:min(340px, 84vw);}
+  #boot .logo{font-size:26px; letter-spacing:.3em; color:#e8ece7; margin-bottom:6px;}
+  #boot .sub{font-size:10px; letter-spacing:.2em; color:#5f7d79; margin-bottom:20px;}
+  #boot .bar{height:8px; border:1px solid #33565d; border-radius:5px; overflow:hidden;}
+  #boot .bar i{display:block; height:100%; width:0; background:#7fd4c1; transition:width .2s;}
+  #boot .lines{font-size:10px; color:#5f7d79; margin-top:14px; line-height:2; min-height:44px;}
+
+  /* ログオフ */
+  #logoff{position:fixed; inset:0; background:#04080a; z-index:500; display:none; align-items:center; justify-content:center; font-family:var(--mono);}
+  #logoff.on{display:flex;}
+  #logoff .l-msg{text-align:center; font-size:13px; letter-spacing:.3em; color:#9fb8b4; line-height:2.6;}
+  #logoff .l-sub{font-size:10px; letter-spacing:.15em; color:#5f7d79;}
+  #logoff .blink{animation:blink 1s steps(1) infinite;}
 </style>
 </head>
 <body>
-<div id="phone">
 
-  <!-- ダイナミックアイランド -->
-  <div id="island">
-    <div id="island-inner">
-      <div id="island-avatar">📡</div>
-      <div id="island-text">
-        <div id="island-name">送信者不明</div>
-        <div id="island-msg"></div>
-      </div>
-    </div>
+<div id="boot">
+  <div class="in">
+    <div class="logo">🐙 KORAN</div>
+    <div class="sub">KORAN SYSTEM / build 08.16</div>
+    <div class="bar"><i id="bootbar"></i></div>
+    <div class="lines" id="bootlines">author: 蛸川小蘭<br>storage: 8-arm distributed archive</div>
   </div>
+</div>
 
-  <!-- ステータスバー -->
-  <div id="sbar">
-    <span class="t" id="stime">--:--</span>
-    <div class="ic">
-      <svg width="16" height="12" viewBox="0 0 16 12">
-        <rect x="0" y="8" width="3" height="4" rx=".5" opacity=".4"/>
-        <rect x="4" y="5" width="3" height="7" rx=".5" opacity=".7"/>
-        <rect x="8" y="2" width="3" height="10" rx=".5"/>
-        <rect x="12" y="0" width="3" height="12" rx=".5"/>
-      </svg>
-      <svg width="22" height="11" viewBox="0 0 22 11">
-        <rect x=".5" y=".5" width="18" height="10" rx="2" stroke="white" stroke-width="1" fill="none" opacity=".55"/>
-        <rect x="2" y="2" width="11" height="7" rx="1" fill="white"/>
-        <path d="M19.5 3.5 L19.5 7.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-    </div>
-  </div>
+<div id="logoff"><div class="l-msg">LOGOFF<span class="blink">…</span><br><span class="l-sub">セッションを切断しました</span></div></div>
 
-  <!-- スクリーン -->
-  <div id="screen">
+<div id="desktop">
+  <div id="icons"></div>
+  <div id="wins"></div>
+</div>
 
-    <!-- ホーム -->
-    <div id="home">
-      <div id="wallpaper"></div>
+<div id="startmenu">
+  <div class="sm-h">🐙 KORAN OS</div>
+  <div id="sm-items"></div>
+  <div class="sm-f">build 08.16 ｜ 第一幕ボード試作<br>本作はフィクションです。</div>
+</div>
 
-      <div id="clk">
-        <div id="clk-time">--:--</div>
-        <div id="clk-date">----年--月--日</div>
-        <div id="clk-anom">▸ 異常なタイムスタンプを検出</div>
-      </div>
+<div id="taskbar">
+  <button id="startbtn">🐙 たこらん</button>
+  <div id="tasks"></div>
+  <div id="clock"><b>09:04<span class="blink">:</span>32</b><span>1973/09/12（停止中）</span></div>
+</div>
 
-      <!-- 4アプリ（固定） -->
-      <div id="grid">
-        <div class="aico" onclick="Shell.open('browser')">
-          <div class="aibox" style="background:linear-gradient(135deg,#162840 0%,#0a1520 100%);">
-            📁
-            <div class="nbadge" id="b-browser"></div>
-          </div>
-          <span class="ailabel">復元</span>
-        </div>
-        <div class="aico" onclick="Shell.open('messages')">
-          <div class="aibox" style="background:linear-gradient(135deg,#182848 0%,#0d1a30 100%);">
-            💬
-            <div class="nbadge" id="b-messages"></div>
-          </div>
-          <span class="ailabel">メッセージ</span>
-        </div>
-        <a class="aico" href="pray-store/?from=koe" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
-          <div class="aibox" style="background:linear-gradient(135deg,#1f3526 0%,#0d1812 100%);color:#7ec88f;font-weight:700;">
-            ▶
-          </div>
-          <span class="ailabel">ストア</span>
-        </a>
-        <div class="aico" onclick="Shell.open('history')">
-          <div class="aibox" style="background:linear-gradient(135deg,#1e1a10 0%,#100e08 100%);">
-            🕐
-            <div class="nbadge" id="b-history"></div>
-          </div>
-          <span class="ailabel">履歴</span>
-        </div>
-        <div class="aico" onclick="Shell.open('tako')">
-          <div class="aibox" style="background:linear-gradient(135deg,#2a1530 0%,#150a18 100%);">
-            🐙
-            <div class="nbadge" id="b-tako"></div>
-          </div>
-          <span class="ailabel">セクタマップ</span>
-        </div>
-      </div>
-
-      <!-- ★v3.1 解析アプリ（インストール済みを動的描画） -->
-      <div id="tool-grid"></div>
-
-      <!-- 免責表示 -->
-      <div style="
-        padding:12px 20px 16px;
-        font-family:var(--mono);
-        font-size:9px;
-        color:rgba(255,255,255,0.18);
-        letter-spacing:.05em;
-        line-height:1.7;
-        text-align:center;
-      ">
-        本作はフィクションです。<br>
-        登場する事件・地名・人物・団体は実在のものとは関係ありません。
-      </div>
-    </div><!-- /home -->
-
-    <!-- ═══ アプリ画面 ═══ -->
-    <div id="appscr">
-      <div id="anav">
-        <span id="anav-back" onclick="Shell.closeApp()">‹ ホーム</span>
-        <span id="anav-title"></span>
-        <span id="anav-r"></span>
-      </div>
-      <div id="acontent"></div>
-      <div id="afooter" style="display:none;flex-shrink:0;border-top:1px solid var(--bd);background:var(--s1);padding:8px 12px calc(8px + env(safe-area-inset-bottom, 0px));gap:8px;"></div>
-    </div>
-
-    <!-- ═══ メッセージ本文ビュー ═══ -->
-    <div id="msgview">
-      <div id="mvnav">
-        <span id="mvnav-back" onclick="Shell.closeMsgView()">‹ 戻る</span>
-        <span id="mvnav-title"></span>
-      </div>
-      <div id="mvcontent"></div>
-    </div>
-
-    <!-- ★A-4 誰のスマホか導入オーバーレイ（初回起動のみ） -->
-    <div id="intro-overlay">
-      <div id="intro-inner">
-        <div id="intro-status">⚠ RECOVERED DEVICE — OWNER UNKNOWN</div>
-        <div id="intro-msg">
-          回収された端末のアーカイブ。<br>閲覧要求を検出。<br>
-          <span style="font-size:11px;color:var(--t3);">持ち主：不明</span><br>
-          <span style="font-size:11px;color:var(--t3);">最終起動：1973-09-12 09:04</span><br>
-          <span style="font-size:11px;color:var(--red);opacity:.65;">接続元：照合できません</span>
-        </div>
-        <div id="intro-sub">タップして起動</div>
-      </div>
-    </div>
-
-  </div><!-- /screen -->
-
-  <div id="hind"><div onclick="Shell.goHome()"></div></div>
-</div><!-- /phone -->
+<div id="toasts"></div>
 
 <script>
-/* ═══════════════════════════════════════
-   Shell ── UI コントローラー
-═══════════════════════════════════════ */
-const Shell = (() => {
-  let curApp = null;
-  let bStack  = [];  // [{id, scrollY}]
-  let bPtr    = -1;
-  let curTool = null;  // ★v3.1 現在開いている解析アプリ
+(function(){
+  'use strict';
+  const winsEl = document.getElementById('wins');
+  const tasksEl = document.getElementById('tasks');
+  const iconsEl = document.getElementById('icons');
+  const openWins = {};   // id -> {el, minimized}
+  let zTop = 10;
+  let cascade = 0;
+  let extToastDone = false;
+  const finePointer = window.matchMedia && window.matchMedia('(pointer:fine)').matches;
 
-  /* 外部サイトから戻ったとき、同一オリジンに残った閲覧印を進行へ反映する。 */
-  function syncExternalProgress(animate=false) {
-    const newIds = KoeOS.checkPrereqUnlocks();
-    try { window.KOE_UPDATE_EXTERNAL_STATUS?.(); } catch {}
-    if (!newIds.length) return Promise.resolve([]);
-    newIds.forEach(() => KoeOS.addNotif('browser'));
-    return Promise.all(newIds.map(id => loadPageScript(`pages/${id}.js`))).then(() => {
-      deliverMessages(animate);
-      updateBadges();
-      if (curApp === 'browser' && bStack[bPtr] && bStack[bPtr].id === '__home') {
-        const view = document.getElementById('bview');
-        if (view) _renderBrowserHome(view);
-      }
-      if (animate) {
-        const names = newIds.map(id => KoeOS.getPage(id)?.title || id).join('、');
-        pushNotif('📡', '繧ｿ◆縺薙％??', `外部照合：一致　${names}`, null);
-      }
-      return newIds;
+  /* ---------- 小さな部品 ---------- */
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function fmtDate(iso){
+    try{
+      const d = new Date(iso);
+      return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 既読`;
+    }catch{ return '既読'; }
+  }
+  function toast(msg){
+    const box = document.getElementById('toasts');
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = msg;
+    box.appendChild(el);
+    setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .4s'; }, 4200);
+    setTimeout(() => el.remove(), 4700);
+  }
+
+  /* ---------- ぬいぐるみ風のタコSVG ----------
+     小蘭が現代で持ち込んだ当時の姿＝新品の布地。
+     大きな黒目・小さな笑み・ずんぐりした足・足先の光る端子。 */
+  function takoSVG(size){
+    const arms = KoranOS.ARMS.map((arm, i) => {
+      const a = (Math.PI * 2 * i) / 8 + Math.PI / 8;
+      const x1 = 160 + Math.cos(a) * 48, y1 = 182 + Math.sin(a) * 30;
+      const x2 = 160 + Math.cos(a) * 96, y2 = 182 + Math.sin(a) * 66;
+      const mx = 160 + Math.cos(a) * 74, my = 182 + Math.sin(a) * 52 + 9;
+      const st = KoranOS.armState(arm.id);
+      const port = (i === 7)
+        ? `<rect x="${(x2-9).toFixed(1)}" y="${(y2-6).toFixed(1)}" width="18" height="12" rx="2" fill="#3a2c22" stroke="#201612" stroke-width="1.5"/>` +
+          `<rect x="${(x2-6).toFixed(1)}" y="${(y2-3.5).toFixed(1)}" width="12" height="7" rx="1" fill="#f5a742">` +
+          `<animate attributeName="opacity" values="1;.5;1" dur="2s" repeatCount="indefinite"/></rect>`
+        : `<ellipse class="sucker" cx="${x2.toFixed(1)}" cy="${y2.toFixed(1)}" rx="5" ry="6.5" fill="#e9b7b7" opacity=".9"/>`;
+      return `<g class="tako-arm" data-state="${st}" data-arm="${arm.id}">` +
+        `<path class="limb" d="M${x1.toFixed(1)},${y1.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}" stroke-width="24" stroke-linecap="round"/>` +
+        port +
+        `<text x="${x2.toFixed(1)}" y="${(y2+20).toFixed(1)}" text-anchor="middle">${i+1}</text>` +
+        `</g>`;
+    }).join('');
+    return `<svg class="tako" viewBox="60 40 200 235" role="img" aria-label="たこらん">` +
+      arms +
+      `<ellipse cx="160" cy="130" rx="60" ry="64" fill="#c65a64" stroke="#8a3a42" stroke-width="3"/>` +
+      `<ellipse cx="137" cy="126" rx="11" ry="15" fill="#2a2226"/>` +
+      `<ellipse cx="183" cy="126" rx="11" ry="15" fill="#2a2226"/>` +
+      `<circle cx="140.5" cy="120" r="3.6" fill="#fff" opacity=".95"/>` +
+      `<circle cx="186.5" cy="120" r="3.6" fill="#fff" opacity=".95"/>` +
+      `<path d="M151,156 q9,8 18,0" fill="none" stroke="#5e2f36" stroke-width="2.5" stroke-linecap="round"/>` +
+      `</svg>`;
+  }
+
+  /* ---------- ウィンドウ管理 ---------- */
+  function winSize(){
+    const small = window.innerWidth < 560;
+    return small
+      ? { w: window.innerWidth - 16, x: 8, yBase: 86 }
+      : { w: 460, x: 150, yBase: 40 };
+  }
+  function openWin(id, title, icon, menu, addr, bodyHTML, statusHTML){
+    if (openWins[id]) {
+      const o = openWins[id];
+      o.el.classList.remove('min');
+      o.minimized = false;
+      focusWin(id);
+      return o.el;
+    }
+    const s = winSize();
+    const el = document.createElement('div');
+    el.className = 'win';
+    el.style.width = Math.min(s.w, window.innerWidth - 16) + 'px';
+    el.style.maxHeight = (window.innerHeight - 46 - 100) + 'px';
+    const off = (cascade % 4) * 26;
+    el.style.left = Math.max(8, Math.min(s.x + off, window.innerWidth - parseFloat(el.style.width) - 8)) + 'px';
+    el.style.top = (s.yBase + off) + 'px';
+    cascade++;
+    el.innerHTML =
+      `<div class="titlebar"><span class="ticon">${icon}</span><span class="t">${esc(title)}</span>` +
+      `<span class="btns"><button data-act="min" title="最小化">＿</button><button data-act="max" title="最大化">▢</button><button data-act="close" class="x" title="閉じる">✕</button></span></div>` +
+      (menu ? `<div class="menubar">${menu}</div>` : '') +
+      (addr ? `<div class="addrbar">📂<span class="path">${esc(addr)}</span></div>` : '') +
+      `<div class="wbody">${bodyHTML}</div>` +
+      (statusHTML ? `<div class="statusbar">${statusHTML}</div>` : '');
+    winsEl.appendChild(el);
+    openWins[id] = { el, minimized:false, title, icon };
+    el.classList.add('open');
+    el.querySelectorAll('.titlebar .btns button').forEach(b => {
+      b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const act = b.getAttribute('data-act');
+        if (act === 'close') closeWin(id);
+        if (act === 'min') minWin(id);
+        if (act === 'max') {
+          el.style.left = '8px'; el.style.top = '8px';
+          el.style.width = (window.innerWidth - 16) + 'px';
+        }
+      });
+    });
+    el.addEventListener('pointerdown', () => focusWin(id));
+    const bar = el.querySelector('.titlebar');
+    if (finePointer) {
+      bar.style.cursor = 'move';
+      bar.addEventListener('pointerdown', (e) => {
+        if (e.target.tagName === 'BUTTON') return;
+        const sx = e.clientX - el.offsetLeft, sy = e.clientY - el.offsetTop;
+        bar.setPointerCapture(e.pointerId);
+        const move = (ev) => {
+          el.style.left = Math.max(-40, Math.min(ev.clientX - sx, window.innerWidth - 80)) + 'px';
+          el.style.top = Math.max(0, Math.min(ev.clientY - sy, window.innerHeight - 120)) + 'px';
+        };
+        const up = () => { bar.removeEventListener('pointermove', move); bar.removeEventListener('pointerup', up); };
+        bar.addEventListener('pointermove', move);
+        bar.addEventListener('pointerup', up);
+      });
+    }
+    renderTasks();
+    focusWin(id);
+    return el;
+  }
+  function focusWin(id){
+    Object.keys(openWins).forEach(k => openWins[k].el.classList.remove('focus'));
+    if (openWins[id]) { openWins[id].el.style.zIndex = ++zTop; openWins[id].el.classList.add('focus'); }
+    renderTasks(id);
+  }
+  function closeWin(id){
+    if (!openWins[id]) return;
+    openWins[id].el.remove();
+    delete openWins[id];
+    renderTasks();
+  }
+  function minWin(id){
+    if (!openWins[id]) return;
+    openWins[id].el.classList.add('min');
+    openWins[id].minimized = true;
+    renderTasks();
+  }
+  function renderTasks(activeId){
+    tasksEl.innerHTML = '';
+    Object.keys(openWins).forEach(id => {
+      const o = openWins[id];
+      const b = document.createElement('button');
+      b.className = 'taskbtn' + (o.el.classList.contains('focus') ? ' active' : '');
+      b.textContent = `${o.minimized ? '＿ ' : ''}${o.icon} ${o.title}`;
+      b.addEventListener('click', () => {
+        if (o.minimized) { o.el.classList.remove('min'); o.minimized = false; focusWin(id); }
+        else if (o.el.classList.contains('focus')) minWin(id);
+        else focusWin(id);
+      });
+      tasksEl.appendChild(b);
     });
   }
 
-  /* ── 起動 ── */
-  function boot() {
-    tick(); setInterval(tick, 10000);
-    syncExternalProgress(false);
-    updateBadges();
-    renderToolGrid();
-    setTimeout(() => document.getElementById('clk-anom').classList.add('vis'), 900);
-    if (KoeOS.isFirstLaunch()) {
-      KoeOS.markLaunched();
-      const ov = document.getElementById('intro-overlay');
-      if (ov) {
-        ov.classList.add('show');
-        ov.addEventListener('click', () => {
-          ov.classList.add('fadeout');
-          setTimeout(() => {
-            ov.classList.remove('show','fadeout');
-            pushNotif('📡', '繧ｿ◆縺薙％??', '受信ファイル：1', 'soran_intro');
-          }, 700);
-        }, { once: true });
+  /* ---------- よんでね ---------- */
+  const MEMO_HTML = `<div class="notepad"><div class="date">KORAN OS ― よんでね</div><br>` +
+    `このOSはわたしが作りました。蛸川小蘭といいます。<br>` +
+    `タコの名前はたこらんです。記録の置き場所は、たこつぼと呼んでいます。足が八本あるので、記録も八つにわけました。頭がこわれても足がおぼえています。<br><br>` +
+    `・同じものは二つの場所に置くこと。空の上にも。<br>` +
+    `・断片は全部開いてあるよ。ボードにはめて、機械に確かめてね。<br>` +
+    `・よんだものは機械が「かため」ます。かためたものは、もうこわれません。<br><br>` +
+    `―――<br>1973年9月11日　追記<br><br>` +
+    `ここは、わたしが来たところから二十四年後です。たこらんと一緒に埋まります。<br>` +
+    `外で見つけた紙（新聞や地図）は、あとでつきあわせてください。今はまだ棚がありません。<br>` +
+    `宛先のらんが、まだ空いています。誰にとどけるか、決めないまま埋めます。ゆるしてください。<br>` +
+    `<div class="sign">小蘭</div></div>`;
+
+  function openMemo(){ openWin('memo', 'よんでね.txt — メモ帳', '📝', 'ファイル　編集　表示', 'たこつぼ:\\メモ\\よんでね.txt', MEMO_HTML, '1 / 1 ページ'); }
+
+  /* ---------- たこつぼ（断片置き場） ---------- */
+  function explorerBody(){
+    const p = KoranOS.progress();
+    let h = `<div class="tako-box">${takoSVG()}</div>`;
+    h += `<div style="font-family:var(--mono);font-size:10.5px;color:#3f6b64;letter-spacing:.06em;text-align:center;">断片 既読${p.read}/${p.fragTotal} ｜ 順序自由 ｜ 足をクリックで移動</div>`;
+    h += `<div class="folders">`;
+    KoranOS.ARMS.forEach((arm, i) => {
+      const st = KoranOS.armState(arm.id);
+      const frags = KoranOS.armDocs(arm.id);
+      const cls = st === 'has-unread' ? 'folder unread' : (st === 'read' ? 'folder read' : 'folder');
+      const tag = st === 'has-unread' ? '● 未読あり' : (st === 'read' ? '✓ 既読' : '▒ 未検出');
+      h += `<div class="${cls}" data-arm="${arm.id}"><div class="fh">📁 第${i+1}足 ${esc(arm.sub)}<span class="tag">${tag}</span></div>`;
+      if (!frags.length) {
+        h += `<div style="font-family:var(--mono);font-size:10.5px;color:#999;margin-top:6px;">▒▒▒▒ ― 第二幕以降（試作範囲外）</div>`;
       } else {
-        setTimeout(() => pushNotif('📡', '繧ｿ◆縺薙％??', '受信ファイル：1', 'soran_intro'), 1200);
-      }
-    } else {
-      // 既存セーブの再読込：到達済みビートを無音で既配信扱いにし、再トーストを防ぐ
-      deliverMessages(false);
-      // 旧セーブ移行：_READ_KEY が未初期化の場合のみ、現在可視スレッドを全て既読として初期化
-      // （過去にプレイ済みのプレイヤーのバッジが全部未読になるのを防ぐ）
-      if (localStorage.getItem(_READ_KEY) === null) {
-        const _initRead = new Set(_visibleThreads().map(t => t.id));
-        localStorage.setItem(_READ_KEY, JSON.stringify([..._initRead]));
-      }
-    }
-  }
-
-  /* ── 時計 ── */
-  function tick() {
-    const n = new Date();
-    const s = `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
-    document.getElementById('stime').textContent = s;
-    document.getElementById('clk-time').textContent = s;
-    const days=['日','月','火','水','木','金','土'];
-    document.getElementById('clk-date').textContent =
-      `${n.getFullYear()}年${n.getMonth()+1}月${n.getDate()}日（${days[n.getDay()]}）`;
-  }
-
-  /* ── バッジ更新 ── */
-  function updateBadges() {
-    ['browser','messages','history'].forEach(a => {
-      const n = (a === 'messages') ? _unreadCount() : KoeOS.getNotif(a);
-      const el = document.getElementById('b-'+a);
-      if(!el) return;
-      el.textContent = n>9?'9+':String(n);
-      el.classList.toggle('vis', n>0);
-    });
-    // ★v3.4 セクタマップバッジ：restored && !viewed（TAKO_LEGS 対象のみ、クリア時は0）
-    const elTako = document.getElementById('b-tako');
-    if(elTako) {
-      const ending = localStorage.getItem('koe_ending');
-      const isClear = KoeOS.isViewed('epilogue') && (ending === 'record' || ending === 'source');
-      let takoUnread = 0;
-      if(!isClear) {
-        for(const leg of KoeOS.TAKO_LEGS) {
-          for(const pid of leg.pages) {
-            if(KoeOS.isRestored(pid) && !KoeOS.isViewed(pid)) takoUnread++;
+        frags.forEach(f => {
+          if (KoranOS.isRead(f.id)) {
+            h += `<button class="filebtn done" data-frag="${f.id}">📄 ${esc(f.title)}<span class="st">✓ ${esc(fmtDate(KoranOS.readAt(f.id)))}</span></button>`;
+          } else {
+            h += `<button class="filebtn new" data-frag="${f.id}">📄 ${esc(f.title)}<span class="st">● 未読</span></button>`;
           }
-        }
+        });
       }
-      elTako.textContent = takoUnread>9?'9+':String(takoUnread);
-      elTako.classList.toggle('vis', takoUnread>0);
-    }
+      h += `</div>`;
+    });
+    h += `</div>`;
+    return h;
   }
-
-  /* ═══════════════════════════════════
-     ★v3.1 解析アプリ（ホーム動的描画 / インストール / 起動）
-  ═══════════════════════════════════ */
-  function renderToolGrid() {
-    const grid = document.getElementById('tool-grid');
-    if(!grid) return;
-    const installed = [...KoeOS.getInstalled()];
-    grid.innerHTML = installed.map(id => {
-      const a = KoeOS.getToolApp(id);
-      if(!a) return '';
-      return `<div class="aico" onclick="Shell.openTool('${a.id}')">
-        <div class="aibox tool-icon" data-toolicon="${a.id}">${a.icon}</div>
-        <span class="ailabel">${a.name}</span>
-      </div>`;
-    }).join('');
+  function openExplorer(){
+    const p = KoranOS.progress();
+    const el = openWin('explorer', 'たこつぼエクスプローラー', '🐙', null, 'たこつぼ:\\', explorerBody(), `断片 既読${p.read}/${p.fragTotal} ｜ 8 本の足`);
+    bindExplorer(el);
   }
-
-  /* 解析アプリを開く（第4の画面種別） */
-  function openTool(id) {
-    const app = KoeOS.getToolApp(id);
-    if(!app || !KoeOS.isInstalled(id)) return;
-    curApp = null;
-    curTool = id;
-    document.getElementById('home').classList.add('hidden');
-    document.getElementById('appscr').classList.add('open');
-    document.getElementById('anav-title').textContent = app.name;
-
-    // ブラウザバー残骸を除去
-    const old = document.getElementById('bbar-wrap');
-    if(old) old.remove();
-
-    const footer = document.getElementById('afooter');
-    footer.style.display = 'none';
-    footer.innerHTML = '';
-
-    const content = document.getElementById('acontent');
-    content.style.display = 'block';
-    content.style.overflow = 'auto';
-    content.innerHTML = (typeof TOOL_UI !== 'undefined' && TOOL_UI[id])
-      ? TOOL_UI[id]()
-      : `<div style="padding:40px 20px;font-family:var(--mono);font-size:11px;color:var(--t3);text-align:center;">ツールを読み込めませんでした</div>`;
+  function refreshExplorer(){
+    if (!openWins['explorer']) return;
+    const body = openWins['explorer'].el.querySelector('.wbody');
+    body.innerHTML = explorerBody();
+    bindExplorer(openWins['explorer'].el);
   }
-
-  /* ── プッシュ通知（ダイナミックアイランド） ── */
-  function pushNotif(emoji, name, msg, threadId) {
-    // ★v3.6 スレッドを持たない不明送信元の通知（照合完了・ヒント等）は通知ログに記録し、
-    //   メッセージアプリの「照合通知」スレッドから読み返せるようにする（0611指摘：消える通知）
-    if (!threadId && name === '繧ｿ◆縺薙％??') {
-      _appendNotifLog(msg);
-      threadId = 'notif_log';
-    }
-    const isl  = document.getElementById('island');
-    const av   = document.getElementById('island-avatar');
-    const nm   = document.getElementById('island-name');
-    const txt  = document.getElementById('island-msg');
-    av.textContent = emoji;
-    nm.textContent = name;
-    txt.textContent = msg;
-    isl.classList.add('exp');
-    if(threadId) {
-      isl.style.cursor = 'pointer';
-      isl.onclick = () => { Shell.open('messages'); Shell.openThread(threadId); };
-    }
-    setTimeout(() => {
-      isl.classList.remove('exp');
-      isl.style.cursor = '';
-      isl.onclick = null;
-    }, 4500);
-    updateBadges();
-  }
-
-  /* ── アプリを開く ── */
-  function open(appId) {
-    curApp = appId;
-    curTool = null;
-    // メッセージのスレッド上のボタンから他appへ遷移した際、msgviewが残って
-    // 「押しても何も起きない」ように見えるのを防ぐ（遷移先を可視化）
-    const _mv = document.getElementById('msgview');
-    if(_mv) _mv.classList.remove('open');
-    document.getElementById('home').classList.add('hidden');
-    document.getElementById('appscr').classList.add('open');
-    KoeOS.clearNotif(appId);
-    updateBadges();
-
-    const titles = { browser:'復元', messages:'メッセージ', history:'履歴', tako:'セクタマップ' };
-    document.getElementById('anav-title').textContent = titles[appId] || appId;
-
-    const old = document.getElementById('bbar-wrap');
-    if(old) old.remove();
-
-    const content = document.getElementById('acontent');
-    content.innerHTML = '';
-    // ★v3.6 修正：復元アプリが #acontent に display:flex / overflow:hidden をインラインで
-    //   設定したまま残り、その後に開いたアプリ（セクタマップ等）がスクロール不能になっていた。
-    //   アプリ切替時に必ず既定値へ戻す（renderBrowser は自分で flex に再設定する）。
-    content.style.display = 'block';
-    content.style.flexDirection = '';
-    content.style.overflow = '';
-
-    const footer = document.getElementById('afooter');
-    footer.style.display = 'none';
-    footer.innerHTML = '';
-
-    if(appId === 'browser') renderBrowser();
-    else if(appId === 'messages') renderMessages(content);
-    else if(appId === 'history') renderHistory(content);
-    else if(appId === 'tako') _renderTako(content);
-  }
-
-  /* ── アプリを閉じる ── */
-  function closeApp() {
-    document.getElementById('appscr').classList.remove('open');
-    document.getElementById('home').classList.remove('hidden');
-    curApp = null;
-    curTool = null;
-    renderToolGrid();   // ★v3.1 戻ったとき最新状態に
-    updateBadges();
-  }
-
-  function goHome() { closeMsgView(); closeApp(); }
-
-  /* ═══════════════════════════════════
-     ★v3.1 検索欄に語を入れてフォーカス（telegram_001 のキーワードタグ用）
-  ═══════════════════════════════════ */
-  function setSearchAndFocus(kw) {
-    open('browser');
-    setTimeout(() => {
-      const inp = document.getElementById('burl');
-      if(inp) { inp.value = kw; inp.focus(); }
-    }, 120);
-  }
-
-  /* ═══════════════════════════════════
-     ブラウザ
-  ═══════════════════════════════════ */
-  function renderBrowser(pageId) {
-    const content = document.getElementById('acontent');
-    content.innerHTML = '';
-
-    const barHTML = `
-      <div id="bbar-wrap" style="display:flex;flex-direction:column;flex-shrink:0;">
-        <div id="bbar" style="display:flex;align-items:center;padding:9px 12px;gap:7px;border-bottom:1px solid var(--bd);background:var(--s1);">
-          <div class="bnav-btn" id="bbtn-back" onclick="Shell.bBack()" title="戻る">‹</div>
-          <div class="bnav-btn" id="bbtn-fwd"  onclick="Shell.bFwd()"  title="進む">›</div>
-          <input id="burl" placeholder="記録名・公開資料を検索…" style="flex:1;background:var(--s3);border:1px solid var(--bd);border-radius:10px;padding:7px 11px;font-family:var(--mono);font-size:12px;color:var(--t1);outline:none;letter-spacing:.03em;" />
-          <button id="bgo" onclick="Shell.doSearch()" style="background:var(--gold-d);border:1px solid rgba(200,169,110,.28);border-radius:8px;padding:7px 13px;font-family:var(--mono);font-size:12px;color:var(--gold);cursor:pointer;letter-spacing:.05em;white-space:nowrap;">検索</button>
-        </div>
-        <div id="bsearch-result" style="display:none;padding:10px 14px;"></div>
-      </div>
-    `;
-    content.insertAdjacentHTML('beforeend', barHTML);
-
-    const bview = document.createElement('div');
-    bview.id = 'bview';
-    bview.style.cssText = 'flex:1;overflow-y:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;';
-    content.appendChild(bview);
-    content.style.display = 'flex';
-    content.style.flexDirection = 'column';
-    content.style.overflow = 'hidden';
-
-    const _burlEl = document.getElementById('burl');
-    _burlEl.addEventListener('keydown', e => { if(e.key==='Enter') Shell.doSearch(); });
-    _burlEl.addEventListener('focus',   () => { _burlEl.select(); });
-
-    if(pageId) {
-      _loadPage(pageId);
-    } else {
-      _renderBrowserHome(bview);
-      bStack = [{ id: '__home', scrollY: 0 }];
-      bPtr   = 0;
-      _updateNavBtns();
-    }
-  }
-
-  function _renderBrowserHome(bview) {
-    const restored = KoeOS.PAGES.filter(p => KoeOS.isRestored(p.id));
-    const externalCount = KoeOS.getExternalVisits ? KoeOS.getExternalVisits().size : 0;
-    const restoredRows = restored.length === 0 ? '' : `
-      <div style="width:100%;max-width:320px;margin-top:24px;">
-        <div style="font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.15em;margin-bottom:10px;">── 復元済みファイル（${restored.length}件）</div>
-        <div style="background:var(--s2);border:1px solid var(--bd);border-radius:12px;overflow:hidden;">
-          ${restored.map(p => `
-            <div onclick="Shell.bNavigate('${p.id}')" style="
-              display:flex;align-items:center;gap:10px;
-              padding:10px 14px;
-              border-bottom:1px solid rgba(255,255,255,0.04);
-              cursor:pointer;
-            ">
-              <span style="flex-shrink:0;font-size:16px;">${p.icon}</span>
-              <span style="flex:1;font-family:var(--mono);font-size:11px;color:var(--t1);letter-spacing:.03em;">${p.title}</span>
-              <span style="color:var(--t3);font-size:12px;">›</span>
-            </div>
-          `).join('')}
-        </div>
-      </div>`;
-
-    bview.innerHTML = `
-      <div style="padding:36px 20px 32px;display:flex;flex-direction:column;align-items:center;gap:0;">
-        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.2em;margin-bottom:26px;">RECORD BODY / ONLINE</div>
-        <div style="width:100%;max-width:320px;display:flex;gap:7px;margin-bottom:10px;">
-          <input id="bhome-kw" placeholder="記録名・公開資料を検索…"
-            onkeydown="if(event.key==='Enter'){const b=document.getElementById('burl');if(b)b.value=this.value;Shell.doSearch();}"
-            style="flex:1;background:var(--s3);border:1px solid rgba(200,169,110,0.25);border-radius:12px;padding:12px 14px;font-family:var(--mono);font-size:13px;color:var(--t1);outline:none;letter-spacing:.03em;" />
-          <button onclick="const i=document.getElementById('bhome-kw');const b=document.getElementById('burl');if(i&&b)b.value=i.value;Shell.doSearch();"
-            style="background:var(--gold-d);border:1px solid rgba(200,169,110,.28);border-radius:12px;padding:12px 16px;font-family:var(--mono);font-size:12px;color:var(--gold);cursor:pointer;letter-spacing:.05em;white-space:nowrap;">検索</button>
-        </div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.08em;text-align:center;line-height:1.9;margin-bottom:28px;">
-          内部記録と公開中の資料を検索します。
-        </div>
-        <div style="width:100%;max-width:320px;margin-top:14px;font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.08em;display:flex;justify-content:space-between;">
-          <span>読取済み：<span style="color:var(--gold);">${KoeOS.getFixedPercent()}%</span></span>
-          <span>外部照合：${externalCount}</span>
-        </div>
-        ${restoredRows}
-      </div>`;
-  }
-
-  function bNavigate(pageId) {
-    if(bPtr < bStack.length-1) bStack = bStack.slice(0, bPtr+1);
-    bStack.push({ id: pageId, scrollY: 0 });
-    bPtr = bStack.length - 1;
-    _loadPage(pageId);
-    _updateNavBtns();
-  }
-
-  function bBack() {
-    if(bPtr <= 0) return;
-    const bview = document.getElementById('bview');
-    if(bview) bStack[bPtr].scrollY = bview.scrollTop;
-    bPtr--;
-    const entry = bStack[bPtr];
-    if(entry.id === '__home') _renderBrowserHome(bview||document.getElementById('bview'));
-    else _loadPage(entry.id, entry.scrollY);
-    _updateNavBtns();
-  }
-
-  function bFwd() {
-    if(bPtr >= bStack.length-1) return;
-    bPtr++;
-    const entry = bStack[bPtr];
-    const bview = document.getElementById('bview');
-    if(entry.id === '__home') _renderBrowserHome(bview);
-    else _loadPage(entry.id, entry.scrollY);
-    _updateNavBtns();
-  }
-
-  function _updateNavBtns() {
-    const bb = document.getElementById('bbtn-back');
-    const bf = document.getElementById('bbtn-fwd');
-    if(bb) { bb.style.opacity = bPtr<=0?'.3':'1'; bb.style.pointerEvents = bPtr<=0?'none':'auto'; }
-    if(bf) { bf.style.opacity = bPtr>=bStack.length-1?'.3':'1'; bf.style.pointerEvents = bPtr>=bStack.length-1?'none':'auto'; }
-  }
-
-  function _loadPage(pageId, scrollY=0) {
-    const bview = document.getElementById('bview');
-    if(!bview) return;
-    const urlEl = document.getElementById('burl');
-    if(urlEl) urlEl.value = 'archive://' + pageId;
-
-    KoeOS.addHistory(pageId);
-
-    const page = KoeOS.getPage(pageId);
-    if(!page) { bview.innerHTML = '<div style="padding:40px 20px;font-family:var(--mono);font-size:11px;color:var(--t3);text-align:center;">ページが見つかりません</div>'; return; }
-    KoeOS.markRestored(pageId);
-    const _newIds = KoeOS.checkPrereqUnlocks();
-    const _scripts = _newIds.map(id => `pages/${id}.js`);
-    // manual解放ページは連鎖で事前ロードされないため、未定義ならここで読む
-    if (!PAGE_CONTENT[pageId]) _scripts.push(`pages/${pageId}.js`);
-    Promise.all(_scripts.map(loadPageScript)).then(() => {
-      deliverMessages(true);
-      updateBadges();
-      const html = PAGE_CONTENT[pageId] ? PAGE_CONTENT[pageId]() : _placeholder(page);
-      bview.innerHTML = html;
-      bview.scrollTop = scrollY;
+  function bindExplorer(root){
+    root.querySelectorAll('.tako-arm').forEach(g => {
+      g.style.cursor = 'pointer';
+      g.addEventListener('click', () => {
+        const arm = g.getAttribute('data-arm');
+        const f = root.querySelector(`.folder[data-arm="${arm}"]`);
+        if (f) f.scrollIntoView({ behavior:'smooth', block:'center' });
+      });
+    });
+    root.querySelectorAll('button[data-frag]').forEach(b => {
+      b.addEventListener('click', () => openFrag(b.getAttribute('data-frag')));
     });
   }
 
-  function _placeholder(page) {
-    return `<div class="bpage">
-      <div class="bpage-num">準備中</div>
-      <div class="bpage-title">${page.title}</div>
-      <div class="bpage-meta">このページは近日公開予定です</div>
-      <div class="bpage-body"><p>コンテンツは順次追加されます。</p></div>
-    </div>`;
-  }
-
-  /* ─ 検索・キーワード ─ */
-  function doSearch() {
-    const inp = document.getElementById('burl');
-    if(!inp) return;
-    const val = inp.value.trim();
-    if(val.startsWith('archive://')) {
-      const id = val.replace('archive://','');
-      if(KoeOS.getPage(id) && KoeOS.isRestored(id)) { bNavigate(id); return; }
-    }
-    if(!val) return;
-
-    // 内部の二つの鍵以外は、独立した公開ページを通常の検索結果として返す。
-    // 検索エンジンのインデックス状況に依存しないための作品内フォールバックでもある。
-    const webSources = [
-      {
-        terms:['芙島','M川事件','列車転覆','市民の声','裁判年表','桃見山','声は壁を透して','文集'],
-        title:'芙島市立図書館 郷土資料室　デジタル目録',
-        url:'fushima-archive/?from=koe',
-        desc:'新聞縮刷、裁判年表、郷土資料の所蔵情報'
-      },
-      {
-        terms:['蒼沼','ブルーランド','遊園地','タコのマスコット'],
-        title:'蒼沼ブルーランド思い出保存会',
-        url:'blue-land/?from=koe',
-        desc:'営業当時のパンフレットと閉園後の写真'
-      },
-      {
-        terms:['Pray','モールス','モールス符号','16進','HexConv','MorseReader','蛸川小蘭'],
-        title:'Pray ストア',
-        url:'pray-store/?from=koe',
-        desc:'解析ツールと開発者情報'
-      },
-      {
-        terms:['M川事件wiki','資料wiki','未収録資料'],
-        title:'M川事件資料wiki',
-        url:'m-kawa-wiki/?from=koe',
-        desc:'共同編集型の事件資料索引'
-      },
-    ];
-    const needle = val.replace(/\s+/g,'').toLowerCase();
-    const webMatches = needle.length >= 2 ? webSources.filter(src =>
-      src.terms.some(term => {
-        const key = term.replace(/\s+/g,'').toLowerCase();
-        return key.includes(needle) || needle.includes(key);
-      })
-    ) : [];
-    if (webMatches.length) {
-      const tbox = document.getElementById('bsearch-result');
-      if (tbox) {
-        tbox.style.display = 'block';
-        tbox.innerHTML = `<div class="sbox" style="border-color:rgba(200,169,110,.35);">
-          <div class="sbox-label" style="color:var(--gold);">公開Web　${webMatches.length}件</div>
-          ${webMatches.map(src => `<a class="sbox-link" href="${src.url}" target="_blank" rel="noopener" style="display:block;text-decoration:none;margin-top:12px;">
-            <span style="display:block;color:var(--gold);">${src.title}</span>
-            <span class="sbox-desc" style="display:block;margin-top:3px;">${src.desc}</span>
-            <span style="display:block;color:var(--t3);font-size:9px;margin-top:3px;">${src.url}</span>
-          </a>`).join('')}
-        </div>`;
-      }
-      return;
-    }
-
-    const res = KoeOS.submitKeyword(val);
-    const rbox = document.getElementById('bsearch-result');
-    if(!rbox) return;
-    rbox.style.display = 'block';
-
-    if(res.alreadyUsed) {
-      rbox.innerHTML = `<div class="sbox ng"><div class="sbox-label">登録済み</div><div class="sbox-desc">このキーワードは既に使用されています。</div></div>`;
-      setTimeout(() => { if(rbox) rbox.style.display='none'; }, 3500);
-      return;
-    }
-    let hideAfter = 3500;
-    if(res.success) {
-      const pages = res.unlocked.map(id=>KoeOS.getPage(id)).filter(Boolean);
-      const titles = pages.map(p=>p.title).join('、');
-      rbox.innerHTML = `<div class="sbox ok">
-        <div class="sbox-label">KEY ACCEPTED</div>
-        <div class="sbox-desc">「${titles}」を開けます。</div>
-        <div class="sbox-link" onclick="Shell.bNavigate('${res.unlocked[0]}')">▸ 開く</div>
-      </div>`;
-      inp.value = '';
-      Promise.all(res.unlocked.map(id => loadPageScript(`pages/${id}.js`))).then(() => {
-        deliverMessages(true);
-        const bv = document.getElementById('bview');
-        if(bv && bPtr === 0) _renderBrowserHome(bv);
-      });
-    } else if(res.prereqBlocked) {
-      rbox.innerHTML = `<div class="sbox" style="border-color:rgba(200,169,110,.35);">
-        <div class="sbox-label" style="color:var(--gold);">KEY DETECTED</div>
-        <div class="sbox-desc">先行ファイルが未読です。</div>
-      </div>`;
-      hideAfter = 6000;
-    } else if (/オカエリ|おかえり|お帰り/.test(val)) {
-      // 任意の末尾付記は解錠語ではなく、終幕の自由記述に使える語として保持する。
-      const _afterChoice = KoeOS.isRestored('choice');
-      rbox.innerHTML = `<div class="sbox" style="border-color:rgba(200,169,110,.35);">
-        <div class="sbox-label" style="color:var(--gold);">WRITABLE PHRASE</div>
-        <div class="sbox-desc">${_afterChoice
-          ? '用途：追記文<br>入力先：資料wiki「あなたの一行」'
-          : '用途：追記文<br>入力先：未生成　／　保持してください'}</div>
-      </div>`;
-      hideAfter = 7000;
+  /* ---------- 断片ビューア（集めるだけ。完了はボードで行う） ---------- */
+  function openFrag(id){
+    const f = KoranOS.getFrag(id);
+    if (!f) return;
+    if (openWins['frag:' + id]) { focusWin('frag:' + id); return; }
+    let body = `<div class="doc-kind">${esc(f.kind)} ｜ ${esc(f.id)}</div>` +
+      `<h2 class="doc-title">${esc(f.title)}</h2>`;
+    if (f.view === 'photo') {
+      body += `<img src="${f.image}" class="doc-photo" alt="昭和二十四年の写真"` +
+        ` onerror="this.outerHTML='<div class=\'doc-imgbroken\'>[ 画像データ 破損 ]</div>'">` +
+        `<div class="doc-body" style="margin-top:10px;">${esc(f.body)}</div>` +
+        `<div class="zoombox" id="dz-zoom" style="display:none;"><div class="z-h">壁面 拡大</div>` +
+        `芙島民報　昭和二十四年八月十八日<br>列車脱線　けが人二十名</div>` +
+        `<div class="zoombox" id="dz-face" style="display:none;"><div class="z-h">人物 観察</div>` +
+        `髪は結わず、歯を見せて笑う。当時の写真機の前では珍しい写り方。</div>` +
+        `<div class="doc-btns"><button data-act="zoom-news">壁の新聞を調べる</button><button data-act="zoom-face">女性の写り方を見る</button></div>`;
+    } else if (f.view === 'external') {
+      const got = KoranOS.hasExternalFlag(f.external.flag);
+      body += `<div class="extbox"><div class="q">EXTERNAL MATCH REQUIRED</div>` +
+        `<div>参照先：${esc(f.external.label)}</div>` +
+        `<div>内容：${esc(f.external.detail)}</div>` +
+        `<div>状態：<span class="${got ? 'ok' : ''}">${got ? '取得済み' : '未取得'}</span></div></div>` +
+        `<div class="doc-body">${esc(f.body)}</div>` +
+        `<div class="doc-btns"><button class="primary" data-act="open-ext">郷土資料室を開く ↗</button></div>`;
+    } else if (f.view === 'map') {
+      body += `<div class="doc-body" style="margin-bottom:10px;">${esc(f.body)}</div>` +
+        `<svg id="dz-map" viewBox="0 0 300 220" role="img" aria-label="書込地図">` +
+        `<rect x="0" y="0" width="300" height="220" fill="#e9e3d1"/>` +
+        `<path d="M0,180 Q80,150 140,170 T300,140" stroke="#9db8c4" stroke-width="10" fill="none" opacity=".7"/>` +
+        `<g class="mapspot" data-spot="station"><circle cx="90" cy="80" r="9" fill="#8a857d" stroke="#55514a" stroke-width="2"/><text x="90" y="102" text-anchor="middle" font-size="10" fill="#55514a">芙島駅</text></g>` +
+        `<g class="mapspot" data-spot="momomi"><circle cx="150" cy="150" r="9" fill="#c8a96e" stroke="#7a5f22" stroke-width="2"/><text x="150" y="172" text-anchor="middle" font-size="10" fill="#55514a">桃見山</text></g>` +
+        `<g class="mapspot" data-spot="aonuma"><circle cx="215" cy="52" r="10" fill="none" stroke="#a03a3a" stroke-width="2.5" stroke-dasharray="4 3"><animate attributeName="opacity" values="1;.4;1" dur="1.6s" repeatCount="indefinite"/></circle><circle cx="215" cy="52" r="3.5" fill="#a03a3a"/><text x="215" y="74" text-anchor="middle" font-size="10" fill="#a03a3a">北の沼</text></g>` +
+        `</svg>` +
+        `<div class="mapmsg" id="dz-mapmsg">印を選んで書入れを読むこと。</div>`;
     } else {
-      const hint = _missHint(res.missStreak);
-      rbox.innerHTML = `<div class="sbox ng">
-        <div class="sbox-label">NO RESULT</div>
-        <div class="sbox-desc">一致する内部記録・公開資料はありません。</div>
-        ${hint ? `<div class="sbox-desc" style="margin-top:8px;color:var(--red);font-family:var(--mono);font-size:11px;">📡 ${hint}</div>` : ''}
-      </div>`;
-      if(hint) {
-        hideAfter = 7000;
-        // 6回目以降は不明送信元からのナッジとして3回ごとにトースト
-        if(res.missStreak >= 6 && res.missStreak % 3 === 0) pushNotif('📡', '繧ｿ◆縺薙％??', hint, null);
-      }
+      body += `<div class="doc-body">${esc(f.body)}</div>`;
     }
-    setTimeout(() => { if(rbox) rbox.style.display='none'; }, hideAfter);
-  }
+    body += `<div class="doc-btns"><button data-act="close">閉じるだけ</button>` +
+      `<button class="primary" data-act="read">読了にして閉じる</button></div>`;
 
-  /* ── ★ヒントシステム：解放なし検索が続いたとき、不明送信元の口調でナッジ ── */
-  function _missHint(streak) {
-    if (!streak || streak < 3) return '';
-    if (KoeOS.isRestored('telegram_001') && !KoeOS.isRestored('telegram_002'))
-      return '接触ログは一行につき一桁です。Prayストアのモールス読取機を使えます。';
-    if (KoeOS.isRestored('receiver_lock') && !KoeOS.isRestored('hidden'))
-      return '受信割込は、モールスで数字にしたあと、16進として読みます。';
-    return '公開資料の固有名か、復号した鍵を入力してください。';
-  }
-
-  /* ═══════════════════════════════════
-     メッセージアプリ
-  ═══════════════════════════════════ */
-  // 文字化けした不明送信元から届く復元通知。正体は最後まで明示しない。
-  // 本文を使い回さず、受信者＝あなたに二人称で語りかける物語のビート。
-  function _bub(text, anom, time) {
-    return `<div class="mbubble-row">
-      <div class="mbubble-av">📡</div>
-      <div>
-        <div class="mbubble ${anom?'anom':''}">${text}</div>
-        ${time?`<div class="mbubble-time ${anom?'anom':''}">${time}</div>`:''}
-      </div>
-    </div>`;
-  }
-
-  const STORY_MSGS = [
-    {
-      id:'msg_reader', gate:'kiroku_001', name:'繧ｿ◆縺薙％??', avatar:'📡',
-      date:'1949.08.17', anomaly:true, preview:'SECTOR A-01　READ COMPLETE',
-      body:() => `<div class="mdate-sep">受信時刻：照合不能</div>`
-        + _bub('SECTOR A-01　READ COMPLETE')
-        + _bub('固定処理：完了　／　欠損率：3.1%')
-        + _bub('RECEIVER：未登録', true, '1949-08-17 ⚠'),
-    },
-    {
-      id:'msg_external', gate:'telegram_001', name:'繧ｿ◆縺薙％??', avatar:'📡',
-      date:'1973.09.12', anomaly:true, preview:'EXTERNAL MATCH：2',
-      body:() => `<div class="mdate-sep">処理記録：1973年9月12日</div>`
-        + _bub('EXTERNAL MATCH：2')
-        + _bub('参照先：芙島市立図書館 郷土資料室／蒼沼ブルーランド思い出保存会')
-        + _bub('SECTOR SIGNAL-01　INPUT REQUIRED', true, '1973-09-12 09:04'),
-    },
-    {
-      id:'msg_receiver', gate:'hidden', name:'繧ｿ◆縺薙％??', avatar:'📡',
-      date:'復号済み', anomaly:true, preview:'RECEIVER FIELD：DECRYPTED',
-      body:() => `<div class="mdate-sep">受信時刻：照合不能</div>`
-        + _bub('RECEIVER FIELD　DECRYPTED')
-        + _bub('RECORD COUNT：1')
-        + _bub('READ REQUIRED', true, 'DECRYPT COMPLETE'),
-    },
-    {
-      id:'msg_deliver', gate:'fumi_tegami', name:'繧ｿ◆縺薙％??', avatar:'✉️',
-      date:'1973.09.11', anomaly:true, preview:'UNSENT DOCUMENT：1',
-      body:() => `<div class="mdate-sep">送信：1973年9月11日</div>`
-        + _bub('UNSENT DOCUMENT：1')
-        + _bub('宛先：猫塚清治　／　投函記録：なし')
-        + _bub('読取可能', true, '1973-09-11'),
-    },
-  ];
-
-  const THREADS = [
-    { id:'soran_intro', name:'繧ｿ◆縺薙％??', avatar:'📡', preview:'受信ファイル：1', date:'1973.09.12', anomaly:true, gate:null },
-    ...STORY_MSGS,
-  ];
-
-  /* 物語メッセージ配信：gate が復元された瞬間に一度だけトースト */
-  const _DELIVERED_KEY = 'koe_msgs_delivered';
-  function _getDelivered() {
-    try { return new Set(JSON.parse(localStorage.getItem(_DELIVERED_KEY)||'[]')); } catch { return new Set(); }
-  }
-
-  /* ── メッセージ既読管理 ── */
-  const _READ_KEY = 'koe_msgs_read';
-  function _getRead() { try { return new Set(JSON.parse(localStorage.getItem(_READ_KEY)||'[]')); } catch { return new Set(); } }
-  function _markRead(id) { const s=_getRead(); if(!s.has(id)) { s.add(id); localStorage.setItem(_READ_KEY, JSON.stringify([...s])); } }
-
-  /* ── ★v3.6 通知ログ（スレッドを持たない不明送信元の通知を蓄積・読み返し可能に） ── */
-  const _NOTIF_LOG_KEY = 'koe_notif_log';
-  function _getNotifLog() { try { return JSON.parse(localStorage.getItem(_NOTIF_LOG_KEY)||'[]'); } catch { return []; } }
-  function _appendNotifLog(msg) {
-    const log = _getNotifLog();
-    log.push({ t: Date.now(), msg });
-    while (log.length > 60) log.shift();
-    try { localStorage.setItem(_NOTIF_LOG_KEY, JSON.stringify(log)); } catch {}
-    // 新着が来たらスレッドを未読に戻す
-    try {
-      const s = _getRead();
-      if (s.has('notif_log')) { s.delete('notif_log'); localStorage.setItem(_READ_KEY, JSON.stringify([...s])); }
-    } catch {}
-  }
-  function _fmtNotifTime(ts) {
-    const d = new Date(ts);
-    return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-  }
-  const NOTIF_THREAD = {
-    id: 'notif_log', name: '繧ｿ◆縺薙％??', avatar: '📶', anomaly: true, gate: null,
-    get preview() { const l = _getNotifLog(); return l.length ? l[l.length-1].msg : ''; },
-    get date()    { const l = _getNotifLog(); return l.length ? _fmtNotifTime(l[l.length-1].t) : ''; },
-    body: () => {
-      const log = _getNotifLog();
-      return `<div class="mdate-sep">照合通知　── 自動記録</div>`
-        + log.map(e => _bub(e.msg, false, _fmtNotifTime(e.t))).join('');
-    },
-  };
-
-  function _visibleThreads() {
-    const base = THREADS.filter(t => t.gate ? KoeOS.isRestored(t.gate) : true);
-    if (_getNotifLog().length > 0) base.push(NOTIF_THREAD);
-    return base;
-  }
-  function _unreadCount() { const r=_getRead(); return _visibleThreads().filter(t => !r.has(t.id)).length; }
-  function deliverMessages(animate) {
-    const done = _getDelivered();
-    let changed = false;
-    for (const m of STORY_MSGS) {
-      if (done.has(m.id)) continue;
-      if (m.gate && !KoeOS.isRestored(m.gate)) continue;
-      done.add(m.id); changed = true;
-      if (animate) pushNotif(m.avatar, m.name, m.preview, m.id);
-    }
-    if (changed) localStorage.setItem(_DELIVERED_KEY, JSON.stringify([...done]));
-  }
-
-  function renderMessages(el) {
-    const visible = _visibleThreads();
-
-    if (visible.length === 0) {
-      el.innerHTML = '<div class="hempty">メッセージはまだありません。<br>アーカイブを読み進めると<br>ここに届きます。</div>';
-      return;
-    }
-
-    const _readSet = _getRead();
-    el.innerHTML = visible.map(t => {
-      const unread = !_readSet.has(t.id);
-      return `<div class="mthread" onclick="Shell.openThread('${t.id}')">
-        <div class="mthread-av">${t.avatar}</div>
-        <div class="mthread-body">
-          <div class="mthread-name" style="${unread ? '' : 'color:var(--t2);font-weight:400;'}">${t.name}</div>
-          <div class="mthread-prev">${t.preview}</div>
-        </div>
-        <div class="mthread-meta">
-          ${t.date}
-          ${unread ? '<div class="mthread-dot"></div>' : ''}
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  function openThread(threadId) {
-    const mv    = document.getElementById('msgview');
-    const title = document.getElementById('mvnav-title');
-    const body  = document.getElementById('mvcontent');
-    const t = THREADS.find(t=>t.id===threadId) || (threadId === 'notif_log' ? NOTIF_THREAD : null);
-    title.textContent = t ? t.name : threadId;
-
-    const content = (t && t.body) ? t.body()
-                  : (MSG_THREADS[threadId] ? MSG_THREADS[threadId]() : defaultThread(t));
-    body.innerHTML = content;
-
-    mv.classList.add('open');
-    KoeOS.addHistory(threadId);
-    _markRead(threadId);
-    updateBadges();
-  }
-
-  function closeMsgView() {
-    document.getElementById('msgview').classList.remove('open');
-    if(curApp === 'messages') renderMessages(document.getElementById('acontent'));
-  }
-
-  function defaultThread(t) {
-    if(!t) return '<div style="padding:40px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--t3);">スレッドが見つかりません</div>';
-    return `<div class="mdate-sep">${t.date}</div>
-    <div class="mbubble-row">
-      <div class="mbubble-av">${t.avatar}</div>
-      <div>
-        <div class="mbubble ${t.anomaly?'anom':''}">${t.preview}</div>
-        <div class="mbubble-time ${t.anomaly?'anom':''}">送信：${t.date}</div>
-      </div>
-    </div>`;
-  }
-
-  /* ═══════════════════════════════════
-     履歴アプリ
-  ═══════════════════════════════════ */
-  function renderHistory(el) {
-    const hist = KoeOS.getHistory();
-    const footer = document.getElementById('afooter');
-
-    // ★公開準備（2026-06-11）：デバッグパネルは URL に ?dev を付けたときだけ表示する。
-    //   例 https://…/phone_shell.html?dev　（公開ビルドでもコードは残るが、通常導線からは見えない）
-    const devMode = /[?&]dev\b/.test(location.search);
-    if(hist.length > 0) {
-      footer.style.display = 'flex';
-      footer.innerHTML = `
-        <button onclick="Shell.clearHistory()" style="
-          flex:1;background:var(--red-d);border:1px solid rgba(200,88,88,.22);
-          border-radius:10px;padding:10px;font-family:var(--mono);font-size:11px;
-          color:var(--red);letter-spacing:.06em;cursor:pointer;text-align:center;
-        ">履歴をクリア</button>` + (devMode ? `
-        <button onclick="Shell.openDebug()" style="
-          background:rgba(90,143,212,.1);border:1px solid rgba(90,143,212,.22);
-          border-radius:10px;padding:10px 14px;font-family:var(--mono);font-size:11px;
-          color:var(--blue);letter-spacing:.06em;cursor:pointer;white-space:nowrap;
-        ">DEV</button>` : '');
-    } else if(devMode) {
-      footer.style.display = 'flex';
-      footer.innerHTML = `
-        <button onclick="Shell.openDebug()" style="
-          flex:1;background:rgba(90,143,212,.1);border:1px solid rgba(90,143,212,.22);
-          border-radius:10px;padding:10px;font-family:var(--mono);font-size:11px;
-          color:var(--blue);letter-spacing:.06em;cursor:pointer;
-        ">DEV ── デバッグパネル</button>`;
-    } else {
-      footer.style.display = 'none';
-      footer.innerHTML = '';
-    }
-
-    if(hist.length === 0) {
-      el.innerHTML = '<div class="hempty">閲覧履歴はありません。<br>復元アプリでページを開くと<br>ここに記録されます。</div>';
-      return;
-    }
-
-    const fmt = ts => {
-      const d = new Date(ts);
-      return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    const el = openWin('frag:' + id, f.title, f.view === 'external' ? '🔌' : '📄',
+      'ファイル　編集', 'たこつぼ:\\' + f.title, body,
+      KoranOS.isRead(id) ? '✓ ' + fmtDate(KoranOS.readAt(id)) : '● 未読');
+    const q = (sel) => el.querySelector(sel);
+    if (q('[data-act="close"]')) q('[data-act="close"]').addEventListener('click', () => closeWin('frag:' + id));
+    if (q('[data-act="read"]')) q('[data-act="read"]').addEventListener('click', () => {
+      KoranOS.markRead(id);
+      closeWin('frag:' + id);
+      refreshExplorer(); refreshManager(); refreshStartMenu();
+    });
+    if (q('[data-act="zoom-news"]')) q('[data-act="zoom-news"]').addEventListener('click', () => {
+      el.querySelector('#dz-zoom').style.display = 'block';
+      q('[data-act="zoom-news"]').disabled = true;
+    });
+    if (q('[data-act="zoom-face"]')) q('[data-act="zoom-face"]').addEventListener('click', () => {
+      el.querySelector('#dz-face').style.display = 'block';
+      q('[data-act="zoom-face"]').disabled = true;
+    });
+    if (q('[data-act="open-ext"]')) q('[data-act="open-ext"]').addEventListener('click', () => {
+      window.open(f.external.url, '_blank', 'noopener');
+    });
+    const notes = {
+      station: '芙島駅 ― 書入れはありません',
+      momomi: '桃見山 ― 1950・1957・1963 三月の書入れ',
+      aonuma: '北の沼 ― 1973『今年は北の沼へ』',
     };
-
-    el.innerHTML = hist.map(h => `
-      <div class="hrow" onclick="Shell.open('browser'); setTimeout(()=>Shell.bNavigate('${h.id}'),100);">
-        <div class="hrow-icon">${h.icon||'📄'}</div>
-        <div class="hrow-body">
-          <div class="hrow-title">${h.title}</div>
-          <div class="hrow-time">${fmt(h.ts)}</div>
-        </div>
-      </div>`).join('');
+    el.querySelectorAll('.mapspot').forEach(g => {
+      g.addEventListener('click', () => {
+        const msg = el.querySelector('#dz-mapmsg');
+        if (!msg) return;
+        msg.className = 'mapmsg';
+        msg.textContent = notes[g.getAttribute('data-spot')] || '';
+      });
+    });
   }
 
-  function clearHistory() {
-    if(confirm('閲覧履歴をすべて削除しますか？')) {
-      KoeOS.clearHistory();
-      renderHistory(document.getElementById('acontent'));
-    }
+  /* ---------- 第一幕ボード（確定する） ---------- */
+  function fixedLabel(slot){
+    const v = KoranOS.load().fixed[slot.id];
+    if (slot.type === 'free') return v;
+    return slot.options[v];
   }
-
-  /* ═══════════════════════════════════
-     ★v3.4 セクタマップ（タコ躯体図）
-  ═══════════════════════════════════ */
-  function _renderTako(el) {
-    const legs = KoeOS.getLegProgress();
-    const ending = localStorage.getItem('koe_ending');
-    const isClear = KoeOS.isViewed('epilogue') && (ending === 'record' || ending === 'source');
-    // ★v3.5 任意返信（隠しページ「返信」閲覧済み）：タコの頭が金色に点灯する
-    const isTrue = KoeOS.isViewed('okaeri');
-
-    /* ─ (1) ステータス行 ─ */
-    const statusHtml = isClear
-      ? `<div class="tako-status" style="color:var(--gold);">損耗率：0.0%　全セクタ固定</div>`
-      : `<div class="tako-status">セクタ固定率：<span style="color:var(--gold);">${KoeOS.getFixedPercent()}%</span>　<span style="color:rgba(200,88,88,.6);">損耗進行中</span></div>`;
-
-    /* ─ (2) 小見出し ─ */
-    const subheadHtml = `<div class="tako-subhead">── 記録躯体　セクタ配置図</div>`;
-
-    /* ─ (3) SVG躯体図 ─ */
-    // 8本の足：中心(160,150)、半径36の胴体から放射状
-    // 角度：0°から開始し45°ずつ時計回り（上から右回り）
-    // legs の並び順: A=上, B=右上, C=右, D=右下, E=下, spine=左下, shelf=左, core=左上
-    const cx = 160, cy = 150, bodyR = 36;
-    // 足の角度（度）、時計回り・上から
-    const legAngles = [-90, -45, 0, 45, 90, 135, 180, -135]; // 上→右上→右→右下→下→左下→左→左上
-
-    function toRad(deg) { return deg * Math.PI / 180; }
-
-    // 足パスの生成：start から angle 方向に湾曲しながら長さ legLen 伸びる
-    // Q カーブで緩やかな渦巻き
-    function legPath(angle, legLen) {
-      const rad = toRad(angle);
-      const perpRad = toRad(angle + 25); // 少し曲げる方向
-      // 開始点（胴体縁）
-      const sx = cx + bodyR * Math.cos(rad);
-      const sy = cy + bodyR * Math.sin(rad);
-      // 先端
-      const ex = cx + legLen * Math.cos(rad);
-      const ey = cy + legLen * Math.sin(rad);
-      // 制御点：中間点を少し横にずらして湾曲
-      const midLen = legLen * 0.55;
-      const qx = cx + midLen * Math.cos(perpRad);
-      const qy = cy + midLen * Math.sin(perpRad);
-      return { sx, sy, ex, ey, qx, qy };
+  function boardBody(){
+    let h = `<div class="actq"><span class="q">第一幕</span>記録から抜けた人物は誰か</div>`;
+    h += `<div class="sticky">🌟 小蘭の付箋：断片は全部開いてあるよ。ボードにはめて、機械に確かめてね。――小蘭</div>`;
+    KoranOS.SLOTS.forEach((s, i) => {
+      const fixed = KoranOS.isFixed(s.id);
+      const locked = !fixed && KoranOS.slotLocked(s);
+      const hint = KoranOS.slotHint(s.id);
+      h += `<div class="slot${fixed ? ' fixed' : ''}" data-slot="${s.id}">`;
+      h += `<div class="sq"><span class="qn">Q${i + 1}</span>${esc(s.q)}${fixed ? '　<span class="qok">✓ 確定</span>' : ''}</div>`;
+      if (fixed) {
+        h += `<div class="sfix">${esc(fixedLabel(s))}</div>`;
+      } else if (locked) {
+        h += `<div class="slock">🔌 外部照合が必要 ― 郷土資料室を開くこと</div>` +
+          `<div class="doc-btns"><button data-act="go-ext">郷土資料室を開く ↗</button></div>`;
+      } else if (s.type === 'free') {
+        h += `<div class="doc-btns"><input id="dz-in-${s.id}" placeholder="欠損語を入れる" autocomplete="off">` +
+          `<button class="primary" data-act="answer" data-slot="${s.id}">確定する</button></div>`;
+      } else {
+        h += `<div class="opts">` + s.options.map((o, oi) =>
+          `<button data-act="pick" data-slot="${s.id}" data-v="${oi}">${esc(o)}</button>`).join('') + `</div>`;
+      }
+      if (hint && !fixed) h += `<div class="mapmsg bad">${esc(hint)}</div>`;
+      h += `</div>`;
+    });
+    h += `<div class="emptyframe"><div class="ef-h">清治さんの写真</div>` +
+      `<div class="ef-box">［ 写真は存在しない ］</div></div>`;
+    if (KoranOS.boardComplete()) {
+      h += `<div class="complete">第一幕 確定<br>` +
+        `<span>記録から抜けた人物は盤面に残った<br>LOSS: 0.0% ― 第二幕は試作範囲外</span></div>`;
     }
-
-    // 足上の点（パラメタ t: 0=胴体側, 1=先端）をベジエ曲線で求める
-    function bezierPt(p, t) {
-      const mt = 1 - t;
-      return {
-        x: mt*mt*p.sx + 2*mt*t*p.qx + t*t*p.ex,
-        y: mt*mt*p.sy + 2*mt*t*p.qy + t*t*p.ey,
+    return h;
+  }
+  function openBoard(){
+    const p = KoranOS.progress();
+    const el = openWin('board', '第一幕ボード', '📋', null, 'たこつぼ:\\ボード\\第一幕', boardBody(),
+      `確定 ${p.fixed}/${p.slotTotal}`);
+    bindBoard(el);
+  }
+  function refreshBoard(){
+    if (!openWins['board']) return;
+    const body = openWins['board'].el.querySelector('.wbody');
+    body.innerHTML = boardBody();
+    bindBoard(openWins['board'].el);
+  }
+  function bindBoard(root){
+    root.querySelectorAll('button[data-act="pick"]').forEach(b => {
+      b.addEventListener('click', () => {
+        const r = KoranOS.trySlot(b.getAttribute('data-slot'), b.getAttribute('data-v'));
+        if (r.ok) {
+          toast(`FIXED: ${b.getAttribute('data-slot')}`);
+          if (KoranOS.boardComplete()) setTimeout(() => toast('ACT1 COMPLETE ｜ 盤面が確定しました'), 600);
+        } else {
+          toast('MISMATCH: 断片を読み直すこと');
+        }
+        refreshBoard(); refreshManager(); refreshStartMenu();
+      });
+    });
+    root.querySelectorAll('button[data-act="answer"]').forEach(b => {
+      const sid = b.getAttribute('data-slot');
+      const go = () => {
+        const inp = root.querySelector('#dz-in-' + sid);
+        const r = KoranOS.trySlot(sid, inp ? inp.value : '');
+        if (r.ok) {
+          toast(`FIXED: ${sid}`);
+          if (KoranOS.boardComplete()) setTimeout(() => toast('ACT1 COMPLETE ｜ 盤面が確定しました'), 600);
+        } else {
+          toast('不一致 ― 文脈を読み直すこと');
+        }
+        refreshBoard(); refreshManager(); refreshStartMenu();
       };
-    }
-
-    let svgParts = [];
-    // 目
-    legs.forEach((leg, i) => {
-      const angle = legAngles[i];
-      const legLen = 125;
-      const p = legPath(angle, legLen);
-      const pathStr = `M ${p.sx.toFixed(1)} ${p.sy.toFixed(1)} Q ${p.qx.toFixed(1)} ${p.qy.toFixed(1)} ${p.ex.toFixed(1)} ${p.ey.toFixed(1)}`;
-
-      // 足の線の色
-      let strokeColor;
-      if(isClear || leg.complete) strokeColor = 'var(--gold)';
-      else if(leg.revealed) strokeColor = 'rgba(200,169,110,0.35)';
-      else strokeColor = 'rgba(255,255,255,0.08)';
-
-      svgParts.push(`<path d="${pathStr}" fill="none" stroke="${strokeColor}" stroke-width="1.5" stroke-linecap="round"/>`);
-
-      // 吸盤（各セクタ）を足に沿って等間隔配置
-      const n = leg.sectors.length;
-      leg.sectors.forEach((sec, si) => {
-        // t=0.15（胴体近く）から t=0.9（先端近く）まで均等割り
-        const t = n === 1 ? 0.5 : 0.15 + (si / (n - 1)) * 0.75;
-        const pt = bezierPt(p, t);
-        const isViewed = isClear || sec.viewed;
-        const isUnread = !isClear && sec.restored && !sec.viewed;
-        const isLocked = !sec.restored;
-
-        if(isViewed) {
-          // グロー円（薄い金）
-          svgParts.push(`<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="9" fill="rgba(200,169,110,0.15)"/>`);
-          svgParts.push(`<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="5" fill="var(--gold)"/>`);
-        } else if(isUnread) {
-          svgParts.push(`<circle class="sector-unread" cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="5" fill="none" stroke="var(--gold)" stroke-width="1.5"/>`);
-        } else {
-          // 未解放
-          svgParts.push(`<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="5" fill="#101014" stroke="#2a2a30" stroke-width="1"/>`);
-        }
-      });
-
-      // 足先ラベル
-      const labelStr = leg.revealed ? leg.label : '▒▒▒▒';
-      const labelColor = (isClear || leg.complete) ? 'var(--gold)' : (leg.revealed ? 'var(--t2)' : 'var(--t3)');
-      // ラベル位置（足先より少し先、画面端に収まるよう調整）
-      const labelRad = toRad(angle);
-      let lx = cx + (legLen + 14) * Math.cos(labelRad);
-      let ly = cy + (legLen + 14) * Math.sin(labelRad);
-      // テキストアンカー調整
-      let anchor = 'middle';
-      const normAngle = ((angle % 360) + 360) % 360;
-      if(normAngle > 200 && normAngle < 340) anchor = 'end';
-      else if(normAngle > 20 && normAngle < 160) anchor = 'start';
-      // 画面端クランプ（viewBox 0 0 320 340）
-      lx = Math.max(14, Math.min(306, lx));
-      ly = Math.max(10, Math.min(334, ly));
-      svgParts.push(`<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}" font-family="IBM Plex Mono,monospace" font-size="9" fill="${labelColor}" dominant-baseline="middle">${labelStr}</text>`);
+      b.addEventListener('click', go);
+      const inp = root.querySelector('#dz-in-' + sid);
+      if (inp) inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
     });
-
-    // 胴体（足の根元を覆うよう最後に描く）。目は胴体の塗りに隠れないよう、さらに後に描く
-    // ★v3.5 任意返信の閲覧後は頭（胴体＋目）が金色に点灯する
-    const headFill   = isTrue ? 'rgba(200,169,110,0.22)' : '#0d0d10';
-    const headStroke = isTrue ? 'var(--gold)' : 'rgba(200,169,110,0.25)';
-    const eyeFill    = isTrue ? 'var(--gold)' : 'none';
-    const eyeStroke  = isTrue ? 'var(--gold)' : 'rgba(200,169,110,0.5)';
-    const bodySvg = `<g class="${isTrue ? 'tako-head-true' : ''}">`
-      + `<circle cx="${cx}" cy="${cy}" r="${bodyR}" fill="${headFill}" stroke="${headStroke}" stroke-width="1.5"/>`
-      + `<circle cx="${cx-12}" cy="${cy-6}" r="3" fill="${eyeFill}" stroke="${eyeStroke}" stroke-width="1.2"/>`
-      + `<circle cx="${cx+12}" cy="${cy-6}" r="3" fill="${eyeFill}" stroke="${eyeStroke}" stroke-width="1.2"/>`
-      + `</g>`;
-
-    const completeNote = isTrue
-      ? `<div class="tako-complete-note">RETURN PACKET：1</div>`
-      : (isClear ? `<div class="tako-complete-note">ALL SECTORS：FIXED</div>` : '');
-    const svgClass = isClear ? 'tako-complete-svg' : '';
-
-    const svgHtml = `
-      <div class="tako-svg-wrap">
-        <svg class="${svgClass}" viewBox="0 0 320 340" width="300" height="318" xmlns="http://www.w3.org/2000/svg">
-          ${svgParts.join('\n          ')}
-          ${bodySvg}
-        </svg>
-      </div>
-      ${completeNote}`;
-
-    /* ─ (4) 足の一覧 ─ */
-    let listHtml = '<div class="tako-list">';
-    legs.forEach((leg, i) => {
-      const headerLabel = leg.revealed ? leg.label : '▒▒▒▒';
-      const dotsArr = leg.sectors.map(sec => {
-        if(isClear || sec.viewed) return `<span style="color:var(--gold);">●</span>`;
-        if(sec.restored && !sec.viewed) return `<span class="sector-unread" style="color:var(--gold);">◌</span>`;
-        return `<span style="color:var(--t3);">○</span>`;
+    root.querySelectorAll('button[data-act="go-ext"]').forEach(b => {
+      b.addEventListener('click', () => {
+        const f = KoranOS.getFrag('frag_ext');
+        if (f) window.open(f.external.url, '_blank', 'noopener');
       });
-      const dotsHtml = dotsArr.join('');
-      const fixedCnt = isClear ? leg.total : leg.fixed;
-      const headerClass = leg.revealed ? 'tako-leg-header' : 'tako-leg-header dimmed';
-      const headerColor = (isClear || leg.complete) ? 'color:var(--gold);' : '';
-
-      listHtml += `<div class="tako-leg-row" onclick="_takoToggleLeg(this)">
-        <div class="${headerClass}" style="${headerColor}">
-          <span style="flex:1;">${headerLabel}</span>
-          <span style="font-size:10px;color:var(--t3);">${fixedCnt}/${leg.total}</span>
-          <span style="margin-left:8px;font-size:10px;">${dotsHtml}</span>
-          <span style="margin-left:6px;color:var(--t3);font-size:12px;" class="tako-toggle-arrow">›</span>
-        </div>
-        <div class="tako-leg-sectors" data-leg-idx="${i}">`;
-
-      leg.sectors.forEach(sec => {
-        if(isClear || sec.viewed) {
-          listHtml += `<div class="tako-sector-item"><span style="color:var(--gold);">●</span><span style="color:var(--t1);">${sec.title}</span></div>`;
-        } else if(sec.restored && !sec.viewed) {
-          listHtml += `<div class="tako-sector-item" style="cursor:pointer;" onclick="event.stopPropagation();Shell.open('browser');setTimeout(()=>Shell.bNavigate('${sec.id}'),80);">
-            <span class="sector-unread" style="color:var(--gold);">◌</span>
-            <span style="color:var(--t1);">${sec.title}</span>
-            <span style="color:var(--t3);font-size:10px;margin-left:4px;">─ 未読</span>
-          </div>`;
-        } else {
-          listHtml += `<div class="tako-sector-item"><span style="color:var(--t3);">▒</span><span style="color:var(--t3);">▒▒▒▒▒▒</span></div>`;
-        }
-      });
-
-      listHtml += `</div></div>`;
     });
-    listHtml += '</div>';
-
-    /* ─ (6) 添え書き ─ */
-    const footHtml = `<div class="tako-foot">VIEWED：FIXED<br>UNREAD：LOSS ACTIVE</div>`;
-
-    el.innerHTML = `<div class="tako-wrap">${statusHtml}${subheadHtml}${svgHtml}${listHtml}${footHtml}</div>`;
   }
 
-  /* セクタマップ：足の一覧行の開閉トグル */
-  window._takoToggleLeg = function(row) {
-    const sectors = row.querySelector('.tako-leg-sectors');
-    const arrow   = row.querySelector('.tako-toggle-arrow');
-    if(!sectors) return;
-    const isOpen = sectors.classList.toggle('open');
-    if(arrow) arrow.textContent = isOpen ? '⌄' : '›';
-  };
-
-  /* ═══════════════════════════════════
-     デバッグパネル
-  ═══════════════════════════════════ */
-  function openDebug() {
-    const content = document.getElementById('acontent');
-    const footer  = document.getElementById('afooter');
-
-    const old = document.getElementById('bbar-wrap');
-    if(old) old.remove();
-    content.style.display = 'block';
-    content.style.flexDirection = '';
-    content.style.overflow = 'auto';
-
-    footer.style.display = 'flex';
-    footer.innerHTML = `
-      <button onclick="Shell.open('history')" style="
-        flex:1;background:var(--s2);border:1px solid var(--bd);
-        border-radius:10px;padding:10px;font-family:var(--mono);font-size:11px;
-        color:var(--t2);letter-spacing:.06em;cursor:pointer;
-      ">‹ 履歴に戻る</button>`;
-
-    const pages    = KoeOS.PAGES;
-    const restored = pages.filter(p => KoeOS.isRestored(p.id));
-    const locked   = pages.filter(p => !KoeOS.isRestored(p.id));
-    const total    = pages.filter(p => p.locked).length;
-    const pct      = KoeOS.getProgressPercent();
-
-    const phaseLabel = {1:'第1層', 2:'第2層', 3:'第3層', 0:'常時公開'};
-
-    // ★v3.1 解析アプリのインストール状態
-    const toolRows = KoeOS.TOOL_APPS.map(a => {
-      const on = KoeOS.isInstalled(a.id);
-      return `
-        <div style="display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid rgba(255,255,255,.04);">
-          <span style="flex-shrink:0;">${a.icon}</span>
-          <span style="flex:1;color:var(--t1);font-size:11px;">${a.name}</span>
-          <span style="color:${on?'var(--green)':'var(--t3)'};font-size:10px;">${on?'済':'未'}</span>
-          <span onclick="_devToggleTool('${a.id}')" style="
-            color:var(--blue);font-size:10px;cursor:pointer;
-            border:1px solid rgba(90,143,212,.3);border-radius:6px;padding:2px 8px;
-          ">${on?'削除':'導入'}</span>
-        </div>`;
-    }).join('');
-
-    content.innerHTML = `
-      <div style="padding:16px;font-family:var(--mono);font-size:11px;color:var(--t2);line-height:1.9;">
-
-        <div style="color:var(--blue);letter-spacing:.12em;margin-bottom:14px;">── DEV PANEL</div>
-
-        <div style="background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:12px;">
-          <div style="color:var(--t3);letter-spacing:.1em;font-size:10px;margin-bottom:8px;">PROGRESS</div>
-          <div style="color:var(--gold);font-size:16px;margin-bottom:4px;">${pct}%</div>
-          <div style="color:var(--t3);">復元済み：${restored.length} / ${total}</div>
-        </div>
-
-        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
-          <button onclick="_devUnlockAll()" style="
-            background:rgba(200,169,110,.1);border:1px solid rgba(200,169,110,.25);
-            border-radius:8px;padding:10px;color:var(--gold);cursor:pointer;
-            font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-align:left;
-          ">▸ 全ページを一括解放</button>
-          <button onclick="_devUnlockPhase(1)" style="
-            background:var(--s2);border:1px solid var(--bd);
-            border-radius:8px;padding:10px;color:var(--t2);cursor:pointer;
-            font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-align:left;
-          ">▸ 第1層のみ解放（スポークA〜E）</button>
-          <button onclick="_devUnlockPhase(2)" style="
-            background:var(--s2);border:1px solid var(--bd);
-            border-radius:8px;padding:10px;color:var(--t2);cursor:pointer;
-            font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-align:left;
-          ">▸ 第2層まで解放</button>
-          <button onclick="_devSetClear()" style="
-            background:var(--s2);border:1px solid var(--bd);
-            border-radius:8px;padding:10px;color:var(--t2);cursor:pointer;
-            font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-align:left;
-          ">▸ クリア状態にする（追記ED・全閲覧済み）</button>
-          <button onclick="_devSetTrueEnd()" style="
-            background:var(--s2);border:1px solid var(--bd);
-            border-radius:8px;padding:10px;color:var(--t2);cursor:pointer;
-            font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-align:left;
-          ">▸ 任意返信状態にする（タコの頭点灯）</button>
-          <button onclick="_devReset()" style="
-            background:var(--red-d);border:1px solid rgba(200,88,88,.22);
-            border-radius:8px;padding:10px;color:var(--red);cursor:pointer;
-            font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-align:left;
-          ">▸ 全データをリセット（要確認）</button>
-        </div>
-
-        <!-- ★v3.1 解析アプリ強制インストール/アンインストール -->
-        <div style="color:var(--t3);letter-spacing:.1em;font-size:10px;margin-bottom:6px;">TOOL APPS</div>
-        <div style="background:var(--s2);border:1px solid var(--bd);border-radius:8px;margin-bottom:12px;overflow:hidden;">
-          ${toolRows}
-        </div>
-
-        <div style="color:var(--t3);letter-spacing:.1em;font-size:10px;margin-bottom:6px;">RESTORED (${restored.length})</div>
-        <div style="background:var(--s2);border:1px solid var(--bd);border-radius:8px;margin-bottom:12px;overflow:hidden;">
-          ${restored.length === 0
-            ? '<div style="padding:10px 12px;color:var(--t3);font-size:10px;">なし</div>'
-            : restored.map(p => `
-              <div style="
-                display:flex;align-items:center;gap:8px;
-                padding:7px 12px;border-bottom:1px solid rgba(255,255,255,.04);
-                cursor:pointer;
-              " onclick="Shell.open('browser');setTimeout(()=>Shell.bNavigate('${p.id}'),80);">
-                <span style="flex-shrink:0;">${p.icon}</span>
-                <span style="flex:1;color:var(--t1);font-size:11px;">${p.title}</span>
-                <span style="color:var(--t3);font-size:10px;">${phaseLabel[p.phase]||''}</span>
-              </div>`).join('')
-          }
-        </div>
-
-        <div style="color:var(--t3);letter-spacing:.1em;font-size:10px;margin-bottom:6px;">LOCKED (${locked.length})</div>
-        <div style="background:var(--s2);border:1px solid var(--bd);border-radius:8px;overflow:hidden;">
-          ${locked.length === 0
-            ? '<div style="padding:10px 12px;color:var(--gold);font-size:10px;">全ページ解放済み</div>'
-            : locked.map(p => `
-              <div style="
-                display:flex;align-items:center;gap:8px;
-                padding:7px 12px;border-bottom:1px solid rgba(255,255,255,.04);
-                cursor:pointer;
-              " onclick="_devUnlockOne('${p.id}')">
-                <span style="flex-shrink:0;opacity:.4;">${p.icon}</span>
-                <span style="flex:1;color:var(--t3);font-size:11px;">${p.title}</span>
-                <span style="color:var(--blue);font-size:10px;">解放</span>
-              </div>`).join('')
-          }
-        </div>
-
-      </div>`;
-  }
-
-  window._devUnlockAll = () => {
-    KoeOS.PAGES.forEach(p => KoeOS.markRestored(p.id));
-    Shell.openDebug();
-  };
-  window._devUnlockPhase = (maxPhase) => {
-    KoeOS.PAGES.filter(p => p.phase <= maxPhase).forEach(p => KoeOS.markRestored(p.id));
-    Shell.openDebug();
-  };
-  window._devUnlockOne = (id) => {
-    KoeOS.markRestored(id);
-    const src = `pages/${id}.js`;
-    if (!document.querySelector(`script[data-page="${src}"]`)) {
-      loadPageScript(src).then(() => Shell.openDebug());
+  /* ---------- 復元マネージャー ---------- */
+  function managerBody(){
+    const p = KoranOS.progress();
+    const done = KoranOS.boardComplete();
+    const loss = done ? '0.0' : (14.0 - p.fixed * 2).toFixed(1);
+    let h = `<div class="actq"><span class="q">第一幕</span>記録から抜けた人物は誰か</div>`;
+    h += `<div class="sticky">🌟 小蘭の付箋：断片は全部開いてあるよ。ボードにはめて、機械に確かめてね。――小蘭</div>`;
+    if (done) {
+      h += `<div class="mgr-next" style="border-color:#9fd8cb;"><div class="q" style="color:#1f7a6d;">BOARD: COMPLETE</div>` +
+        `<div class="t">第一幕確定（試作範囲）</div></div>`;
     } else {
-      Shell.openDebug();
+      h += `<div class="mgr-next"><div class="q">BOARD: ${p.fixed}/${p.slotTotal} FIXED</div>` +
+        `<div class="t">第一幕ボード</div>` +
+        `<button data-open-board>ボードを開く</button></div>`;
     }
-  };
-  // ★v3.1 解析アプリ強制トグル
-  window._devToggleTool = (id) => {
-    if(KoeOS.isInstalled(id)) KoeOS.uninstallApp(id);
-    else {
-      KoeOS.installApp(id);
-      loadToolScript(`tools/${id}.js`);
-    }
-    Shell.renderToolGrid();
-    Shell.openDebug();
-  };
-  // ★v3.5 実ブラウザテスト支援：読了状態／任意返信状態をワンタップで再現
-  window._devSetClear = () => {
-    KoeOS.PAGES.filter(p => p.locked && p.id !== 'okaeri').forEach(p => { KoeOS.markRestored(p.id); KoeOS.markViewed(p.id); });
-    try {
-      localStorage.setItem('koe_fumi_note', '猫塚清治と蛸川小蘭は、ここにいた。');
-      localStorage.setItem('koe_ending', 'record');
-      localStorage.removeItem('koe_true_end');
-    } catch {}
-    Shell.openDebug();
-  };
-  window._devSetTrueEnd = () => {
-    KoeOS.PAGES.filter(p => p.locked).forEach(p => { KoeOS.markRestored(p.id); KoeOS.markViewed(p.id); });
-    try {
-      localStorage.setItem('koe_fumi_note', 'おかえりなさい。');
-      localStorage.setItem('koe_ending', 'record');
-      localStorage.setItem('koe_true_end', '1');
-    } catch {}
-    Shell.openDebug();
-  };
-  window._devReset = () => {
-    if(confirm('全データ（進捗・履歴・キーワード）をリセットします。よろしいですか？')) {
-      KoeOS.resetAll();
-      location.reload();
-    }
-  };
+    h += `<div class="mgr-log">断片 既読${p.read}/${p.fragTotal} ｜ LOSS: ${loss}%` +
+      `${done ? '' : ' ｜ 未固定の記録からこわれていきます'}<br>MODE: READ ONLY (via WATARI RELAY)</div>`;
+    return h;
+  }
+  function openManager(){
+    const el = openWin('manager', '復元マネージャー', '📥', null, 'たこつぼ:\\システム\\復元マネージャー', managerBody(), '確定はボードで行います');
+    const b = el.querySelector('[data-open-board]');
+    if (b) b.addEventListener('click', openBoard);
+  }
+  function refreshManager(){
+    if (!openWins['manager']) return;
+    const body = openWins['manager'].el.querySelector('.wbody');
+    body.innerHTML = managerBody();
+    const b = body.querySelector('[data-open-board]');
+    if (b) b.addEventListener('click', openBoard);
+  }
 
-  return { boot, open, closeApp, goHome, closeMsgView, openThread,
-           bNavigate, bBack, bFwd, doSearch, clearHistory, pushNotif, openDebug,
-           renderToolGrid, openTool, setSearchAndFocus, syncExternalProgress };
-})();
+  function openTrash(){
+    openWin('trash', 'ごみ箱', '🗑️', 'ファイル　編集', 'たこつぼ:\\ごみ箱', '<div style="padding:26px 6px;text-align:center;color:#7a756a;">からです。<br><span style="font-size:11px;">（小蘭は要らないものを残さない主義でした）</span></div>', '0 個のオブジェクト');
+  }
 
+  /* ---------- デスクトップとスタート ---------- */
+  const ICONS = [
+    { id:'memo', glyph:'📝', cap:'よんでね.txt', hint:'まずこれ', act:openMemo },
+    { id:'board', glyph:'📋', cap:'第一幕ボード', hint:null, act:openBoard },
+    { id:'manager', glyph:'📥', cap:'復元マネージャー', hint:null, act:openManager },
+    { id:'explorer', glyph:'🐙', cap:'たこつぼ', hint:null, act:openExplorer },
+    { id:'trash', glyph:'🗑️', cap:'ごみ箱', hint:null, act:openTrash },
+  ];
+  function renderIcons(){
+    const p = KoranOS.progress();
+    iconsEl.innerHTML = '';
+    ICONS.forEach(ic => {
+      const el = document.createElement('div');
+      el.className = 'dicon';
+      let badge = '';
+      if (ic.id === 'explorer' && p.unread > 0) badge = `<span class="bdg">${p.unread}</span>`;
+      if (ic.id === 'board' && p.open > 0) badge = `<span class="bdg">${p.open}</span>`;
+      if (ic.id === 'manager' && !KoranOS.boardComplete()) badge = `<span class="bdg">!</span>`;
+      el.innerHTML = badge + `<div class="glyph">${ic.glyph}</div><div class="cap">${esc(ic.cap)}</div>` +
+        (ic.hint ? `<span class="hint">▼ ${esc(ic.hint)}</span>` : '');
+      const launch = () => { document.querySelectorAll('.dicon').forEach(d => d.classList.remove('sel')); el.classList.add('sel'); ic.act(); };
+      if (finePointer) {
+        el.addEventListener('click', () => { document.querySelectorAll('.dicon').forEach(d => d.classList.remove('sel')); el.classList.add('sel'); });
+        el.addEventListener('dblclick', launch);
+      } else {
+        el.addEventListener('click', launch);
+      }
+      iconsEl.appendChild(el);
+    });
+  }
+  function refreshStartMenu(){
+    const p = KoranOS.progress();
+    document.getElementById('sm-items').innerHTML =
+      (KoranOS.boardComplete()
+        ? `<button data-sm="none" disabled style="opacity:.5;">✓ 第一幕確定</button>`
+        : `<button data-sm="board">📋 第一幕ボード（確定 ${p.fixed}/${p.slotTotal}）</button>`) +
+      `<button data-sm="explorer">🐙 たこつぼ（未読 ${p.unread}）</button>` +
+      `<button data-sm="memo">📝 よんでね.txt</button>` +
+      `<button data-sm="logoff">🔌 ログオフ</button>` +
+      `<button data-sm="reset">🧹 表示を初期化（試験用）</button>`;
+    document.querySelectorAll('#sm-items button').forEach(b => {
+      b.addEventListener('click', () => {
+        const k = b.getAttribute('data-sm');
+        document.getElementById('startmenu').classList.remove('open');
+        if (k === 'board') openBoard();
+        if (k === 'explorer') openExplorer();
+        if (k === 'memo') openMemo();
+        if (k === 'logoff') confirmLogoff();
+        if (k === 'reset') { KoranOS.resetForTest(); location.reload(); }
+      });
+    });
+    renderIcons();
+  }
 
-/* ═══════════════════════════════════════
-   PAGE_CONTENT / MSG_THREADS / TOOL_UI
-   各ページは pages/*.js、解析アプリは tools/*.js で個別定義
-═══════════════════════════════════════ */
-const PAGE_CONTENT = {};
-const MSG_THREADS  = {};
-const TOOL_UI      = {};   // ★v3.1 解析アプリUI辞書
-
-const ALWAYS_LOAD = [
-  'pages/archive_about.js',
-  'pages/soran_intro.js',   // MSG_THREADS（メッセージスレッド）として動作。PAGES 登録不要
-];
-
-function loadPageScript(src) {
-  return new Promise(resolve => {
-    if (document.querySelector(`script[data-page="${src}"]`)) { resolve(); return; }
-    const s = document.createElement('script');
-    s.src = src;
-    s.dataset.page = src;
-    s.onload = resolve;
-    s.onerror = resolve;
-    document.head.appendChild(s);
+  /* ---------- ログオフ：確認→切断表示→中継画面へ ---------- */
+  function confirmLogoff(){
+    const body = `<div style="padding:6px 2px 2px;line-height:2.1;">読み取りセッションを切断します。<br>` +
+      `確定した記録は残ります。</div>` +
+      `<div class="doc-btns"><button data-act="back">もどる</button>` +
+      `<button class="primary" data-act="off">切断する</button></div>`;
+    const el = openWin('logoff-c', 'セッションの切断', '🔌', null, null, body, null);
+    el.querySelector('[data-act="back"]').addEventListener('click', () => closeWin('logoff-c'));
+    el.querySelector('[data-act="off"]').addEventListener('click', () => {
+      closeWin('logoff-c');
+      document.getElementById('logoff').classList.add('on');
+      setTimeout(() => { window.location.href = 'remote.html?session=closed'; }, 1500);
+    });
+  }
+  document.getElementById('startbtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    refreshStartMenu();
+    document.getElementById('startmenu').classList.toggle('open');
   });
-}
-
-/* ★v3.1 解析アプリ（tools/*.js）の動的ロード */
-function loadToolScript(src) {
-  return new Promise(resolve => {
-    if (document.querySelector(`script[data-tool="${src}"]`)) { resolve(); return; }
-    const s = document.createElement('script');
-    s.src = src;
-    s.dataset.tool = src;
-    s.onload = resolve;
-    s.onerror = resolve;
-    document.head.appendChild(s);
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#startmenu') && !e.target.closest('#startbtn'))
+      document.getElementById('startmenu').classList.remove('open');
   });
-}
 
-async function loadAlwaysPages() {
-  for (const src of ALWAYS_LOAD) await loadPageScript(src);
-}
-
-async function loadRestoredPages() {
-  const restored = KoeOS.getRestored();
-  for (const id of restored) {
-    await loadPageScript(`pages/${id}.js`);
+  /* ---------- 外部サイトから戻ったとき ---------- */
+  function checkExternalReturn(announce){
+    if (KoranOS.hasExternalFlag('fushima-archive') && !KoranOS.isFixed('slot_record') && !extToastDone) {
+      extToastDone = true;
+      refreshBoard(); refreshManager(); refreshStartMenu();
+      if (announce) toast('EXTERNAL MATCH: 1 ｜ fushima-archive');
+      return true;
+    }
+    return false;
   }
-}
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkExternalReturn(true); });
+  window.addEventListener('pageshow', () => checkExternalReturn(true));
+  window.addEventListener('storage', () => checkExternalReturn(true));
 
-/* ★v3.1 インストール済み解析アプリのスクリプトを復元時にロード */
-async function loadInstalledTools() {
-  const installed = KoeOS.getInstalled();
-  for (const id of installed) {
-    await loadToolScript(`tools/${id}.js`);
-  }
-}
-
-/* 外部サイトが別オリジンになっても受け取れる、最小のバージョン付き進行控え。 */
-const KOE_RECEIPT_VISITS = new Set([
-  'blue-land', 'fushima-archive', 'fushima-memo', 'fushima-book',
-  'pray-store', 'm-kawa-wiki',
-]);
-const KOE_RECEIPT_APPS = new Set(['hexconv', 'morse']);
-
-function importKoeReceipt() {
-  const params = new URLSearchParams(location.hash.slice(1));
-  if (params.get('kr') !== 'v1') return { record: false };
-
-  for (const id of params.getAll('visit')) {
-    if (KOE_RECEIPT_VISITS.has(id)) KoeOS.markExternalVisit(id);
-  }
-  for (const id of params.getAll('app')) {
-    if (KOE_RECEIPT_APPS.has(id)) KoeOS.installApp(id);
-  }
-
-  const record = params.get('ending') === 'record';
-  if (record) {
-    const note = (params.get('note') || '').trim().slice(0, 240);
+  /* ---------- 起動 ---------- */
+  function boot(){
+    const overlay = document.getElementById('boot');
+    const fail = (msg) => {
+      const el = document.getElementById('bootlines');
+      if (el) el.innerHTML += '<br><span style="color:#c85858;">' + esc(msg) + '</span><br>再読み込み（Ctrl+F5）してください。';
+    };
     try {
-      localStorage.setItem('koe_ending', 'record');
-      localStorage.setItem('koe_fumi_note', note);
-      if (/おかえり|オカエリ|お帰り/.test(note)) localStorage.setItem('koe_true_end', '1');
-      else localStorage.removeItem('koe_true_end');
-    } catch {}
-    KoeOS.markRestored('epilogue');
-    KoeOS.markViewed('epilogue');
-  }
-
-  history.replaceState(null, '', location.pathname + location.search);
-  return { record };
-}
-
-/* ── 起動 ── */
-window.addEventListener('DOMContentLoaded', async () => {
-  const receipt = importKoeReceipt();
-  await loadAlwaysPages();
-  await loadRestoredPages();
-  await loadInstalledTools();   // ★v3.1
-  Shell.boot();
-
-  const ending = receipt.record ? 'record' : new URLSearchParams(location.search).get('ending');
-  if (ending === 'record' || ending === 'source') {
-    try { localStorage.setItem('koe_ending', ending); } catch {}
-    KoeOS.markRestored('epilogue');
-    await loadPageScript('pages/epilogue.js');
+      if (!window.KoranOS || KoranOS.STATE_KEY !== 'koran_v3_state' || typeof KoranOS.trySlot !== 'function') {
+        fail('更新データを読み込めていません');
+        return;
+      }
+      renderIcons(); refreshStartMenu();
+    } catch (e) {
+      fail('起動に失敗しました');
+      return;
+    }
+    const bar = document.getElementById('bootbar');
+    const lines = document.getElementById('bootlines');
+    let w = 0;
+    const t = setInterval(() => {
+      w += 25;
+      bar.style.width = Math.min(w, 100) + '%';
+      if (w >= 100) {
+        clearInterval(t);
+        lines.innerHTML += '<br>read session … <b style="color:#e0b46a;">OK</b>';
+        setTimeout(() => {
+          document.getElementById('boot').classList.add('hide');
+          const first = !KoranOS.isLaunched();
+          KoranOS.markLaunched();
+          // 窓は自動で開かない。開くのはプレイヤーに任せ、バッジと通知だけ出す。
+          renderIcons();
+          if (first) setTimeout(() => toast('NEW FRAGMENTS: 6 ｜ たこつぼにあります'), 700);
+        }, 400);
+      }
+    }, 220);
+    document.getElementById('boot').addEventListener('click', () => {
+      clearInterval(t);
+      document.getElementById('boot').classList.add('hide');
+    });
+    // failsafe：8秒たっても起動画面が消えなければ理由を出す
     setTimeout(() => {
-      Shell.open('browser');
-      Shell.bNavigate('epilogue');
-    }, 120);
+      if (!overlay.classList.contains('hide')) fail('応答がありません');
+    }, 8000);
   }
-});
-
-/* 独立サイトを別タブで確認して戻った瞬間に、閲覧印を取り込む。 */
-window.addEventListener('pageshow', () => Shell.syncExternalProgress(true));
-window.addEventListener('focus', () => Shell.syncExternalProgress(true));
-window.addEventListener('storage', e => {
-  if (e.key === 'koe_external_visits' || e.key === 'koe_installed_apps') {
-    Shell.syncExternalProgress(true);
-    loadInstalledTools().then(() => Shell.renderToolGrid());
-  }
-});
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') {
-    Shell.syncExternalProgress(true);
-    loadInstalledTools().then(() => Shell.renderToolGrid());
-  }
-});
+  boot();
+})();
 </script>
 </body>
 </html>
