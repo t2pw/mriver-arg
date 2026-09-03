@@ -59,11 +59,14 @@
   @media (pointer:coarse), (max-width:560px){
     #icons{flex-direction:row; top:10px; left:10px; right:10px; overflow-x:auto; padding-bottom:4px;}
   }
-  .dicon{width:86px; text-align:center; cursor:pointer; padding:6px 2px; border:1px solid transparent; border-radius:6px;}
+  .dicon{width:86px; text-align:center; cursor:pointer; padding:6px 2px; border:1px solid transparent; border-radius:6px; position:relative;}
   .dicon.sel{background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.25);}
   .dicon .glyph{font-size:34px; line-height:1; filter:drop-shadow(0 3px 6px rgba(0,0,0,.5));}
   .dicon .cap{font-size:11px; margin-top:5px; line-height:1.5; text-shadow:0 1px 4px #000;}
   .dicon .hint{display:inline-block; font-size:9px; background:#b97f1f; color:#fff; border-radius:8px; padding:0 7px; margin-top:3px; font-family:var(--mono);}
+  .dicon .bdg{position:absolute; top:0; right:6px; background:#b97f1f; color:#fff; font-family:var(--mono);
+    font-size:10px; min-width:18px; height:18px; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    padding:0 4px; border:1.5px solid #0a1d21;}
 
   /* ウィンドウ */
   .win{
@@ -498,7 +501,9 @@
       h += `<div class="mgr-next" style="border-color:#9fd8cb;"><div class="q" style="color:#1f7a6d;">QUEUE: EMPTY</div>` +
         `<div class="t">第一幕よみおわり（試作範囲）</div></div>`;
     }
-    h += `<div class="mgr-log">SECTORS: ${p.done}/${p.total} FIXED ｜ OPEN: ${p.open}<br>MODE: READ ONLY (via WATARI RELAY)</div>`;
+    const loss = p.open > 0 ? (14.2 - p.done * 2.1).toFixed(1) : '0.0';
+    h += `<div class="mgr-log">SECTORS: ${p.done}/${p.total} FIXED ｜ OPEN: ${p.open}<br>` +
+      `LOSS: ${loss}% ｜ ${p.open > 0 ? '未固定の記録からこわれていきます' : '第一幕・全固定'}<br>MODE: READ ONLY (via WATARI RELAY)</div>`;
     return h;
   }
   function openManager(){
@@ -543,7 +548,9 @@
         `<div class="doc-body" style="margin-top:10px;">${esc(d.body)}</div>` +
         `<div class="zoombox" id="dz-zoom" style="display:none;"><div class="z-h">壁面 拡大</div>` +
         `芙島民報　昭和二十四年八月十八日<br>列車脱線　けが人二十名</div>` +
-        `<div class="doc-btns"><button data-act="zoom">壁の新聞を拡大する</button></div>` +
+        `<div class="zoombox" id="dz-face" style="display:none;"><div class="z-h">人物 観察</div>` +
+        `髪は結わず、歯を見せて笑う。当時の写真機の前では珍しい写り方。</div>` +
+        `<div class="doc-btns"><button data-act="zoom-news">壁の新聞を調べる</button><button data-act="zoom-face">女性の写り方を見る</button></div>` +
         `<div class="doc-btns"><button data-act="close">閉じるだけ</button>` +
         `<button class="primary" data-act="read" disabled>読了にして閉じる</button></div>`;
     } else if (d.task === 'external') {
@@ -553,8 +560,12 @@
         `<div>内容：${esc(d.external.detail)}</div>` +
         `<div>状態：<span id="dz-estate" class="${got ? 'ok' : ''}">${got ? '取得済み' : '未取得'}</span></div></div>` +
         `<div class="doc-body">${esc(d.body)}</div>` +
-        `<div class="doc-btns"><button data-act="open-ext">郷土資料室を開く ↗</button>` +
+        `<div class="doc-btns" id="dz-extbtns"><button data-act="open-ext">郷土資料室を開く ↗</button>` +
         `<button class="primary" data-act="verify">照合結果を確認</button></div>` +
+        `<div id="dz-extq" style="display:none;">` +
+        `<div class="mapmsg">問：人物記述索引（MK-I02）に、作業着姿の男の記載はあったか。</div>` +
+        `<div class="doc-btns"><button data-act="ans-yes">あった</button>` +
+        `<button class="primary" data-act="ans-no">なかった</button></div></div>` +
         `<div class="doc-btns"><button data-act="close">閉じる</button></div>`;
     } else if (d.task === 'map') {
       body += `<div class="doc-body" style="margin-bottom:10px;">${esc(d.body)}</div>` +
@@ -565,8 +576,9 @@
         `<g class="mapspot" data-spot="momomi"><circle cx="150" cy="150" r="9" fill="#c8a96e" stroke="#7a5f22" stroke-width="2"/><text x="150" y="172" text-anchor="middle" font-size="10" fill="#55514a">桃見山</text></g>` +
         `<g class="mapspot" data-spot="aonuma"><circle cx="215" cy="52" r="10" fill="none" stroke="#a03a3a" stroke-width="2.5" stroke-dasharray="4 3"><animate attributeName="opacity" values="1;.4;1" dur="1.6s" repeatCount="indefinite"/></circle><circle cx="215" cy="52" r="3.5" fill="#a03a3a"/><text x="215" y="74" text-anchor="middle" font-size="10" fill="#a03a3a">北の沼</text></g>` +
         `</svg>` +
-        `<div class="mapmsg" id="dz-mapmsg">印を選んで開くこと。</div>` +
-        `<div class="doc-btns"><button data-act="close">閉じる</button></div>`;
+        `<div class="mapmsg" id="dz-mapmsg">印を選んで書入れを読むこと。</div>` +
+        `<div class="doc-btns"><button data-act="close">閉じる</button>` +
+        `<button class="primary" data-act="decide" disabled>この印で確定する</button></div>`;
     } else {
       body += `<div class="doc-body">${esc(d.body)}</div>` +
         `<div class="doc-btns"><button data-act="close">閉じるだけ</button>` +
@@ -578,36 +590,63 @@
     const q = (sel) => el.querySelector(sel);
     if (q('[data-act="close"]')) q('[data-act="close"]').addEventListener('click', () => closeWin('doc:' + id));
     if (q('[data-act="read"]')) q('[data-act="read"]').addEventListener('click', () => finishDoc(id));
-    if (q('[data-act="zoom"]')) q('[data-act="zoom"]').addEventListener('click', () => {
+    if (q('[data-act="zoom-news"]')) q('[data-act="zoom-news"]').addEventListener('click', () => {
       el.querySelector('#dz-zoom').style.display = 'block';
-      q('[data-act="zoom"]').disabled = true;
-      q('[data-act="zoom"]').textContent = '拡大済み';
+      q('[data-act="zoom-news"]').disabled = true;
       q('[data-act="read"]').disabled = false;
       toast('ENLARGED: 壁面新聞 1949-08-18');
+    });
+    if (q('[data-act="zoom-face"]')) q('[data-act="zoom-face"]').addEventListener('click', () => {
+      el.querySelector('#dz-face').style.display = 'block';
+      q('[data-act="zoom-face"]').disabled = true;
     });
     if (q('[data-act="open-ext"]')) q('[data-act="open-ext"]').addEventListener('click', () => {
       window.open(d.external.url, '_blank', 'noopener');
     });
     if (q('[data-act="verify"]')) q('[data-act="verify"]').addEventListener('click', () => {
       if (KoranOS.hasExternalFlag(d.external.flag)) {
-        finishDoc(id);
-        toast('EXTERNAL MATCH: 1 ｜ ' + d.external.flag);
+        el.querySelector('#dz-estate').textContent = '取得済み';
+        el.querySelector('#dz-estate').classList.add('ok');
+        el.querySelector('#dz-extbtns').style.display = 'none';
+        el.querySelector('#dz-extq').style.display = 'block';
       } else {
         toast('NO SIGNAL: まだ取得できていません');
       }
     });
+    if (q('[data-act="ans-no"]')) q('[data-act="ans-no"]').addEventListener('click', () => {
+      finishDoc(id);
+      toast('EXTERNAL MATCH: 1 ｜ ' + d.external.flag);
+    });
+    if (q('[data-act="ans-yes"]')) q('[data-act="ans-yes"]').addEventListener('click', () => {
+      toast('MISMATCH: もう一度、索引を読み直すこと');
+    });
+    let picked = null;
+    const notes = {
+      station: '芙島駅 ― 書入れはありません',
+      momomi: '桃見山 ― 1950・1957・1963 三月の書入れ',
+      aonuma: '北の沼 ― 1973『今年は北の沼へ』',
+    };
     el.querySelectorAll('.mapspot').forEach(g => {
       g.addEventListener('click', () => {
+        picked = g.getAttribute('data-spot');
         const msg = el.querySelector('#dz-mapmsg');
-        if (g.getAttribute('data-spot') === 'aonuma') {
-          msg.className = 'mapmsg good';
-          msg.textContent = '1973年追記：蒼沼南岸 ― 経路を特定しました';
-          setTimeout(() => finishDoc(id), 900);
-        } else {
-          msg.className = 'mapmsg bad';
-          msg.textContent = '応答なし ― ここの書入れはありません';
-        }
+        if (!msg) return;
+        msg.className = 'mapmsg';
+        msg.textContent = notes[picked] || '';
+        const dec = el.querySelector('[data-act="decide"]');
+        if (dec) dec.disabled = false;
       });
+    });
+    if (q('[data-act="decide"]')) q('[data-act="decide"]').addEventListener('click', () => {
+      const msg = el.querySelector('#dz-mapmsg');
+      if (picked === 'aonuma') {
+        msg.className = 'mapmsg good';
+        msg.textContent = '1973年追記：蒼沼南岸 ― 経路を特定しました';
+        setTimeout(() => finishDoc(id), 900);
+      } else {
+        msg.className = 'mapmsg bad';
+        msg.textContent = '応答なし ― 1973年の書入れではありません';
+      }
     });
   }
 
@@ -639,11 +678,16 @@
     { id:'trash', glyph:'🗑️', cap:'ごみ箱', hint:null, act:openTrash },
   ];
   function renderIcons(){
+    const open = KoranOS.openCount();
+    const hasNext = Boolean(KoranOS.nextTask());
     iconsEl.innerHTML = '';
     ICONS.forEach(ic => {
       const el = document.createElement('div');
       el.className = 'dicon';
-      el.innerHTML = `<div class="glyph">${ic.glyph}</div><div class="cap">${esc(ic.cap)}</div>` +
+      let badge = '';
+      if (ic.id === 'explorer' && open > 0) badge = `<span class="bdg">${open}</span>`;
+      if (ic.id === 'manager' && hasNext) badge = `<span class="bdg">!</span>`;
+      el.innerHTML = badge + `<div class="glyph">${ic.glyph}</div><div class="cap">${esc(ic.cap)}</div>` +
         (ic.hint ? `<span class="hint">▼ ${esc(ic.hint)}</span>` : '');
       const open = () => { document.querySelectorAll('.dicon').forEach(d => d.classList.remove('sel')); el.classList.add('sel'); ic.act(); };
       if (finePointer) {
@@ -675,6 +719,7 @@
         if (k === 'reset') { KoranOS.resetForTest(); location.reload(); }
       });
     });
+    renderIcons();
   }
 
   /* ---------- ログオフ：確認→切断表示→中継画面へ ---------- */
@@ -717,8 +762,9 @@
           document.getElementById('boot').classList.add('hide');
           const first = !KoranOS.isLaunched();
           KoranOS.markLaunched();
-          openMemo(); openManager();
-          if (first) setTimeout(() => toast('NEW FRAGMENT: 1 ｜ 復元マネージャーにあります'), 700);
+          // 窓は自動で開かない。開くのはプレイヤーに任せ、バッジと通知だけ出す。
+          renderIcons();
+          if (first) setTimeout(() => toast('NEW FRAGMENT: 1 ｜ たこつぼにあります'), 700);
         }, 400);
       }
     }, 220);
