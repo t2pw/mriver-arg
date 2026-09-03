@@ -193,6 +193,16 @@
     padding:14px; text-align:center; font-size:16px; font-weight:700; color:var(--teal);}
   .complete span{display:block; margin-top:6px; font-size:11px; font-weight:400; color:#3f6b64; font-family:var(--mono); line-height:2;}
 
+  /* あまぐもドライブ */
+  .cloud-head{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .cloud-head .glyph{font-size:34px;}
+  .cloud-acct{font-family:var(--mono); font-size:11px; color:var(--win-sub);}
+  .cloud-bar{height:8px; border:1px solid #cfc8b8; border-radius:5px; overflow:hidden; margin:6px 0 12px; background:#fff;}
+  .cloud-bar i{display:block; height:100%; width:2%; background:#7a9ea8;}
+  .cloud-row{display:flex; gap:8px; align-items:center; border:1px solid #d8d2c2; border-radius:6px;
+    background:#fff; padding:8px 12px; margin-bottom:6px; font-size:12.5px;}
+  .cloud-row .st{margin-left:auto; font-family:var(--mono); font-size:10px; color:#8a857d;}
+
   /* タコ */
   .tako-box{text-align:center; background:linear-gradient(180deg,#0e2226,#0b1b1f); border-radius:6px; padding:8px 4px 2px; margin-bottom:4px;}
   svg.tako{width:100%; max-width:330px; height:auto;}
@@ -449,6 +459,7 @@
     `ここは、わたしが来たところから二十四年後です。たこらんと一緒に埋まります。<br>` +
     `外で見つけた紙（新聞や地図）は、あとでつきあわせてください。今はまだ棚がありません。<br>` +
     `宛先のらんが、まだ空いています。誰にとどけるか、決めないまま埋めます。ゆるしてください。<br>` +
+    `お願いが一つあるよ。盤面の空欄を、読むあなたの手で確かめて。開けたわたしがほんものだと言うことはできないから。全部そろったら、たこらんが次の足を出すよ。<br>` +
     `<div class="sign">小蘭</div></div>`;
 
   function openMemo(){ openWin('memo', 'よんでね.txt — メモ帳', '📝', 'ファイル　編集　表示', 'たこつぼ:\\メモ\\よんでね.txt', MEMO_HTML, '1 / 1 ページ'); }
@@ -554,7 +565,7 @@
     if (q('[data-act="read"]')) q('[data-act="read"]').addEventListener('click', () => {
       KoranOS.markRead(id);
       closeWin('frag:' + id);
-      refreshExplorer(); refreshManager(); refreshStartMenu();
+      refreshExplorer(); refreshBoard(); refreshStartMenu();
     });
     if (q('[data-act="zoom-news"]')) q('[data-act="zoom-news"]').addEventListener('click', () => {
       el.querySelector('#dz-zoom').style.display = 'block';
@@ -590,7 +601,7 @@
   }
   function boardBody(){
     let h = `<div class="actq"><span class="q">第一幕</span>記録から抜けた人物は誰か</div>`;
-    h += `<div class="sticky">🌟 小蘭の付箋：断片は全部開いてあるよ。ボードにはめて、機械に確かめてね。――小蘭</div>`;
+    h += `<div class="sticky">🌟 小蘭の付箋：開けたわたしには確かめられないから、読むあなたが一つずつ確かめて。全部そろったら次の足が出るよ。――小蘭</div>`;
     KoranOS.SLOTS.forEach((s, i) => {
       const fixed = KoranOS.isFixed(s.id);
       const locked = !fixed && KoranOS.slotLocked(s);
@@ -642,7 +653,7 @@
         } else {
           toast('MISMATCH: 断片を読み直すこと');
         }
-        refreshBoard(); refreshManager(); refreshStartMenu();
+        refreshBoard(); refreshStartMenu();
       });
     });
     root.querySelectorAll('button[data-act="answer"]').forEach(b => {
@@ -656,7 +667,7 @@
         } else {
           toast('不一致 ― 文脈を読み直すこと');
         }
-        refreshBoard(); refreshManager(); refreshStartMenu();
+        refreshBoard(); refreshStartMenu();
       };
       b.addEventListener('click', go);
       const inp = root.querySelector('#dz-in-' + sid);
@@ -670,47 +681,25 @@
     });
   }
 
-  /* ---------- 復元マネージャー ---------- */
-  function managerBody(){
-    const p = KoranOS.progress();
-    const done = KoranOS.boardComplete();
-    const loss = done ? '0.0' : (14.0 - p.fixed * 2).toFixed(1);
-    let h = `<div class="actq"><span class="q">第一幕</span>記録から抜けた人物は誰か</div>`;
-    h += `<div class="sticky">🌟 小蘭の付箋：断片は全部開いてあるよ。ボードにはめて、機械に確かめてね。――小蘭</div>`;
-    if (done) {
-      h += `<div class="mgr-next" style="border-color:#9fd8cb;"><div class="q" style="color:#1f7a6d;">BOARD: COMPLETE</div>` +
-        `<div class="t">第一幕確定（試作範囲）</div></div>`;
-    } else {
-      h += `<div class="mgr-next"><div class="q">BOARD: ${p.fixed}/${p.slotTotal} FIXED</div>` +
-        `<div class="t">第一幕ボード</div>` +
-        `<button data-open-board>ボードを開く</button></div>`;
-    }
-    h += `<div class="mgr-log">断片 既読${p.read}/${p.fragTotal} ｜ LOSS: ${loss}%` +
-      `${done ? '' : ' ｜ 未固定の記録からこわれていきます'}<br>MODE: READ ONLY (via WATARI RELAY)</div>`;
-    return h;
-  }
-  function openManager(){
-    const el = openWin('manager', '復元マネージャー', '📥', null, 'たこつぼ:\\システム\\復元マネージャー', managerBody(), '確定はボードで行います');
-    const b = el.querySelector('[data-open-board]');
-    if (b) b.addEventListener('click', openBoard);
-  }
-  function refreshManager(){
-    if (!openWins['manager']) return;
-    const body = openWins['manager'].el.querySelector('.wbody');
-    body.innerHTML = managerBody();
-    const b = body.querySelector('[data-open-board]');
-    if (b) b.addEventListener('click', openBoard);
-  }
-
   function openTrash(){
     openWin('trash', 'ごみ箱', '🗑️', 'ファイル　編集', 'たこつぼ:\\ごみ箱', '<div style="padding:26px 6px;text-align:center;color:#7a756a;">からです。<br><span style="font-size:11px;">（小蘭は要らないものを残さない主義でした）</span></div>', '0 個のオブジェクト');
+  }
+
+  /* ---------- あまぐもドライブ ---------- */
+  function openCloud(){
+    const body = `<div class="cloud-head"><span class="glyph">☁</span><div><div style="font-weight:700;">あまぐもドライブ</div><div class="cloud-acct">koran ― 未接続</div></div></div>` +
+      `<div class="cloud-bar"><i></i></div>` +
+      `<div class="cloud-row">📷 写真<span class="st">取得できません</span></div>` +
+      `<div class="cloud-row">📝 メモ<span class="st">取得できません</span></div>` +
+      `<div class="mapmsg">最終同期：1973年9月12日 ― 以後、応答なし</div>`;
+    openWin('cloud', 'あまぐもドライブ', '☁', null, 'たこつぼ:\\アプリ\\あまぐもドライブ', body, '空の上は、ここからは見えない');
   }
 
   /* ---------- デスクトップとスタート ---------- */
   const ICONS = [
     { id:'memo', glyph:'📝', cap:'よんでね.txt', hint:'まずこれ', act:openMemo },
     { id:'board', glyph:'📋', cap:'第一幕ボード', hint:null, act:openBoard },
-    { id:'manager', glyph:'📥', cap:'復元マネージャー', hint:null, act:openManager },
+    { id:'cloud', glyph:'☁', cap:'あまぐもドライブ', hint:null, act:openCloud },
     { id:'explorer', glyph:'🐙', cap:'たこつぼ', hint:null, act:openExplorer },
     { id:'trash', glyph:'🗑️', cap:'ごみ箱', hint:null, act:openTrash },
   ];
@@ -723,7 +712,6 @@
       let badge = '';
       if (ic.id === 'explorer' && p.unread > 0) badge = `<span class="bdg">${p.unread}</span>`;
       if (ic.id === 'board' && p.open > 0) badge = `<span class="bdg">${p.open}</span>`;
-      if (ic.id === 'manager' && !KoranOS.boardComplete()) badge = `<span class="bdg">!</span>`;
       el.innerHTML = badge + `<div class="glyph">${ic.glyph}</div><div class="cap">${esc(ic.cap)}</div>` +
         (ic.hint ? `<span class="hint">▼ ${esc(ic.hint)}</span>` : '');
       const launch = () => { document.querySelectorAll('.dicon').forEach(d => d.classList.remove('sel')); el.classList.add('sel'); ic.act(); };
@@ -788,7 +776,7 @@
   function checkExternalReturn(announce){
     if (KoranOS.hasExternalFlag('fushima-archive') && !KoranOS.isFixed('slot_record') && !extToastDone) {
       extToastDone = true;
-      refreshBoard(); refreshManager(); refreshStartMenu();
+      refreshBoard(); refreshStartMenu();
       if (announce) toast('EXTERNAL MATCH: 1 ｜ fushima-archive');
       return true;
     }
