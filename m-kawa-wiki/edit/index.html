@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="koe-receiver" content="../../phone_shell.html">
+  <meta name="description" content="M川事件資料wiki・未収録資料節の編集画面。入力はこのブラウザだけに保存されます。">
+  <title>M川事件を編集 - M川事件資料wiki</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body data-page="edit">
+  <header class="wiki-header">
+    <a class="wiki-brand" href="../"><span class="wiki-mark">M</span><span><strong>M川事件資料wiki</strong><small>公開資料を持ち寄る共同目録</small></span></a>
+  </header>
+
+  <div class="edit-layout">
+    <main>
+      <div class="page-tools"><a href="../">本文</a><span>編集</span><a href="../#history">履歴表示</a></div>
+      <h1>「M川事件」を編集中</h1>
+
+      <div id="edit-locked" class="local-only" hidden>
+        <strong>編集資料を読み込めません</strong><br>この節の出典となる資料が、このブラウザではまだ確認されていません。
+      </div>
+
+      <form id="wiki-edit-form" hidden>
+        <fieldset>
+          <legend>記録外資料</legend>
+          <p class="field-help">回収端末に残された手紙について、ここに残す一行を入力してください。</p>
+          <label for="wiki-user-line">あなたの一行</label>
+          <textarea id="wiki-user-line" rows="4" maxlength="240" placeholder="一行を入力" required></textarea>
+          <div class="char-count"><span id="char-count">0</span> / 240</div>
+        </fieldset>
+
+        <label for="edit-summary">編集内容の要約</label>
+        <input id="edit-summary" type="text" value="未収録の手紙と記録外人物に関する記述を追加" readonly>
+        <label class="minor"><input type="checkbox"> 細部の編集</label>
+
+        <div class="save-row">
+          <button class="primary" type="submit">編集を保存</button>
+          <a class="cancel" href="../">キャンセル</a>
+        </div>
+      </form>
+
+      <div id="save-status" class="save-status" hidden role="status">
+        <strong>編集を保存しました。</strong>
+        <a href="../?revision=latest">保存した版を見る</a>
+        <a id="save-return" class="koe-return" hidden>回収端末へ記録を返す</a>
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <p>編集内容はこのブラウザ内にのみ保存されます。</p>
+    <p class="disclaimer">『声は壁を透して』のフィクションです。実在の百科事典や外部サービスには投稿されません。</p>
+  </footer>
+  <script src="../site.js"></script>
+</body>
+</html>

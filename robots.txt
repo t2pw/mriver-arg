@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+Disallow: /CREDITS.md
+Sitemap: https://mriver-arg.pages.dev/sitemap.xml

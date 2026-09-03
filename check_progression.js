@@ -13,7 +13,7 @@
 // v2（2026-06-10 改善計画反映）:
 //   - os.js v3.2 の「閲覧済み（addHistory）基準の連鎖」を模倣：仮想プレイヤーは
 //     解放されたページを1枚ずつ「読み」、その都度 checkPrereqUnlocks を回す。
-//   - manual:true ページ（wiki_add / wiki_skip / epilogue）は choice 等のページ内
+//   - manual:true ページ（wiki_skip / epilogue）は choice 等のページ内
 //     ボタン（bNavigate → markRestored）で解放されるため、MANUAL_NAV で模倣する。
 //   - E は submitKeyword の prereqBlocked 応答（前提不足の明示）で緩和済みのため情報扱い。
 
@@ -25,13 +25,17 @@ const vm = require('vm');
 const ROOT = __dirname;
 
 /* ── 謎解きの「答え」キーワード（本文に書かれていないのが正しいもの） ── */
-const PUZZLE_ANSWERS = {
+/* Retired puzzle answers removed from the active v4 route.
   kiroku_002:   { kw: 'クラウド',      how: 'kiroku_001 赤い黒塗り（現代語）の文脈推定' },
   map_002:      { kw: '桃見山',        how: 'map_001 黒塗り地名の推理' },
   map_003:      { kw: '蒼沼ブルーランド', how: 'map_002 の謎解き' },
   telegram_002: { kw: '0816',          how: 'hexconv＋モールス解読' },
   hidden:       { kw: 'あなたはここにいた', how: 'receiver_lock モールス→16進→カタカナ' },
   data_trace:   { kw: 'バックアップ',   how: 'tegami 添え状断片・赤い黒塗り（現代語）の文脈推定' },
+}; */
+const PUZZLE_ANSWERS = {
+  telegram_002: { kw: '0816', how: 'telegram_001 の接触列' },
+  hidden: { kw: 'あなたはここにいた', how: 'receiver_lock の最終入力' },
 };
 
 /* ── os.js をスタブ環境で実行して実物の KoeOS を得る ── */
@@ -103,23 +107,31 @@ function storyMsgs() {
 
 const norm = s => String(s).replace(/\s+/g, '');
 
-/* 意図的な一括解放（資料棚。hub_002 閲覧で5冊同時に開くのは仕様） */
-const INTENDED_BULK = { hub_002: new Set(['voices', 'memo', 'tegami', 'sns', 'momo']) };
+/* 意図的な一括解放（現行v4ではなし） */
+const INTENDED_BULK = {};
 
 /* ── ページ内ボタンによる解放（os.js の prereq 連鎖外）──
    phone_shell.html の bNavigate → _loadPage(markRestored) を模倣する。 */
 const MANUAL_NAV = {
-  choice:    ['wiki_add', 'wiki_skip'],
-  wiki_add:  ['epilogue'],
+  choice:    ['wiki_skip'],
   wiki_skip: ['epilogue'],
-  // ★v3.5 隠し（TRUE END）：エピローグの「返信を開く」ボタン。
+  // 任意返信：エピローグの「受信 1件」ボタン。
   //   実際には「あなたの一行」に解読語（おかえり）を書いた場合のみボタンが出るが、
   //   到達経路としてはページ内ボタン解放なのでここに登録する。
   epilogue:  ['okaeri'],
 };
 
-/* PAGES 外で正しいファイル（メッセージスレッド等） */
-const NON_PAGE_SCRIPTS = new Set(['soran_intro']);
+/* PAGES 外だが意図的に残しているスクリプト。新しい孤立ファイルは自動で許可しない。 */
+const NON_PAGE_OR_RETIRED_SCRIPTS = new Set([
+  'soran_intro',
+  'kiroku_002', 'kiroku_004',
+  'photo_002', 'photo_003',
+  'bbs_001', 'bbs_002', 'bbs_003',
+  'map_002', 'map_003',
+  'telegram_003',
+  'hub_002', 'inochi', 'voices', 'memo', 'tegami', 'sns', 'momo', 'loop',
+  'wiki_add',
+]);
 
 /* 仮想プレイヤーの「読む」動作：未読の復元済みページを読み尽くす。
    読むたびに addHistory（閲覧フラグ）→ checkPrereqUnlocks（連鎖）→
@@ -135,6 +147,14 @@ function viewAllNew(K, viewed, onCascade) {
       K.addHistory(p.id);
       const cascade = K.checkPrereqUnlocks();
       if (onCascade && cascade.length) onCascade(p.id, cascade);
+      const visits = {
+        photo_001: ['fushima-archive'],
+        map_001: ['blue-land'],
+        telegram_002: ['pray-store', 'fushima-memo', 'fushima-book'],
+      }[p.id] || [];
+      for (const site of visits) K.markExternalVisit(site);
+      const externalCascade = K.checkPrereqUnlocks();
+      if (onCascade && externalCascade.length) onCascade(p.id, externalCascade);
       for (const t of (MANUAL_NAV[p.id] || [])) K.markRestored(t);
       changed = true;
     }
@@ -148,6 +168,27 @@ const MSGS = storyMsgs();
 const INTRO = introText();
 
 const findings = { A: [], B: [], C: [], D: [], E: [], F: [], G: [], MISC: [] };
+
+/* ── v4公開構造の基本契約 ── */
+{
+  const sectorCount = KoeOS.TAKO_LEGS.reduce((sum, leg) => sum + leg.pages.length, 0);
+  if (sectorCount !== 30) findings.MISC.push(`記録セクタが ${sectorCount} 個（仕様は30）`);
+
+  const externalSites = new Set([
+    'blue-land', 'fushima-archive', 'pray-store', 'm-kawa-wiki',
+    'fushima-memo', 'fushima-book',
+  ]);
+  for (const page of PAGES) {
+    for (const site of (page.externalPrereqs || [])) {
+      if (!externalSites.has(site)) findings.MISC.push(`${page.id}: 未定義の外部閲覧印 ${site}`);
+    }
+  }
+  for (const site of ['blue-land', 'fushima-archive', 'pray-store', 'm-kawa-wiki']) {
+    if (!fs.existsSync(path.join(ROOT, site, 'index.html'))) {
+      findings.MISC.push(`外部サイト ${site}/index.html が存在しない`);
+    }
+  }
+}
 
 /* ── B. キーワード衝突（静的） ── */
 {
@@ -171,7 +212,7 @@ for (const p of PAGES) {
 // PAGES 外だが pages/ にあるファイル（メッセージスレッド等の正当なものは除く）
 for (const f of fs.readdirSync(path.join(ROOT, 'pages')).filter(f => f.endsWith('.js'))) {
   const id = f.replace(/\.js$/, '');
-  if (NON_PAGE_SCRIPTS.has(id)) continue;
+  if (NON_PAGE_OR_RETIRED_SCRIPTS.has(id)) continue;
   if (!PAGES.some(p => p.id === id)) findings.MISC.push(`pages/${f} は PAGES テーブル未登録（_loadPage では開けない）`);
 }
 
@@ -257,6 +298,9 @@ for (const p of unreached) findings.A.push(`${p.id}（${p.title}）に到達で�
     const pg = PAGES.find(p => p.id === s.target);
     const anyVisible = pg.keywords.some(kw => vis.includes(norm(kw)));
     const isPuzzle = !!PUZZLE_ANSWERS[s.target];
+    if (isPuzzle) {
+      K2.submitKeyword(s.kw); viewAllNew(K2, viewed2); continue;
+    }
     if (!anyVisible && !isPuzzle)
       findings.D.push(`${s.target}: キーワード ${pg.keywords.join('/')} が解放時点の可視テキストに無い`);
     if (!anyVisible && isPuzzle) {

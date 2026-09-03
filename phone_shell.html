@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="架空のアーカイブ。登場する事件・人物・地名はすべてフィクションです。">
+<meta name="description" content="1973年9月12日で止まった回収端末のアーカイブ。">
 <meta name="robots" content="noindex">
 <title>声は壁を透して</title>
 <script src="os.js"></script>
@@ -194,20 +194,6 @@ html,body{
 .tool-icon{
   background:linear-gradient(135deg,#1a2438 0%,#0d141f 100%);
 }
-/* 新規インストール時のポップイン演出 */
-@keyframes toolPopIn{
-  0%   { transform:scale(0); opacity:0; }
-  60%  { transform:scale(1.18); opacity:1; }
-  100% { transform:scale(1); opacity:1; }
-}
-@keyframes toolFlash{
-  0%   { box-shadow:0 0 0 0 rgba(200,169,110,0); }
-  30%  { box-shadow:0 0 22px 4px rgba(200,169,110,.75); }
-  100% { box-shadow:0 0 0 0 rgba(200,169,110,0); }
-}
-.tool-icon.popin{ animation:toolPopIn .5s cubic-bezier(.16,1,.3,1); }
-.tool-icon.flash{ animation:toolFlash 1.1s ease; }
-
 /* 通知バッジ */
 .nbadge{
   position:absolute;top:-5px;right:-5px;
@@ -310,41 +296,6 @@ html,body{
 .bpage-body p{margin-bottom:1.4em;}
 .bpage-body .red{background:var(--t1);color:var(--t1);border-radius:2px;padding:0 2px;user-select:none;}
 .bpage-body .anom{color:var(--red);font-family:var(--mono);font-size:12px;letter-spacing:.06em;}
-
-/* ═══ インストールモーダル（★v3.1） ════ */
-#install-modal{
-  position:absolute;inset:0;z-index:400;
-  background:rgba(5,5,8,.78);
-  display:none;align-items:center;justify-content:center;
-  backdrop-filter:blur(3px);
-}
-#install-modal.open{display:flex;animation:fadeUp .25s ease;}
-#install-card{
-  width:280px;background:var(--s1);
-  border:1px solid var(--bd2);border-radius:18px;
-  padding:26px 22px 22px;text-align:center;
-  box-shadow:0 20px 60px rgba(0,0,0,.7);
-}
-#install-icon{
-  font-size:42px;margin-bottom:12px;
-  display:inline-block;
-}
-#install-name{
-  font-family:var(--serif);font-size:16px;color:var(--t1);
-  letter-spacing:.04em;margin-bottom:4px;
-}
-#install-status{
-  font-family:var(--mono);font-size:10px;color:var(--t3);
-  letter-spacing:.08em;margin-bottom:18px;
-}
-#install-bar-track{
-  height:5px;background:var(--s3);border-radius:3px;overflow:hidden;
-}
-#install-bar-fill{
-  height:100%;width:0%;
-  background:linear-gradient(90deg,var(--gold),#e0c590);
-  border-radius:3px;transition:width .12s linear;
-}
 
 /* ═══ 誰のスマホか 導入オーバーレイ ══ */
 #intro-overlay{
@@ -566,12 +517,12 @@ html,body{
           </div>
           <span class="ailabel">メッセージ</span>
         </div>
-        <div class="aico" onclick="Shell.open('store')">
+        <a class="aico" href="pray-store/?from=koe" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
           <div class="aibox" style="background:linear-gradient(135deg,#1f3526 0%,#0d1812 100%);color:#7ec88f;font-weight:700;">
             ▶
           </div>
           <span class="ailabel">ストア</span>
-        </div>
+        </a>
         <div class="aico" onclick="Shell.open('history')">
           <div class="aibox" style="background:linear-gradient(135deg,#1e1a10 0%,#100e08 100%);">
             🕐
@@ -626,22 +577,12 @@ html,body{
       <div id="mvcontent"></div>
     </div>
 
-    <!-- ★v3.1 インストールモーダル -->
-    <div id="install-modal">
-      <div id="install-card">
-        <div id="install-icon">💾</div>
-        <div id="install-name">—</div>
-        <div id="install-status">ツールを取得しています…</div>
-        <div id="install-bar-track"><div id="install-bar-fill"></div></div>
-      </div>
-    </div>
-
     <!-- ★A-4 誰のスマホか導入オーバーレイ（初回起動のみ） -->
     <div id="intro-overlay">
       <div id="intro-inner">
         <div id="intro-status">⚠ RECOVERED DEVICE — OWNER UNKNOWN</div>
         <div id="intro-msg">
-          回収された端末のアーカイブを、<br>あなたが開こうとしている。<br>
+          回収された端末のアーカイブ。<br>閲覧要求を検出。<br>
           <span style="font-size:11px;color:var(--t3);">持ち主：不明</span><br>
           <span style="font-size:11px;color:var(--t3);">最終起動：1973-09-12 09:04</span><br>
           <span style="font-size:11px;color:var(--red);opacity:.65;">接続元：照合できません</span>
@@ -665,9 +606,31 @@ const Shell = (() => {
   let bPtr    = -1;
   let curTool = null;  // ★v3.1 現在開いている解析アプリ
 
+  /* 外部サイトから戻ったとき、同一オリジンに残った閲覧印を進行へ反映する。 */
+  function syncExternalProgress(animate=false) {
+    const newIds = KoeOS.checkPrereqUnlocks();
+    try { window.KOE_UPDATE_EXTERNAL_STATUS?.(); } catch {}
+    if (!newIds.length) return Promise.resolve([]);
+    newIds.forEach(() => KoeOS.addNotif('browser'));
+    return Promise.all(newIds.map(id => loadPageScript(`pages/${id}.js`))).then(() => {
+      deliverMessages(animate);
+      updateBadges();
+      if (curApp === 'browser' && bStack[bPtr] && bStack[bPtr].id === '__home') {
+        const view = document.getElementById('bview');
+        if (view) _renderBrowserHome(view);
+      }
+      if (animate) {
+        const names = newIds.map(id => KoeOS.getPage(id)?.title || id).join('、');
+        pushNotif('📡', '繧ｿ◆縺薙％??', `外部照合：一致　${names}`, null);
+      }
+      return newIds;
+    });
+  }
+
   /* ── 起動 ── */
   function boot() {
     tick(); setInterval(tick, 10000);
+    syncExternalProgress(false);
     updateBadges();
     renderToolGrid();
     setTimeout(() => document.getElementById('clk-anom').classList.add('vis'), 900);
@@ -680,11 +643,11 @@ const Shell = (() => {
           ov.classList.add('fadeout');
           setTimeout(() => {
             ov.classList.remove('show','fadeout');
-            pushNotif('📡', '繧ｿ◆縺薙％??', 'このアーカイブを見つけてください。', 'soran_intro');
+            pushNotif('📡', '繧ｿ◆縺薙％??', '受信ファイル：1', 'soran_intro');
           }, 700);
         }, { once: true });
       } else {
-        setTimeout(() => pushNotif('📡', '繧ｿ◆縺薙％??', 'このアーカイブを見つけてください。', 'soran_intro'), 1200);
+        setTimeout(() => pushNotif('📡', '繧ｿ◆縺薙％??', '受信ファイル：1', 'soran_intro'), 1200);
       }
     } else {
       // 既存セーブの再読込：到達済みビートを無音で既配信扱いにし、再トーストを防ぐ
@@ -721,7 +684,8 @@ const Shell = (() => {
     // ★v3.4 セクタマップバッジ：restored && !viewed（TAKO_LEGS 対象のみ、クリア時は0）
     const elTako = document.getElementById('b-tako');
     if(elTako) {
-      const isClear = KoeOS.isViewed('epilogue') && (localStorage.getItem('koe_fumi_note')||'').trim() !== '';
+      const ending = localStorage.getItem('koe_ending');
+      const isClear = KoeOS.isViewed('epilogue') && (ending === 'record' || ending === 'source');
       let takoUnread = 0;
       if(!isClear) {
         for(const leg of KoeOS.TAKO_LEGS) {
@@ -750,52 +714,6 @@ const Shell = (() => {
         <span class="ailabel">${a.name}</span>
       </div>`;
     }).join('');
-  }
-
-  /* 新規インストールアイコンのポップイン＋フラッシュ */
-  function flashNewIcon(id) {
-    const el = document.querySelector(`[data-toolicon="${id}"]`);
-    if(!el) return;
-    el.classList.add('popin','flash');
-    setTimeout(() => el.classList.remove('popin','flash'), 1200);
-  }
-
-  /* インストール演出フロー */
-  function installTool(id) {
-    const app = KoeOS.getToolApp(id);
-    if(!app || KoeOS.isInstalled(id)) return;
-
-    // モーダル表示
-    const modal = document.getElementById('install-modal');
-    const fill  = document.getElementById('install-bar-fill');
-    document.getElementById('install-icon').textContent = app.icon;
-    document.getElementById('install-name').textContent = app.name;
-    document.getElementById('install-status').textContent = 'ツールを取得しています…';
-    fill.style.width = '0%';
-    modal.classList.add('open');
-
-    // プログレス（約2秒）
-    let pct = 0;
-    const iv = setInterval(() => {
-      pct += Math.random()*14 + 6;
-      if(pct >= 100) { pct = 100; clearInterval(iv); }
-      fill.style.width = pct + '%';
-      if(pct >= 100) {
-        document.getElementById('install-status').textContent = 'インストール完了';
-      }
-    }, 130);
-
-    setTimeout(() => {
-      KoeOS.installApp(id);
-      modal.classList.remove('open');
-      loadToolScript(`tools/${id}.js`).then(() => {
-        // ホームへ戻してアイコンをポップイン
-        goHome();
-        renderToolGrid();
-        setTimeout(() => flashNewIcon(id), 60);
-        pushNotif(app.icon, 'アプリ', `${app.name} をインストールしました`, null);
-      });
-    }, 2100);
   }
 
   /* 解析アプリを開く（第4の画面種別） */
@@ -865,7 +783,7 @@ const Shell = (() => {
     KoeOS.clearNotif(appId);
     updateBadges();
 
-    const titles = { browser:'復元', messages:'メッセージ', history:'履歴', tako:'セクタマップ', store:'ストア' };
+    const titles = { browser:'復元', messages:'メッセージ', history:'履歴', tako:'セクタマップ' };
     document.getElementById('anav-title').textContent = titles[appId] || appId;
 
     const old = document.getElementById('bbar-wrap');
@@ -888,7 +806,6 @@ const Shell = (() => {
     else if(appId === 'messages') renderMessages(content);
     else if(appId === 'history') renderHistory(content);
     else if(appId === 'tako') _renderTako(content);
-    else if(appId === 'store') renderStore(content);
   }
 
   /* ── アプリを閉じる ── */
@@ -926,8 +843,8 @@ const Shell = (() => {
         <div id="bbar" style="display:flex;align-items:center;padding:9px 12px;gap:7px;border-bottom:1px solid var(--bd);background:var(--s1);">
           <div class="bnav-btn" id="bbtn-back" onclick="Shell.bBack()" title="戻る">‹</div>
           <div class="bnav-btn" id="bbtn-fwd"  onclick="Shell.bFwd()"  title="進む">›</div>
-          <input id="burl" placeholder="照合語を入力…" style="flex:1;background:var(--s3);border:1px solid var(--bd);border-radius:10px;padding:7px 11px;font-family:var(--mono);font-size:12px;color:var(--t1);outline:none;letter-spacing:.03em;" />
-          <button id="bgo" onclick="Shell.doSearch()" style="background:var(--gold-d);border:1px solid rgba(200,169,110,.28);border-radius:8px;padding:7px 13px;font-family:var(--mono);font-size:12px;color:var(--gold);cursor:pointer;letter-spacing:.05em;white-space:nowrap;">照合</button>
+          <input id="burl" placeholder="記録名・公開資料を検索…" style="flex:1;background:var(--s3);border:1px solid var(--bd);border-radius:10px;padding:7px 11px;font-family:var(--mono);font-size:12px;color:var(--t1);outline:none;letter-spacing:.03em;" />
+          <button id="bgo" onclick="Shell.doSearch()" style="background:var(--gold-d);border:1px solid rgba(200,169,110,.28);border-radius:8px;padding:7px 13px;font-family:var(--mono);font-size:12px;color:var(--gold);cursor:pointer;letter-spacing:.05em;white-space:nowrap;">検索</button>
         </div>
         <div id="bsearch-result" style="display:none;padding:10px 14px;"></div>
       </div>
@@ -958,6 +875,7 @@ const Shell = (() => {
 
   function _renderBrowserHome(bview) {
     const restored = KoeOS.PAGES.filter(p => KoeOS.isRestored(p.id));
+    const externalCount = KoeOS.getExternalVisits ? KoeOS.getExternalVisits().size : 0;
     const restoredRows = restored.length === 0 ? '' : `
       <div style="width:100%;max-width:320px;margin-top:24px;">
         <div style="font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.15em;margin-bottom:10px;">── 復元済みファイル（${restored.length}件）</div>
@@ -979,26 +897,20 @@ const Shell = (() => {
 
     bview.innerHTML = `
       <div style="padding:36px 20px 32px;display:flex;flex-direction:column;align-items:center;gap:0;">
-        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.2em;margin-bottom:26px;">── 記録躯体　接続済み ──</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.2em;margin-bottom:26px;">RECORD BODY / ONLINE</div>
         <div style="width:100%;max-width:320px;display:flex;gap:7px;margin-bottom:10px;">
-          <input id="bhome-kw" placeholder="照合語を入力…"
+          <input id="bhome-kw" placeholder="記録名・公開資料を検索…"
             onkeydown="if(event.key==='Enter'){const b=document.getElementById('burl');if(b)b.value=this.value;Shell.doSearch();}"
             style="flex:1;background:var(--s3);border:1px solid rgba(200,169,110,0.25);border-radius:12px;padding:12px 14px;font-family:var(--mono);font-size:13px;color:var(--t1);outline:none;letter-spacing:.03em;" />
           <button onclick="const i=document.getElementById('bhome-kw');const b=document.getElementById('burl');if(i&&b)b.value=i.value;Shell.doSearch();"
-            style="background:var(--gold-d);border:1px solid rgba(200,169,110,.28);border-radius:12px;padding:12px 16px;font-family:var(--mono);font-size:12px;color:var(--gold);cursor:pointer;letter-spacing:.05em;white-space:nowrap;">照合</button>
+            style="background:var(--gold-d);border:1px solid rgba(200,169,110,.28);border-radius:12px;padding:12px 16px;font-family:var(--mono);font-size:12px;color:var(--gold);cursor:pointer;letter-spacing:.05em;white-space:nowrap;">検索</button>
         </div>
         <div style="font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.08em;text-align:center;line-height:1.9;margin-bottom:28px;">
-          記録されなかったものを、復元する。
-        </div>
-        <div style="width:100%;max-width:320px;background:var(--s2);border:1px solid var(--bd);border-radius:14px;padding:20px 18px;">
-          <div style="font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:.15em;margin-bottom:12px;">使い方</div>
-          <div style="font-size:12px;color:var(--t2);line-height:1.9;letter-spacing:.04em;font-family:var(--serif);">
-            アーカイブの各所に残る言葉（照合語）を見つけ、照合欄に入力してください。一致すると、封鎖されたセクタが復元されます。
-          </div>
+          内部記録と公開中の資料を検索します。
         </div>
         <div style="width:100%;max-width:320px;margin-top:14px;font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.08em;display:flex;justify-content:space-between;">
-          <span>セクタ固定率：<span style="color:var(--gold);">${KoeOS.getFixedPercent()}%</span></span>
-          <span style="color:rgba(200,88,88,.6);">損耗進行中</span>
+          <span>読取済み：<span style="color:var(--gold);">${KoeOS.getFixedPercent()}%</span></span>
+          <span>外部照合：${externalCount}</span>
         </div>
         ${restoredRows}
       </div>`;
@@ -1053,7 +965,7 @@ const Shell = (() => {
     KoeOS.markRestored(pageId);
     const _newIds = KoeOS.checkPrereqUnlocks();
     const _scripts = _newIds.map(id => `pages/${id}.js`);
-    // manual解放ページ（wiki_add 等）は連鎖で事前ロードされないため、未定義ならここで読む
+    // manual解放ページは連鎖で事前ロードされないため、未定義ならここで読む
     if (!PAGE_CONTENT[pageId]) _scripts.push(`pages/${pageId}.js`);
     Promise.all(_scripts.map(loadPageScript)).then(() => {
       deliverMessages(true);
@@ -1084,24 +996,57 @@ const Shell = (() => {
     }
     if(!val) return;
 
-    // ★v3.6 解析ツール関連語：freesoft ページ廃止に伴い、アーカイブ照合ではなく
-    //   ストア（あなたの時代の側）へ橋渡しする。missStreak を汚さないよう submitKeyword 前に判定。
-    const TOOL_WORDS = ['モールス','モールス符号','電信符号','16進','バイナリ','符号','解析ツール','フリーソフト','ツール','解析'];
-    if (TOOL_WORDS.includes(val)) {
+    // 内部の二つの鍵以外は、独立した公開ページを通常の検索結果として返す。
+    // 検索エンジンのインデックス状況に依存しないための作品内フォールバックでもある。
+    const webSources = [
+      {
+        terms:['芙島','M川事件','列車転覆','市民の声','裁判年表','桃見山','声は壁を透して','文集'],
+        title:'芙島市立図書館 郷土資料室　デジタル目録',
+        url:'fushima-archive/?from=koe',
+        desc:'新聞縮刷、裁判年表、郷土資料の所蔵情報'
+      },
+      {
+        terms:['蒼沼','ブルーランド','遊園地','タコのマスコット'],
+        title:'蒼沼ブルーランド思い出保存会',
+        url:'blue-land/?from=koe',
+        desc:'営業当時のパンフレットと閉園後の写真'
+      },
+      {
+        terms:['Pray','モールス','モールス符号','16進','HexConv','MorseReader','蛸川小蘭'],
+        title:'Pray ストア',
+        url:'pray-store/?from=koe',
+        desc:'解析ツールと開発者情報'
+      },
+      {
+        terms:['M川事件wiki','資料wiki','未収録資料'],
+        title:'M川事件資料wiki',
+        url:'m-kawa-wiki/?from=koe',
+        desc:'共同編集型の事件資料索引'
+      },
+    ];
+    const needle = val.replace(/\s+/g,'').toLowerCase();
+    const webMatches = needle.length >= 2 ? webSources.filter(src =>
+      src.terms.some(term => {
+        const key = term.replace(/\s+/g,'').toLowerCase();
+        return key.includes(needle) || needle.includes(key);
+      })
+    ) : [];
+    if (webMatches.length) {
       const tbox = document.getElementById('bsearch-result');
       if (tbox) {
         tbox.style.display = 'block';
         tbox.innerHTML = `<div class="sbox" style="border-color:rgba(200,169,110,.35);">
-          <div class="sbox-label" style="color:var(--gold);">── 照合一致：アーカイブ外 ──</div>
-          <div class="sbox-desc">該当する道具は、このアーカイブの中にありません。<br>あなたの端末のストアに、あります。</div>
-          <div class="sbox-link" onclick="Shell.open('store')">▸ ストアを開く</div>
+          <div class="sbox-label" style="color:var(--gold);">公開Web　${webMatches.length}件</div>
+          ${webMatches.map(src => `<a class="sbox-link" href="${src.url}" target="_blank" rel="noopener" style="display:block;text-decoration:none;margin-top:12px;">
+            <span style="display:block;color:var(--gold);">${src.title}</span>
+            <span class="sbox-desc" style="display:block;margin-top:3px;">${src.desc}</span>
+            <span style="display:block;color:var(--t3);font-size:9px;margin-top:3px;">${src.url}</span>
+          </a>`).join('')}
         </div>`;
-        setTimeout(() => { if(tbox) tbox.style.display='none'; }, 9000);
       }
       return;
     }
 
-    const _before = KoeOS.getSpokeProgress();
     const res = KoeOS.submitKeyword(val);
     const rbox = document.getElementById('bsearch-result');
     if(!rbox) return;
@@ -1117,50 +1062,37 @@ const Shell = (() => {
       const pages = res.unlocked.map(id=>KoeOS.getPage(id)).filter(Boolean);
       const titles = pages.map(p=>p.title).join('、');
       rbox.innerHTML = `<div class="sbox ok">
-        <div class="sbox-label">── 復元完了 ──</div>
-        <div class="sbox-desc">「${titles}」へのアクセスが復元されました。</div>
+        <div class="sbox-label">KEY ACCEPTED</div>
+        <div class="sbox-desc">「${titles}」を開けます。</div>
         <div class="sbox-link" onclick="Shell.bNavigate('${res.unlocked[0]}')">▸ 開く</div>
       </div>`;
       inp.value = '';
-      // スポーク完了ナッジ：今回の検索で新たに complete になったスポークがあれば通知
-      const SPOKE_NAMES = { A:'手記', B:'写真', C:'掲示板', D:'地図', E:'電文' };
-      const _after = KoeOS.getSpokeProgress();
-      const _newlyCompleted = _after.filter(s => s.complete && !_before.find(b => b.group === s.group && b.complete));
-      if (_newlyCompleted.length > 0) {
-        const g = _newlyCompleted[0].group;
-        const remaining = _after.filter(s => !s.complete).map(s => SPOKE_NAMES[s.group]);
-        if (remaining.length > 0) {
-          pushNotif('📡', '繧ｿ◆縺薙％??', `${SPOKE_NAMES[g]}の照合が完了。未照合：${remaining.join('、')}`, null);
-        }
-      }
       Promise.all(res.unlocked.map(id => loadPageScript(`pages/${id}.js`))).then(() => {
         deliverMessages(true);
         const bv = document.getElementById('bview');
         if(bv && bPtr === 0) _renderBrowserHome(bv);
       });
     } else if(res.prereqBlocked) {
-      // 「正しいが今は開かない」を無反応にしない（前提不足の明示）
       rbox.innerHTML = `<div class="sbox" style="border-color:rgba(200,169,110,.35);">
-        <div class="sbox-label" style="color:var(--gold);">── 照合一致 ──</div>
-        <div class="sbox-desc">照合語は記録と一致しました。ただし参照元の記録が不足しています。<br>復元済みの記録を読み進めてから、もう一度試してください。</div>
+        <div class="sbox-label" style="color:var(--gold);">KEY DETECTED</div>
+        <div class="sbox-desc">先行ファイルが未読です。</div>
       </div>`;
       hideAfter = 6000;
     } else if (/オカエリ|おかえり|お帰り/.test(val)) {
-      // ★v3.6 「おかえり」系（telegram_001 の末尾付記＝オカエリコラン／クリア後断片＝オカエリナサイ）を
-      //   照合した場合の専用応答。照合では開かず「一行」に書く。choice 到達前は場所を伏せて含みだけ残す。
+      // 任意の末尾付記は解錠語ではなく、終幕の自由記述に使える語として保持する。
       const _afterChoice = KoeOS.isRestored('choice');
       rbox.innerHTML = `<div class="sbox" style="border-color:rgba(200,169,110,.35);">
-        <div class="sbox-label" style="color:var(--gold);">── 一致なし ──</div>
+        <div class="sbox-label" style="color:var(--gold);">WRITABLE PHRASE</div>
         <div class="sbox-desc">${_afterChoice
-          ? '📡 それは、照合にかける言葉ではありません。<br>書き足す言葉です。——あの一行に。'
-          : '📡 それは、照合にかける言葉ではありません。<br>まだ、受け取れる場所がありません。覚えておいてください。'}</div>
+          ? '用途：追記文<br>入力先：資料wiki「あなたの一行」'
+          : '用途：追記文<br>入力先：未生成　／　保持してください'}</div>
       </div>`;
       hideAfter = 7000;
     } else {
       const hint = _missHint(res.missStreak);
       rbox.innerHTML = `<div class="sbox ng">
-        <div class="sbox-label">── 一致なし ──</div>
-        <div class="sbox-desc">該当するアーカイブが見つかりません。別の照合語を試してください。</div>
+        <div class="sbox-label">NO RESULT</div>
+        <div class="sbox-desc">一致する内部記録・公開資料はありません。</div>
         ${hint ? `<div class="sbox-desc" style="margin-top:8px;color:var(--red);font-family:var(--mono);font-size:11px;">📡 ${hint}</div>` : ''}
       </div>`;
       if(hint) {
@@ -1175,24 +1107,11 @@ const Shell = (() => {
   /* ── ★ヒントシステム：解放なし検索が続いたとき、不明送信元の口調でナッジ ── */
   function _missHint(streak) {
     if (!streak || streak < 3) return '';
-    if (streak < 6) return '…照合失敗が続いています。復元済みの記録を読み直すことを推奨します。';
-    // 6回以上：現在地に応じた具体ナッジ
-    const SPOKE_HINTS = {
-      A: '手記の記録が途切れています。直前の手記を読み直してください。赤い黒塗りは、文脈から元の言葉を推定できます。',
-      B: '写真の照合が未完了です。写真そのものに写り込んでいる情報を確認してください。',
-      C: '掲示板の記録が未照合です。ビラと投書の文面を読み直してください。',
-      D: '地図の黒塗りが未照合です。欠けた地名を推定してください。',
-      E: '電文の解読が未完了です。符号の名前（モールス）を照合にかけると、道具が見つかります。',
-    };
-    const sp = KoeOS.getSpokeProgress().find(s => !s.complete);
-    if (sp) return SPOKE_HINTS[sp.group] || '';
-    if (KoeOS.isRestored('loop') && !KoeOS.isRestored('data_trace'))
-      return '最後のファイルの照合語は、文集に挟まれた断片の中にあります。赤い黒塗りは、文脈から元の言葉を推定できます。';
+    if (KoeOS.isRestored('telegram_001') && !KoeOS.isRestored('telegram_002'))
+      return '接触ログは一行につき一桁です。Prayストアのモールス読取機を使えます。';
     if (KoeOS.isRestored('receiver_lock') && !KoeOS.isRestored('hidden'))
-      return '最後のロックの信号は、モールス読取機と16進変換器の二段で解読できます。';
-    if (!KoeOS.isRestored('hidden'))
-      return '未読の記録が残っています。復元済みファイルの一覧から、まだ読んでいないものを開いてください。';
-    return '';
+      return '受信割込は、モールスで数字にしたあと、16進として読みます。';
+    return '公開資料の固有名か、復号した鍵を入力してください。';
   }
 
   /* ═══════════════════════════════════
@@ -1213,46 +1132,40 @@ const Shell = (() => {
   const STORY_MSGS = [
     {
       id:'msg_reader', gate:'kiroku_001', name:'繧ｿ◆縺薙％??', avatar:'📡',
-      date:'1949.09', anomaly:true, preview:'ページが開かれました。',
-      body:() => `<div class="mdate-sep">送信：1949年9月（推定）</div>`
-        + _bub('手記ファイルの開封を検知。')
-        + _bub('「いつかこれを読む人へ」── 書き出しを照合しました。受信者名は未登録です。')
-        + _bub('記録セクタの損耗率：3%。閲覧された記録は固定されます。読まれていない記録から、先に壊れていきます。')
-        + _bub('あなたが何者でも、最後まで読んでください。ここには、記録から消された人たちがいます。', true, '1949-09 ⚠ タイムスタンプ異常'),
+      date:'1949.08.17', anomaly:true, preview:'SECTOR A-01　READ COMPLETE',
+      body:() => `<div class="mdate-sep">受信時刻：照合不能</div>`
+        + _bub('SECTOR A-01　READ COMPLETE')
+        + _bub('固定処理：完了　／　欠損率：3.1%')
+        + _bub('RECEIVER：未登録', true, '1949-08-17 ⚠'),
     },
     {
-      id:'msg_inside', gate:'hub_002', name:'繧ｿ◆縺薙％??', avatar:'📡',
-      date:'1973.09.11', anomaly:true, preview:'第2層を開封できます。',
-      body:() => `<div class="mdate-sep">送信：1973年9月11日</div>`
-        + _bub('手記、写真、掲示板、地図、電文。五つのスポークを照合しました。')
-        + _bub('損耗率：14%。破損は止まっていません。急がなくていい。でも、止まらないでください。')
-        + _bub('ここまでが「外側」です。ここから先は、記録が誰のために残されたのか、という話になります。')
-        + _bub('もう少しだけ、続けてください。', true, '1973-09-11')
-    + `<div style="margin:10px 4px 0;"><div onclick="Shell.open('browser');setTimeout(()=>Shell.bNavigate('hub_002'),80);" style="display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid rgba(200,88,88,0.2);border-radius:12px;padding:13px 14px;cursor:pointer;user-select:none;"><span style="font-size:20px;">🔓</span><div style="font-family:var(--mono);font-size:11px;line-height:1.7;"><div style="color:var(--t1);letter-spacing:.04em;">第2層が開く</div><div style="color:var(--t3);font-size:10px;letter-spacing:.06em;">復元アプリで開く</div></div><span style="margin-left:auto;color:var(--t3);font-size:13px;">›</span></div></div>`,
+      id:'msg_external', gate:'telegram_001', name:'繧ｿ◆縺薙％??', avatar:'📡',
+      date:'1973.09.12', anomaly:true, preview:'EXTERNAL MATCH：2',
+      body:() => `<div class="mdate-sep">処理記録：1973年9月12日</div>`
+        + _bub('EXTERNAL MATCH：2')
+        + _bub('参照先：芙島市立図書館 郷土資料室／蒼沼ブルーランド思い出保存会')
+        + _bub('SECTOR SIGNAL-01　INPUT REQUIRED', true, '1973-09-12 09:04'),
     },
     {
       id:'msg_receiver', gate:'hidden', name:'繧ｿ◆縺薙％??', avatar:'📡',
-      date:'復号済み', anomaly:true, preview:'受信者照合が完了しました。',
-      body:() => `<div class="mdate-sep">送信：日時不明（復号済み）</div>`
-        + _bub('損耗率：3█%。一部のセクタ照合に失敗し▒▒した。継続します。')
-        + _bub('受信者欄「███」を復号しました。')
-        + _bub('現在の閲覧者と照合。名前は登録されていません。')
-        + _bub('受信の条件は、ひとつだけ。記録が消えない側で、これを読めること。')
-        + _bub('受信者は、あなたです。最初から。', true, '受信者照合 ── 完了'),
+      date:'復号済み', anomaly:true, preview:'RECEIVER FIELD：DECRYPTED',
+      body:() => `<div class="mdate-sep">受信時刻：照合不能</div>`
+        + _bub('RECEIVER FIELD　DECRYPTED')
+        + _bub('RECORD COUNT：1')
+        + _bub('READ REQUIRED', true, 'DECRYPT COMPLETE'),
     },
     {
       id:'msg_deliver', gate:'fumi_tegami', name:'繧ｿ◆縺薙％??', avatar:'✉️',
-      date:'1973.09.11', anomaly:true, preview:'未投函の手紙があります。',
+      date:'1973.09.11', anomaly:true, preview:'UNSENT DOCUMENT：1',
       body:() => `<div class="mdate-sep">送信：1973年9月11日</div>`
-        + _bub('損耗率：5█%。手紙のセクタは、まだ無事で▒。')
-        + _bub('最深部に、未投函の手紙があります。宛先は、猫塚清治。')
-        + _bub('投函記録なし。文集収録なし。公式記録への参照なし。')
-        + _bub('この手紙を、記録してください。', true, '1973-09-11'),
+        + _bub('UNSENT DOCUMENT：1')
+        + _bub('宛先：猫塚清治　／　投函記録：なし')
+        + _bub('読取可能', true, '1973-09-11'),
     },
   ];
 
   const THREADS = [
-    { id:'soran_intro', name:'繧ｿ◆縺薙％??', avatar:'📡', preview:'このアーカイブを見つけてください。', date:'1973.09.12', anomaly:true, gate:null },
+    { id:'soran_intro', name:'繧ｿ◆縺薙％??', avatar:'📡', preview:'受信ファイル：1', date:'1973.09.12', anomaly:true, gate:null },
     ...STORY_MSGS,
   ];
 
@@ -1439,125 +1352,11 @@ const Shell = (() => {
   /* ═══════════════════════════════════
      ★v3.4 セクタマップ（タコ躯体図）
   ═══════════════════════════════════ */
-  /* ═══════════════════════════════════
-     ストアアプリ（★v3.6）
-     freesoft ページ（復元アプリ内の配布サイト）を廃止し、ホームの独立アプリに昇格。
-     解析ツールの開発者は蛸川小蘭（現代にいたときの個人開発アプリ、という設定）。
-     ダミーアプリはツール内広告（月湯温泉・芙島観光）と世界を共有する。
-  ═══════════════════════════════════ */
-  function renderStore(el) {
-    el.style.display = 'block';
-    el.style.flexDirection = '';
-    el.style.overflow = 'auto';
-
-    const hexDone   = KoeOS.isInstalled('hexconv');
-    const morseDone = KoeOS.isInstalled('morse');
-    const stars = n => '★'.repeat(n) + '☆'.repeat(5-n);
-
-    const installBtn = (id, done) => done
-      ? `<div style="display:inline-block;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:4px;padding:6px 16px;font-size:12px;color:#388e3c;font-family:'Roboto',sans-serif;">✓ インストール済み</div>`
-      : `<div data-install="${id}" style="display:inline-block;cursor:pointer;background:#fff;border:1px solid #dadce0;border-radius:4px;padding:6px 16px;font-size:12px;color:#1a73e8;font-family:'Roboto',sans-serif;">インストール</div>`;
-    const naBtn = `<div style="display:inline-block;background:#f1f3f4;border:1px solid #e0e0e0;border-radius:4px;padding:6px 16px;font-size:11px;color:#9aa0a6;font-family:'Roboto',sans-serif;">この端末には対応していません</div>`;
-
-    const card = ({icon, iconBg, name, dev, rate, dl, desc, badges, footer, review}) => `
-      <div class="fs-card">
-        <div class="fs-card-main">
-          <div class="fs-icon" style="background:${iconBg};">${icon}</div>
-          <div class="fs-info">
-            <div class="fs-app-name">${name}</div>
-            <div class="fs-developer">${dev}</div>
-            <div class="fs-rating-row"><span class="fs-stars">${stars(rate)}</span><span>${rate}.0</span><span>・</span><span>${dl}</span></div>
-          </div>
-        </div>
-        <div class="fs-card-desc">${desc}</div>
-        ${review ? `<div class="fs-review">${review}</div>` : ''}
-        <div class="fs-card-footer">
-          <div>${badges.map(b=>`<span class="fs-badge">${b}</span>`).join('')}</div>
-          ${footer}
-        </div>
-      </div>`;
-
-    el.innerHTML = `
-<style>
-  #fs-wrap { background:#f2f2f2; font-family:'Roboto','Noto Sans JP',sans-serif; font-size:13px; min-height:100%; color:#202124; }
-  #fs-topbar { background:#1a73e8; padding:10px 14px; }
-  #fs-topbar-logo { font-size:15px; font-weight:700; color:#fff; letter-spacing:.03em; }
-  #fs-topbar-sub { font-size:11px; color:rgba(255,255,255,.75); margin-top:1px; }
-  #fs-tabs { background:#fff; border-bottom:1px solid #e0e0e0; display:flex; font-size:12px; color:#5f6368; padding:0 14px; }
-  .fs-tab { padding:10px 12px; letter-spacing:.04em; cursor:default; }
-  .fs-tab.active { color:#1a73e8; border-bottom:2px solid #1a73e8; font-weight:700; }
-  #fs-body { padding:10px 12px 24px; }
-  .fs-section-label { font-size:11px; color:#5f6368; letter-spacing:.08em; margin:14px 0 8px; padding-left:2px; }
-  .fs-card { background:#fff; border-radius:8px; box-shadow:0 1px 2px rgba(0,0,0,.12); margin-bottom:10px; overflow:hidden; }
-  .fs-card-main { display:flex; align-items:flex-start; gap:12px; padding:14px; }
-  .fs-icon { width:52px; height:52px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; }
-  .fs-info { flex:1; min-width:0; }
-  .fs-app-name { font-size:14px; font-weight:700; color:#202124; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .fs-developer { font-size:11px; color:#1a73e8; margin:2px 0 4px; }
-  .fs-rating-row { display:flex; align-items:center; gap:6px; font-size:11px; color:#5f6368; }
-  .fs-stars { color:#f9ab00; font-size:12px; letter-spacing:1px; }
-  .fs-card-desc { font-size:12px; color:#3c4043; line-height:1.7; padding:0 14px 12px; }
-  .fs-review { font-size:11px; color:#5f6368; line-height:1.7; padding:0 14px 12px; border-top:1px dashed #eceef0; margin:0 0 0; padding-top:10px; }
-  .fs-card-footer { border-top:1px solid #f1f3f4; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; font-size:11px; color:#5f6368; }
-  .fs-badge { display:inline-block; background:#f1f3f4; border-radius:4px; padding:2px 7px; font-size:10px; color:#5f6368; margin-right:4px; }
-</style>
-<div id="fs-wrap">
-  <div id="fs-topbar">
-    <div id="fs-topbar-logo">▶ Pray ストア</div>
-    <div id="fs-topbar-sub">おすすめのアプリとゲーム</div>
-  </div>
-  <div id="fs-tabs">
-    <div class="fs-tab active">ツール</div>
-    <div class="fs-tab">地域</div>
-    <div class="fs-tab">ゲーム</div>
-  </div>
-  <div id="fs-body">
-
-    <div class="fs-section-label">▼ お近くのおすすめ</div>
-    ${card({ icon:'♨️', iconBg:'#7a4a2b', name:'月湯温泉 公式', dev:'月湯温泉旅館組合', rate:4, dl:'5,000+ ダウンロード',
-      desc:'渓流の音と、こけしの宿。空室照会と日帰り入浴の受付はこちらから。',
-      badges:['無料','全年齢'], footer:naBtn })}
-    ${card({ icon:'🌸', iconBg:'#b06a8a', name:'芙島観光ナビ', dev:'芙島市観光協会', rate:4, dl:'10,000+ ダウンロード',
-      desc:'桃見山の開花情報をプッシュ通知でお届け。モデルコースと駐車場マップを収録。',
-      badges:['無料','全年齢'], footer:naBtn })}
-    ${card({ icon:'🎎', iconBg:'#5a5246', name:'こけし図鑑', dev:'個人開発者', rate:3, dl:'100+ ダウンロード',
-      desc:'東北のこけしを産地別に収録。あなたのこけしの系統が分かります。',
-      badges:['無料','広告あり'], footer:naBtn })}
-
-    <div class="fs-section-label">▼ バックアップとストレージ</div>
-    ${card({ icon:'☁️', iconBg:'#3b6ea5', name:'おもいでクラウド', dev:'オモイデ電子', rate:4, dl:'100,000+ ダウンロード',
-      desc:'大切な写真もメモも、消えない場所へ。どこからでも取り出せます。',
-      badges:['無料','アプリ内課金'], footer:naBtn })}
-    ${card({ icon:'💾', iconBg:'#4a5568', name:'まるごとバックアップ', dev:'フシマ電算', rate:4, dl:'50,000+ ダウンロード',
-      desc:'同じものを、もう一つ、別の場所に。端末が壊れても、あなたの記録は失われません。',
-      badges:['無料','広告あり'], footer:naBtn })}
-
-    <div class="fs-section-label">▼ ユーティリティ</div>
-    ${card({ icon:'🔢', iconBg:'#1565c0', name:'HexConv — 16進変換器', dev:'蛸川小蘭', rate:4, dl:'1,000+ ダウンロード',
-      desc:'16進数（Hex）をカタカナに変換します。対応表は作者の独自規格です。スペースがなくても2桁ずつ自動で区切ります。',
-      review:'★★★☆☆　用途不明。でも、ちゃんと動く。',
-      badges:['無料','広告あり','v1.2.0'], footer:installBtn('hexconv', hexDone) })}
-    ${card({ icon:'📻', iconBg:'#1b5e20', name:'MorseReader — モールス読取機', dev:'蛸川小蘭', rate:4, dl:'500+ ダウンロード',
-      desc:'符号列（・と−）を数字に変換します。一文字ごとに改行またはスペースで区切って入力。',
-      review:'★★★★★　問い合わせに返信がありません。更新を待っています。',
-      badges:['無料','広告あり','v0.9.4 β'], footer:installBtn('morse', morseDone) })}
-
-  </div>
-</div>`;
-
-    el.querySelectorAll('[data-install]').forEach(b => {
-      b.addEventListener('click', () => {
-        const id = b.getAttribute('data-install');
-        if (KoeOS.isInstalled(id)) return;
-        installTool(id);
-      });
-    });
-  }
-
   function _renderTako(el) {
     const legs = KoeOS.getLegProgress();
-    const isClear = KoeOS.isViewed('epilogue') && (localStorage.getItem('koe_fumi_note')||'').trim() !== '';
-    // ★v3.5 TRUE END（隠しページ「返信」閲覧済み）：タコの頭が金色に点灯する
+    const ending = localStorage.getItem('koe_ending');
+    const isClear = KoeOS.isViewed('epilogue') && (ending === 'record' || ending === 'source');
+    // ★v3.5 任意返信（隠しページ「返信」閲覧済み）：タコの頭が金色に点灯する
     const isTrue = KoeOS.isViewed('okaeri');
 
     /* ─ (1) ステータス行 ─ */
@@ -1662,7 +1461,7 @@ const Shell = (() => {
     });
 
     // 胴体（足の根元を覆うよう最後に描く）。目は胴体の塗りに隠れないよう、さらに後に描く
-    // ★v3.5 TRUE END時は頭（胴体＋目）が金色に点灯する
+    // ★v3.5 任意返信の閲覧後は頭（胴体＋目）が金色に点灯する
     const headFill   = isTrue ? 'rgba(200,169,110,0.22)' : '#0d0d10';
     const headStroke = isTrue ? 'var(--gold)' : 'rgba(200,169,110,0.25)';
     const eyeFill    = isTrue ? 'var(--gold)' : 'none';
@@ -1674,8 +1473,8 @@ const Shell = (() => {
       + `</g>`;
 
     const completeNote = isTrue
-      ? `<div class="tako-complete-note">── 躯体、応答。声は、帰ってきた。</div>`
-      : (isClear ? `<div class="tako-complete-note">── 全セクタ、固定されました。</div>` : '');
+      ? `<div class="tako-complete-note">RETURN PACKET：1</div>`
+      : (isClear ? `<div class="tako-complete-note">ALL SECTORS：FIXED</div>` : '');
     const svgClass = isClear ? 'tako-complete-svg' : '';
 
     const svgHtml = `
@@ -1729,7 +1528,7 @@ const Shell = (() => {
     listHtml += '</div>';
 
     /* ─ (6) 添え書き ─ */
-    const footHtml = `<div class="tako-foot">閲覧された記録は固定されます。読まれていない記録から、先に壊れていきます。</div>`;
+    const footHtml = `<div class="tako-foot">VIEWED：FIXED<br>UNREAD：LOSS ACTIVE</div>`;
 
     el.innerHTML = `<div class="tako-wrap">${statusHtml}${subheadHtml}${svgHtml}${listHtml}${footHtml}</div>`;
   }
@@ -1823,7 +1622,7 @@ const Shell = (() => {
             background:var(--s2);border:1px solid var(--bd);
             border-radius:8px;padding:10px;color:var(--t2);cursor:pointer;
             font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-align:left;
-          ">▸ TRUE END状態にする（タコの頭点灯）</button>
+          ">▸ 任意返信状態にする（タコの頭点灯）</button>
           <button onclick="_devReset()" style="
             background:var(--red-d);border:1px solid rgba(200,88,88,.22);
             border-radius:8px;padding:10px;color:var(--red);cursor:pointer;
@@ -1901,11 +1700,12 @@ const Shell = (() => {
     Shell.renderToolGrid();
     Shell.openDebug();
   };
-  // ★v3.5 実ブラウザテスト支援：クリア状態／TRUE END状態をワンタップで再現
+  // ★v3.5 実ブラウザテスト支援：読了状態／任意返信状態をワンタップで再現
   window._devSetClear = () => {
     KoeOS.PAGES.filter(p => p.locked && p.id !== 'okaeri').forEach(p => { KoeOS.markRestored(p.id); KoeOS.markViewed(p.id); });
     try {
       localStorage.setItem('koe_fumi_note', '猫塚清治と蛸川小蘭は、ここにいた。');
+      localStorage.setItem('koe_ending', 'record');
       localStorage.removeItem('koe_true_end');
     } catch {}
     Shell.openDebug();
@@ -1914,6 +1714,7 @@ const Shell = (() => {
     KoeOS.PAGES.filter(p => p.locked).forEach(p => { KoeOS.markRestored(p.id); KoeOS.markViewed(p.id); });
     try {
       localStorage.setItem('koe_fumi_note', 'おかえりなさい。');
+      localStorage.setItem('koe_ending', 'record');
       localStorage.setItem('koe_true_end', '1');
     } catch {}
     Shell.openDebug();
@@ -1927,7 +1728,7 @@ const Shell = (() => {
 
   return { boot, open, closeApp, goHome, closeMsgView, openThread,
            bNavigate, bBack, bFwd, doSearch, clearHistory, pushNotif, openDebug,
-           renderToolGrid, openTool, installTool, setSearchAndFocus };
+           renderToolGrid, openTool, setSearchAndFocus, syncExternalProgress };
 })();
 
 
@@ -1988,12 +1789,75 @@ async function loadInstalledTools() {
   }
 }
 
+/* 外部サイトが別オリジンになっても受け取れる、最小のバージョン付き進行控え。 */
+const KOE_RECEIPT_VISITS = new Set([
+  'blue-land', 'fushima-archive', 'fushima-memo', 'fushima-book',
+  'pray-store', 'm-kawa-wiki',
+]);
+const KOE_RECEIPT_APPS = new Set(['hexconv', 'morse']);
+
+function importKoeReceipt() {
+  const params = new URLSearchParams(location.hash.slice(1));
+  if (params.get('kr') !== 'v1') return { record: false };
+
+  for (const id of params.getAll('visit')) {
+    if (KOE_RECEIPT_VISITS.has(id)) KoeOS.markExternalVisit(id);
+  }
+  for (const id of params.getAll('app')) {
+    if (KOE_RECEIPT_APPS.has(id)) KoeOS.installApp(id);
+  }
+
+  const record = params.get('ending') === 'record';
+  if (record) {
+    const note = (params.get('note') || '').trim().slice(0, 240);
+    try {
+      localStorage.setItem('koe_ending', 'record');
+      localStorage.setItem('koe_fumi_note', note);
+      if (/おかえり|オカエリ|お帰り/.test(note)) localStorage.setItem('koe_true_end', '1');
+      else localStorage.removeItem('koe_true_end');
+    } catch {}
+    KoeOS.markRestored('epilogue');
+    KoeOS.markViewed('epilogue');
+  }
+
+  history.replaceState(null, '', location.pathname + location.search);
+  return { record };
+}
+
 /* ── 起動 ── */
 window.addEventListener('DOMContentLoaded', async () => {
+  const receipt = importKoeReceipt();
   await loadAlwaysPages();
   await loadRestoredPages();
   await loadInstalledTools();   // ★v3.1
   Shell.boot();
+
+  const ending = receipt.record ? 'record' : new URLSearchParams(location.search).get('ending');
+  if (ending === 'record' || ending === 'source') {
+    try { localStorage.setItem('koe_ending', ending); } catch {}
+    KoeOS.markRestored('epilogue');
+    await loadPageScript('pages/epilogue.js');
+    setTimeout(() => {
+      Shell.open('browser');
+      Shell.bNavigate('epilogue');
+    }, 120);
+  }
+});
+
+/* 独立サイトを別タブで確認して戻った瞬間に、閲覧印を取り込む。 */
+window.addEventListener('pageshow', () => Shell.syncExternalProgress(true));
+window.addEventListener('focus', () => Shell.syncExternalProgress(true));
+window.addEventListener('storage', e => {
+  if (e.key === 'koe_external_visits' || e.key === 'koe_installed_apps') {
+    Shell.syncExternalProgress(true);
+    loadInstalledTools().then(() => Shell.renderToolGrid());
+  }
+});
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    Shell.syncExternalProgress(true);
+    loadInstalledTools().then(() => Shell.renderToolGrid());
+  }
 });
 </script>
 </body>

@@ -31,7 +31,7 @@ TOOL_UI['hexconv'] = () => {
       out.textContent = result;
       out.style.color = result.includes('?') ? 'var(--red)' : 'var(--gold)';
       // 躯体の自動付記（45 12 44 24 10 23 5E＝オカエリコラン）を解読した瞬間に応答を返す。
-      // 機械が声を聴いて覚えた未送信の一行＝TRUE END への早期導線（2026-06-11 制作者発案）。
+      // 機械が声を聴いて覚えた未送信の一行＝任意返信への早期導線（2026-06-11 制作者発案）。
       const note = document.getElementById('hex-ident-note');
       if (note) note.style.display = (result === 'オカエリコラン') ? 'block' : 'none';
     });

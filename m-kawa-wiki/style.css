@@ -1,0 +1,36 @@
+:root { --ink:#202122; --sub:#54595d; --border:#a2a9b1; --link:#36c; --paper:#fff; --page:#f8f9fa; }
+* { box-sizing:border-box; }
+html,body { max-width:100%; overflow-x:hidden; }
+body { margin:0; color:var(--ink); background:var(--page); font-family:Arial,"Yu Gothic",sans-serif; }
+.wiki-header { min-height:74px; display:flex; justify-content:space-between; align-items:center; gap:22px; padding:12px 24px; background:#fff; border-bottom:1px solid #c8ccd1; }
+.wiki-brand { display:flex; align-items:center; gap:11px; color:var(--ink); text-decoration:none; }
+.wiki-brand strong,.wiki-brand small { display:block; }.wiki-brand strong{font-family:Georgia,"Yu Mincho",serif;font-size:20px;font-weight:400}.wiki-brand small{margin-top:2px;color:var(--sub);font-size:9px;letter-spacing:.08em}
+.wiki-mark { width:44px;height:44px;display:grid;place-items:center;border:1px solid #777;border-radius:50%;font-family:Georgia,serif;font-size:27px; }
+.wiki-search { display:flex; width:min(360px,42vw); }.wiki-search input{width:100%;min-width:0;border:1px solid var(--border);padding:9px}.wiki-search button{border:1px solid var(--border);border-left:0;background:#f8f9fa;font-weight:700;padding:0 13px}
+.layout { width:100%; max-width:1180px; margin:0 auto; display:grid; grid-template-columns:190px minmax(0,800px); gap:34px; padding:28px 22px 65px; }
+.sidebar { padding-top:44px; font-size:12px; }.sidebar a{display:block;padding:6px 0}.sidebar hr{border:0;border-top:1px solid #c8ccd1;margin:12px 0}
+main { min-width:0; max-width:100%; overflow-wrap:anywhere; background:var(--paper); padding:24px 30px 44px; border:1px solid #c8ccd1; }
+.page-tools { display:flex; justify-content:flex-end; gap:18px; margin:-10px 0 8px; padding-bottom:8px; border-bottom:1px solid #c8ccd1; font-size:12px; }
+h1,h2 { font-family:Georgia,"Yu Mincho",serif; font-weight:400; }
+h1 { margin:0 0 14px; padding-bottom:8px; border-bottom:1px solid var(--border); font-size:30px; }
+h2 { margin:27px 0 12px; padding-bottom:5px; border-bottom:1px solid var(--border); font-size:21px; }
+p { line-height:1.8; }
+.lead { font-size:14px; }
+a { color:var(--link); }
+.infobox { float:right;width:275px;margin:0 0 18px 24px;border:1px solid var(--border);background:#f8f9fa;font-size:12px }.infobox h2{margin:0;padding:9px;text-align:center;background:#dce7f3;border:0;font-size:18px}.infobox dl{margin:8px 12px 12px}.infobox dl div{display:grid;grid-template-columns:70px 1fr;padding:5px 0}.infobox dt{font-weight:700}.infobox dd{margin:0}
+table { width:100%; border-collapse:collapse; font-size:13px; }th,td{border:1px solid var(--border);padding:8px;text-align:left;vertical-align:top}th{background:#eaecf0}
+.catalog-note,.last-edit,.revision-meta { color:var(--sub);font-size:11px; }
+.added-record { margin-top:28px;padding:0 16px 15px;border:2px solid #7997b4;background:#f8fbff }.verification{margin:0 -16px 12px;padding:8px 12px;background:#e6f1fb;color:#36536e;font-size:11px}.added-record blockquote{margin:16px 0;padding:12px 16px;border-left:4px solid #7997b4;background:#fff;font-family:Georgia,"Yu Mincho",serif;line-height:1.9}
+.references ol { font-size:12px;line-height:1.8; }
+footer { padding:28px 16px;color:#6c7074;background:#eaecf0;border-top:1px solid #c8ccd1;text-align:center;font-size:10px }footer p{margin:4px}
+footer .disclaimer{margin:10px auto 0;max-width:760px;color:#8a8f93;font-size:9px;line-height:1.6}
+.edit-layout { width:min(880px,calc(100% - 32px)); margin:28px auto 60px; }.edit-layout main{width:100%}
+.local-only { margin:15px 0 23px;padding:13px 15px;border:1px solid #f0c36d;background:#fff7d7;font-size:12px;line-height:1.7 }
+fieldset { margin:0 0 20px;padding:16px;border:1px solid var(--border) }legend{font-family:Georgia,"Yu Mincho",serif;font-size:18px}label{display:block;margin:14px 0 6px;font-weight:700;font-size:12px}.field-help{color:var(--sub);font-size:12px}
+textarea,#edit-summary { width:100%;border:1px solid #72777d;background:#fff;padding:10px;font:13px/1.7 Consolas,"Yu Gothic",sans-serif }textarea{resize:vertical}.char-count{text-align:right;color:var(--sub);font-size:10px}.minor{display:flex;align-items:center;gap:6px;font-weight:400}.minor input{width:auto}
+.save-row { display:flex;align-items:center;gap:12px;margin-top:22px }.primary{border:1px solid #36c;border-radius:2px;padding:9px 14px;color:#fff;background:#36c;font-weight:700;cursor:pointer}.cancel{padding:9px 12px;color:var(--ink);text-decoration:none;border:1px solid var(--border);background:#f8f9fa}
+.save-status { margin-top:22px;padding:15px;border:1px solid #14866d;background:#d5fdf6;color:#134e42 }.save-status p{margin:6px 0}
+.receiver-return{display:inline-block;margin-top:8px;padding:8px 11px;border:1px solid #7997b4;background:#fff;text-decoration:none;font-size:12px}
+.koe-return{display:inline-block;margin-top:12px;padding:8px 11px;border:1px solid #7997b4;background:#fff;color:#36536e;text-decoration:none;font-size:12px}
+.history-section table{font-size:12px}.history-section th:first-child{width:155px}
+@media(max-width:760px){.wiki-header{align-items:flex-start;flex-direction:column}.wiki-search{width:100%}.layout{grid-template-columns:1fr;padding:15px 10px 45px}.sidebar{display:none}main{padding:20px 17px}.infobox{float:none;width:100%;margin:18px 0}.edit-layout{width:calc(100% - 20px)}table{font-size:11px}th,td{padding:6px}}

@@ -1,102 +1,52 @@
-// wiki_skip.js　結末③「追記しない選択」
-// prereqs: choice
+// wiki_skip.js　非追記側の出口
+// 読了状態を保ったまま、現実の検索結果へ遷移する。
 
 PAGE_CONTENT['wiki_skip'] = () => {
-  setTimeout(() => {
-    const btnBack = document.getElementById('skip-btn-back');
-    const btnSkip = document.getElementById('skip-btn-skip');
-    if (!btnBack || !btnSkip) return;
+  const googleUrl = 'https://www.google.com/search?q=' + encodeURIComponent('1949年 列車転覆 冤罪 事件');
 
-    btnBack.addEventListener('click', () => Shell.bNavigate('wiki_add'));
-    btnSkip.addEventListener('click', () => {
-      try { localStorage.setItem('koe_fumi_note', ''); } catch {}
-      Shell.bNavigate('epilogue');
+  setTimeout(() => {
+    try {
+      localStorage.setItem('koe_ending', 'source');
+      KoeOS.markRestored('epilogue');
+      KoeOS.markViewed('epilogue');
+      if (window.KOE_SOURCE_REDIRECT) clearTimeout(window.KOE_SOURCE_REDIRECT);
+      if (window.KOE_SOURCE_COUNTDOWN) clearInterval(window.KOE_SOURCE_COUNTDOWN);
+    } catch {}
+
+    let rest = 6;
+    const counter = document.getElementById('source-countdown');
+    const tick = () => { if (counter) counter.textContent = String(rest); };
+    tick();
+    window.KOE_SOURCE_COUNTDOWN = setInterval(() => { rest -= 1; tick(); }, 1000);
+    window.KOE_SOURCE_REDIRECT = setTimeout(() => { window.location.href = googleUrl; }, 6500);
+
+    const cancel = document.getElementById('source-cancel');
+    if (cancel) cancel.addEventListener('click', () => {
+      clearTimeout(window.KOE_SOURCE_REDIRECT);
+      clearInterval(window.KOE_SOURCE_COUNTDOWN);
+      const status = document.getElementById('source-status');
+      if (status) status.innerHTML = '転送を中止しました。読了記録はこのブラウザに残っています。';
+      cancel.style.display = 'none';
+      const record = document.getElementById('source-record');
+      if (record) record.style.display = 'inline-block';
     });
   }, 0);
 
   return `<div class="bpage">
-  <div class="bpage-num">── 確認 ──</div>
-  <div class="bpage-title">追記しない、ということ</div>
-  <div class="bpage-meta" style="border-bottom:none;padding-bottom:0;color:var(--t3);">
-    選択：M川事件wikiへ追記しない
-  </div>
+    <div class="bpage-num">EXTERNAL LOOKUP</div>
+    <div class="bpage-title">記録の外を確かめる</div>
+    <div class="bpage-meta">検索先：Google　／　検索語：1949年 列車転覆 冤罪 事件</div>
 
-  <div class="bpage-body" style="margin-top:24px;">
-    <p>
-      清治さんは被告名簿にいなかった。
-      逮捕された二十名にも、無罪になった二十名にも、彼の名前はない。
-      記録から除外されたことで、彼は存在しなかったことになった。
-    </p>
-    <p>
-      小蘭も同じだ。
-      戸籍がない。公式記録がない。
-      清治さんがいなければ、小蘭はあの夜を越えられなかった。
-      小蘭が記録しなければ、清治さんは消えたままになる。
-    </p>
-
-    <hr style="border:none;border-top:1px solid #222;margin:1.8em 0;">
-
-    <p>
-      あなたが追記しなければ、ふたりはここで終わる。
-    </p>
-    <p>
-      それはあなたの選択だ。
-      ただ一つだけ伝えておく。
-    </p>
-
-    <p class="anom" style="padding:14px;background:#0d0d10;border-radius:8px;border:1px solid rgba(200,88,88,0.15);line-height:2.1;">
-      清治さんが存在しなければ、小蘭も存在しない。<br>
-      小蘭が存在しなければ、清治さんも存在しない。<br>
-      ふたりは、追記されて初めてここにいる。
-    </p>
-  </div>
-
-  <div style="margin:24px 0 0;display:flex;flex-direction:column;gap:10px;">
-
-    <div
-      id="skip-btn-back"
-      style="
-        background:#0d0d10;
-        border:1px solid rgba(200,169,110,0.3);
-        border-radius:12px;
-        padding:16px 18px;
-        cursor:pointer;
-        font-family:var(--mono);
-        transition:background .15s;
-      "
-      onmouseenter="this.style.background='rgba(200,169,110,0.07)'"
-      onmouseleave="this.style.background='#0d0d10'"
-    >
-      <div style="color:var(--gold);font-size:12px;letter-spacing:.1em;margin-bottom:4px;">
-        ▸ やはり、追記する
-      </div>
-      <div style="color:var(--t3);font-size:11px;letter-spacing:.04em;">
-        M川事件wikiに一行を足す。
-      </div>
+    <div style="background:#0d0d10;border:1px solid rgba(200,169,110,.25);border-radius:10px;padding:16px;font-family:var(--mono);font-size:11px;line-height:2;color:var(--t2);">
+      <div style="color:var(--gold);letter-spacing:.1em;margin-bottom:6px;">EXTERNAL CONNECTION</div>
+      <div id="source-status">検索語を送信します。<br><span id="source-countdown">6</span>秒後に、Googleの検索結果へ移動します。</div>
     </div>
 
-    <div
-      id="skip-btn-skip"
-      style="
-        background:#0d0d10;
-        border:1px solid rgba(255,255,255,0.06);
-        border-radius:12px;
-        padding:16px 18px;
-        cursor:pointer;
-        font-family:var(--mono);
-        transition:background .15s;
-      "
-      onmouseenter="this.style.background='rgba(255,255,255,0.03)'"
-      onmouseleave="this.style.background='#0d0d10'"
-    >
-      <div style="color:var(--t3);font-size:12px;letter-spacing:.1em;margin-bottom:4px;">
-        ▸ それでも、追記しない
-      </div>
-      <div style="color:var(--t3);font-size:11px;letter-spacing:.04em;opacity:.6;">
-        接続を終了する。
-      </div>
+    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:14px;font-family:var(--mono);font-size:10px;">
+      <a href="${googleUrl}" style="padding:9px 12px;border:1px solid rgba(200,169,110,.28);border-radius:8px;color:var(--gold);text-decoration:none;">今すぐ移動</a>
+      <button id="source-cancel" type="button" style="padding:9px 12px;border:1px solid rgba(255,255,255,.1);border-radius:8px;background:#0d0d10;color:var(--t2);font:inherit;cursor:pointer;">転送を中止</button>
+      <button id="source-record" type="button" onclick="Shell.bNavigate('epilogue')" style="display:none;padding:9px 12px;border:1px solid rgba(255,255,255,.1);border-radius:8px;background:#0d0d10;color:var(--t2);font:inherit;cursor:pointer;">読了記録を見る</button>
+      <button type="button" onclick="try{clearTimeout(window.KOE_SOURCE_REDIRECT);clearInterval(window.KOE_SOURCE_COUNTDOWN)}catch{};Shell.bNavigate('choice')" style="padding:9px 12px;border:1px solid rgba(255,255,255,.1);border-radius:8px;background:#0d0d10;color:var(--t2);font:inherit;cursor:pointer;">選択へ戻る</button>
     </div>
-
-  </div>
-</div>`;
+  </div>`;
 };

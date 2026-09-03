@@ -5,6 +5,9 @@ const path = require('path');
 
 function stripHtml(str) {
   return str
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/\sonclick="[^"]*"/gi, '')
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/p>/gi, '\n')
     .replace(/<\/li>/gi, '\n')
@@ -75,19 +78,39 @@ function extractPhoneMessages() {
   return out;
 }
 
-// v3.6: freesoft（ページ廃止→ストアアプリ化）と soran_profile（v11でarchive_aboutに統合・
-//        ファイル削除済み）を除去。memo（資料棚 別冊）と okaeri（TRUE END）を追加。
+// v4: 公開進行に含まれる統合済みページだけを抽出する。
+// 退役した旧ページは比較用に残すが、現行シナリオには混ぜない。
 const ORDER = [
   'archive_about','soran_intro',
-  'kiroku_001','kiroku_002','kiroku_003','kiroku_004',
-  'photo_001','photo_002','photo_003',
-  'bbs_001','bbs_002','bbs_003',
-  'map_001','map_002','map_003',
-  'telegram_001','telegram_002','telegram_003',
-  'hub_002',
-  'inochi','voices','memo','tegami','sns','momo','loop','data_trace',
-  'receiver_lock','hidden','fumi_tegami','choice','wiki_add','wiki_skip','epilogue','okaeri',
+  'kiroku_001','photo_001','kiroku_003','map_001',
+  'telegram_001','telegram_002','data_trace',
+  'receiver_lock','hidden','fumi_tegami','choice','wiki_skip','epilogue','okaeri',
 ];
+
+const EXTERNAL_PAGES = [
+  ['蒼沼ブルーランド資料保存室', 'blue-land/index.html'],
+  ['芙島市立図書館 郷土資料室 デジタル目録', 'fushima-archive/index.html'],
+  ['Pray ストア', 'pray-store/index.html'],
+  ['Pray ストア 開発者ページ', 'pray-store/developer.html'],
+  ['M川事件資料wiki', 'm-kawa-wiki/index.html'],
+  ['M川事件資料wiki 編集画面', 'm-kawa-wiki/edit/index.html'],
+];
+
+function extractExternalPages() {
+  let section = '';
+  for (const [label, relativePath] of EXTERNAL_PAGES) {
+    const fpath = path.join(__dirname, ...relativePath.split('/'));
+    if (!fs.existsSync(fpath)) continue;
+    const src = fs.readFileSync(fpath, 'utf8');
+    const main = src.match(/<main(?:\s[^>]*)?>([\s\S]*?)<\/main>/i);
+    const body = main ? main[1] : src;
+    section += '═'.repeat(60) + '\n';
+    section += `【外部サイト】${label}　${relativePath}\n`;
+    section += '═'.repeat(60) + '\n\n';
+    section += stripHtml(body) + '\n\n';
+  }
+  return section;
+}
 
 let out = '# 「声は壁を透して」シナリオテキスト\n';
 out += '# 生成日時: ' + new Date().toLocaleString('ja-JP') + '\n\n';
@@ -119,6 +142,7 @@ for (const id of ORDER) {
   out += stripHtml(tmplAll) + '\n\n';
 }
 
+out += extractExternalPages();
 out += extractPhoneMessages();
 out = out.replace(/(?:\r?\n[ \t]*){3,}/g, '\n\n');
 

@@ -1,0 +1,97 @@
+:root { --navy:#173a57; --blue:#2b628b; --pale:#eef3f6; --line:#c7d1d8; --ink:#20272c; }
+* { box-sizing: border-box; }
+html, body { max-width:100%; overflow-x:hidden; }
+body { margin:0; color:var(--ink); background:#f7f8f8; font-family:"Yu Gothic", "Hiragino Kaku Gothic ProN", sans-serif; }
+.masthead { background:#fff; border-top:6px solid var(--navy); border-bottom:1px solid var(--line); }
+.masthead-inner { width:min(1040px,calc(100% - 32px)); margin:auto; padding:21px 0; display:flex; align-items:center; gap:14px; }
+.seal { width:50px; height:50px; display:grid; place-items:center; color:#fff; background:var(--navy); font-family:serif; font-size:28px; }
+.bureau { margin:0 0 2px; color:#425d70; font-size:12px; letter-spacing:.14em; }
+h1 { margin:0; color:var(--navy); font-size:27px; font-weight:600; letter-spacing:.05em; }
+.breadcrumbs { padding:9px max(16px,calc((100% - 1040px)/2)); background:#edf2f5; color:#516471; font-size:11px; border-bottom:1px solid var(--line); }
+main { width:calc(100% - 32px); max-width:1040px; margin:28px auto 54px; display:grid; grid-template-columns:245px minmax(0,1fr); gap:30px; align-items:start; }
+aside { padding:18px; background:#fff; border:1px solid var(--line); }
+aside h2 { margin:0 0 15px; padding-bottom:9px; border-bottom:3px solid var(--navy); color:var(--navy); font-size:17px; }
+label { display:block; margin-bottom:6px; font-size:12px; font-weight:700; }
+.search-row { display:flex; }
+input { width:100%; min-width:0; border:1px solid #8799a6; padding:9px; font:inherit; font-size:13px; }
+button { border:0; padding:0 13px; color:#fff; background:var(--navy); font-weight:700; cursor:pointer; }
+.aside-note { margin:16px 0 0; color:#5a6973; font-size:11px; line-height:1.8; }
+.record-links { margin-top:18px; border-top:1px solid var(--line); }
+.record-links a { display:block; padding:9px 2px; border-bottom:1px solid #e3e8eb; font-size:11px; line-height:1.5; text-decoration:none; }
+.results { min-width:0; overflow-wrap:anywhere; }
+.results-head { display:flex; flex-wrap:wrap; gap:5px 15px; align-items:baseline; justify-content:space-between; border-bottom:4px solid var(--navy); }
+.results-head h2 { margin:0 0 8px; color:var(--navy); font-size:22px; }
+.results-head p { margin:0; color:#5d6c75; font-size:12px; }
+.record { padding:22px 0 25px; border-bottom:1px solid var(--line); }
+.record.featured, .record.key-record { margin-top:18px; padding:20px; border:1px solid var(--line); background:#fff; }
+.record.key-record { border-left:5px solid var(--blue); }
+.record-id { margin:0 0 4px; color:#667985; font-size:10px; letter-spacing:.08em; }
+h3 { margin:0 0 12px; color:#194f76; font-size:19px; }
+p { line-height:1.85; }
+.meta { color:#566975; font-size:11px; }
+.fact-table, .intake-table { width:100%; margin:14px 0; border-collapse:collapse; font-size:12px; }
+.fact-table th, .fact-table td, .intake-table th, .intake-table td { padding:8px 10px; border:1px solid #cfd7dc; text-align:left; vertical-align:top; line-height:1.7; }
+.fact-table th, .intake-table th { width:105px; color:#425d70; background:#f2f5f7; font-weight:700; }
+.document-detail { margin:15px 0 4px; border:1px solid #aebdc7; background:#fff; }
+.document-detail summary { padding:10px 13px; color:#164e75; background:#eef3f6; font-size:12px; font-weight:700; cursor:pointer; }
+.document-detail[open] summary { border-bottom:1px solid #c7d1d8; }
+.document-detail > :not(summary) { margin-left:14px; margin-right:14px; }
+.newspaper-copy { padding:14px 17px; background:#f0ecdf; color:#2e291f; font-family:"Yu Mincho",serif; }
+.newspaper-copy h4 { margin:5px 0 7px; font-size:17px; letter-spacing:.04em; }
+.newspaper-copy p { margin:6px 0 15px; }
+.paper-meta { color:#6b6353; font-family:"Yu Gothic",sans-serif; font-size:9px; }
+.catalog-answer { margin:14px 0; padding:10px 13px; border:1px solid #b7c5ce; background:#f4f7f9; font-size:12px; }
+.catalog-answer p { margin:3px 0; }
+.timeline { margin:17px 0 4px; padding:0; list-style:none; border-left:3px solid #7893a5; }
+.timeline li { display:grid; grid-template-columns:125px 1fr; gap:14px; margin:0 0 2px; padding:8px 0 10px 15px; }
+.timeline time { color:#425d70; font-size:11px; font-weight:700; }
+.timeline b, .timeline span { display:block; }
+.timeline b { margin-bottom:2px; font-size:12px; }
+.timeline span { font-size:12px; line-height:1.7; }
+.custody-log { margin:14px; font-size:12px; }
+.custody-log div { display:grid; grid-template-columns:105px 1fr; padding:8px 0; border-bottom:1px dotted #b9c4ca; }
+.custody-log dt { color:#425d70; font-weight:700; }
+.custody-log dd { margin:0; line-height:1.7; }
+.transcript { margin-top:16px !important; margin-bottom:16px !important; padding:15px; border:1px solid #b9b09d; background:#eee9dc; color:#302c23; font-family:"Yu Mincho",serif; }
+.transcript p { margin:5px 0; }
+.transcript .stamp { color:#716956; font-family:"Yu Gothic",sans-serif; font-size:9px; letter-spacing:.1em; }
+.transcript .pencil { color:#61594b; font-size:11px; font-style:italic; }
+.bibliography { margin:13px 0 16px; border-top:1px solid var(--line); font-size:12px; }
+.bibliography div { display:grid; grid-template-columns:110px 1fr; border-bottom:1px solid var(--line); }
+.bibliography dt, .bibliography dd { padding:7px 9px; line-height:1.7; }
+.bibliography dt { color:#425d70; background:#f2f5f7; font-weight:700; }
+.bibliography dd { margin:0; }
+.excerpt-list { padding:1px 0 12px; }
+.missing-file { border-left:4px solid #875e5e; }
+.missing-file summary { color:#6f3535; background:#f7efef; }
+.redaction { padding:0 4px; color:#fff; background:#262626; letter-spacing:.08em; }
+.record-grid { display:grid; grid-template-columns:220px 1fr; gap:18px; }
+.record-grid img, .comparison img, .wide-image { display:block; width:100%; border:1px solid #9baab4; }
+figure { margin:12px 0; }
+figcaption, .credit, .note { color:#5f6e77; font-size:10px; line-height:1.7; }
+.comparison { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.comparison figure { margin:0; }
+.comparison img { aspect-ratio:16/9; object-fit:cover; }
+blockquote { margin:14px 0; padding:10px 14px; background:#eef3f6; border-left:4px solid #6d8799; font-family:serif; line-height:1.9; }
+a { color:#075c9b; }
+#no-results { padding:26px; background:#fff; border:1px solid var(--line); }
+footer { padding:28px 16px; color:#e8f0f5; background:var(--navy); text-align:center; font-size:11px; }
+footer p { margin:4px; }
+footer .disclaimer { margin-top:10px; color:#aebfcc; font-size:9px; }
+.koe-return { display:inline-block; margin:18px 0 0; padding:8px 11px; border:1px solid #9baab4; background:#fff; color:#36536e; text-decoration:none; font-size:12px; }
+@media (max-width:720px) {
+  main { grid-template-columns:1fr; gap:18px; }
+  aside { position:static; }
+  .record-grid { grid-template-columns:1fr; }
+  .record.featured, .record.key-record { margin-left:-8px; margin-right:-8px; padding:16px 12px; }
+  .timeline li { grid-template-columns:1fr; gap:2px; }
+  .custody-log div { grid-template-columns:1fr; gap:2px; }
+}
+@media (max-width:500px) {
+  .comparison { grid-template-columns:1fr; }
+  h1 { font-size:22px; }
+  .masthead-inner { width:calc(100% - 24px); }
+  main { width:calc(100% - 24px); }
+  .fact-table th, .intake-table th { width:82px; }
+  .bibliography div { grid-template-columns:90px 1fr; }
+}

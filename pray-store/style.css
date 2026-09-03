@@ -1,0 +1,67 @@
+:root { --ink:#182027; --sub:#68727a; --line:#e1e6ea; --blue:#1769e0; --soft:#f6f8fa; }
+* { box-sizing:border-box; }
+html,body { max-width:100%; overflow-x:hidden; }
+body { margin:0; color:var(--ink); background:#fff; font-family:Arial,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif; }
+header { height:64px; display:flex; align-items:center; justify-content:space-between; padding:0 max(18px,calc((100% - 980px)/2)); border-bottom:1px solid var(--line); }
+.brand { color:var(--ink); font-size:21px; font-weight:700; text-decoration:none; letter-spacing:-.03em; }
+.playmark { color:var(--blue); font-size:18px; }
+.account { width:30px; height:30px; display:grid; place-items:center; color:#fff; background:#52636f; border-radius:50%; }
+nav { display:flex; gap:25px; padding:0 max(18px,calc((100% - 980px)/2)); border-bottom:1px solid var(--line); color:var(--sub); font-size:13px; }
+nav span, nav a { padding:14px 0 11px; color:inherit; text-decoration:none; }
+nav .active { color:var(--blue); border-bottom:3px solid var(--blue); font-weight:700; }
+main { width:calc(100% - 32px); max-width:900px; margin:36px auto 70px; overflow-wrap:anywhere; }
+.hero { margin-bottom:38px; padding:30px; border-radius:18px; background:linear-gradient(135deg,#e8f2ff,#f5efff); }
+.kicker { margin:0 0 5px; color:var(--blue); font-size:11px; font-weight:700; letter-spacing:.08em; }
+h1 { margin:0 0 8px; font-size:31px; }
+h2 { margin:0; font-size:20px; }
+.hero p:last-child { margin-bottom:0; color:#4f5b64; }
+.section-head { display:flex; flex-wrap:wrap; gap:6px 16px; justify-content:space-between; align-items:baseline; margin-bottom:14px; }
+.section-head a, a { color:var(--blue); }
+.app-card { margin-bottom:14px; padding:20px; border:1px solid var(--line); border-radius:14px; box-shadow:0 2px 8px rgba(20,34,45,.05); }
+.app-top { display:grid; grid-template-columns:64px minmax(0,1fr) auto; gap:14px; align-items:center; }
+.app-icon, .compact-icon { display:grid; place-items:center; color:#fff; border-radius:14px; font-weight:700; }
+.app-icon { width:64px; height:64px; font-family:monospace; font-size:18px; }
+.hex { background:#1565c0; }.morse { background:#1b5e20; }
+.app-title { min-width:0; }
+.app-title h3, .compact-grid h3 { margin:0 0 4px; font-size:16px; overflow-wrap:anywhere; }
+.app-title a { font-size:12px; text-decoration:none; }
+.app-title p, .developer { margin:5px 0 0; color:var(--sub); font-size:11px; }
+button { border:0; border-radius:18px; padding:9px 15px; color:#fff; background:var(--blue); font-weight:700; cursor:pointer; }
+button[disabled] { color:#46627c; background:#dfeaf5; cursor:default; }
+.app-card > p { font-size:13px; line-height:1.75; }
+.badges { display:flex; gap:6px; flex-wrap:wrap; }
+.badges span { padding:3px 8px; color:#59656d; background:#f0f2f4; border-radius:5px; font-size:10px; }
+.release-meta { margin:9px 0 0; color:#7a858d; font-size:10px !important; }
+blockquote { margin:14px 0 0; padding-top:12px; border-top:1px dashed var(--line); color:var(--sub); font-size:11px; }
+.install-message { padding:12px 15px; color:#155b39; background:#e4f7ed; border-radius:8px; }
+.shelf { margin-top:42px; }
+.shelf > h2 { margin-bottom:15px; }
+.compact-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.compact-grid article { position:relative; display:grid; grid-template-columns:48px 1fr; gap:12px; padding:16px; border:1px solid var(--line); border-radius:12px; }
+.compact-icon { width:48px; height:48px; border-radius:10px; }
+.cloud{background:#3b6ea5}.backup{background:#4a5568}.hot{background:#7a4a2b}.flower{background:#b06a8a}.doll{background:#5a5246}
+.compact-grid p { margin:7px 0 0; color:#4b565e; font-size:12px; line-height:1.65; }
+.compact-grid .developer { margin:0; color:var(--sub); font-size:10px; }
+.unavailable { grid-column:2; color:#849099; font-size:10px; }
+.return-row { margin-top:38px; text-align:center; }
+.return-row a { display:inline-block; padding:11px 18px; border:1px solid #b9c9db; border-radius:22px; text-decoration:none; font-size:13px; }
+.koe-return { display:inline-block; margin-top:12px; padding:8px 13px; border:1px solid #b9c9db; border-radius:18px; color:#315c83; background:#fff; text-decoration:none; font-size:12px; }
+footer { padding:25px 16px; color:#647079; background:var(--soft); border-top:1px solid var(--line); text-align:center; font-size:10px; }
+footer p { margin:4px; }
+footer .disclaimer { margin:10px auto 0; max-width:720px; color:#929ba2; font-size:9px; line-height:1.6; }
+.developer-page { max-width:760px; }
+.developer-profile { display:flex; gap:20px; align-items:center; padding:26px 0 34px; border-bottom:1px solid var(--line); }
+.developer-profile .avatar { width:82px; height:82px; display:grid; place-items:center; color:#fff; background:#303b43; border-radius:50%; font-family:serif; font-size:35px; }
+.developer-profile p:last-child { margin:5px 0 0; color:var(--sub); }
+.developer-status { margin:28px 0 38px; padding:20px; background:var(--soft); border-radius:12px; }
+.developer-status dl div { display:grid; grid-template-columns:120px 1fr; padding:9px 0; border-bottom:1px solid var(--line); }
+.developer-status dt { color:var(--sub); }.developer-status dd { margin:0; }
+.developer-status > p { margin-bottom:0; color:var(--sub); font-size:12px; }
+.developer-app { display:grid; grid-template-columns:56px 1fr auto; gap:14px; align-items:center; margin-top:12px; padding:14px; border:1px solid var(--line); border-radius:12px; color:var(--ink); text-decoration:none; }
+.developer-app .app-icon { width:56px; height:56px; }
+.developer-app strong, .developer-app small { display:block; }.developer-app small { margin-top:5px; color:var(--sub); }
+@media(max-width:660px){
+  .app-top { grid-template-columns:56px 1fr; }.app-icon{width:56px;height:56px}.app-top button{grid-column:1/-1;width:100%}
+  .compact-grid { grid-template-columns:1fr; }.hero{padding:23px}h1{font-size:25px}.section-head a{font-size:12px}
+}
+@media(max-width:430px){.developer-profile{align-items:flex-start}.developer-profile .avatar{width:64px;height:64px}.developer-status dl div{grid-template-columns:100px 1fr}}
