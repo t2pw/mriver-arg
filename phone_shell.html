@@ -3,272 +3,587 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="蛸川小蘭の自作OS。欠けた記録の復元端末（試作）。">
+<meta name="description" content="蛸川小蘭の自作OS。タコ型端末のデスクトップ（試作）。">
 <meta name="robots" content="noindex">
-<title>KORAN SYSTEM｜記録核（試作）</title>
+<title>KORAN OS — ようこそ</title>
 <script src="koran-os.js"></script>
 <style>
   :root{
-    --bg:#0d1b1e; --panel:#122629; --panel2:#0f2225;
-    --line:#27484d; --line2:#356066;
-    --t1:#e8ece7; --t2:#9fb8b4; --t3:#5f7d79;
-    --amber:#e0b46a; --amber-d:rgba(224,180,106,.14);
-    --teal:#7fd4c1;
-    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    --sans:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif;
+    --desk1:#0f2e33; --desk2:#0a1d21;
+    --win:#f2efe8; --win-ink:#23211d; --win-sub:#7a756a;
+    --title1:#274b52; --title2:#162e33;
+    --task:#101f23; --task-line:#2b4a51;
+    --amber:#b97f1f; --teal:#1f7a6d;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"MS Gothic",monospace;
+    --sans:"MS UI Gothic","Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{background:radial-gradient(120% 90% at 50% 0%,#143035 0%,var(--bg) 55%,#081214 100%);color:var(--t1);font-family:var(--sans);line-height:1.9;min-height:100vh;}
-  .wrap{max-width:720px;margin:0 auto;padding:0 18px 60px;}
-  header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 2px 12px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--t2);}
-  header.top .proto{border:1px solid var(--line2);border-radius:20px;padding:3px 10px;font-size:10px;color:var(--amber);}
-  .purpose{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 18px 16px;margin-bottom:14px;}
-  .purpose h1{font-size:16px;margin:0 0 10px;letter-spacing:.04em;}
-  .purpose p{margin:0 0 .9em;font-size:13.5px;color:var(--t1);}
-  .purpose .ops{font-size:12px;color:var(--t2);border-top:1px dashed var(--line);padding-top:10px;margin-top:6px;line-height:2.0;}
-  .next{border:1px solid var(--amber);background:linear-gradient(180deg,rgba(224,180,106,.12),rgba(224,180,106,.04));border-radius:12px;padding:18px;margin:0 0 14px;}
-  .next .label{font-family:var(--mono);font-size:10px;letter-spacing:.25em;color:var(--amber);margin-bottom:8px;}
-  .next .title{font-size:18px;font-weight:700;margin-bottom:8px;}
-  .next .meta{font-family:var(--mono);font-size:11px;color:var(--t2);letter-spacing:.06em;margin-bottom:14px;}
-  .next button{width:100%;background:var(--amber);border:none;color:#1c1508;font-weight:700;font-size:15px;letter-spacing:.08em;padding:13px;border-radius:9px;cursor:pointer;}
-  .next.done{border-color:var(--line2);background:var(--panel);}
-  .next.done .label{color:var(--teal);}
-  .nucleus{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px;text-align:center;}
-  .nucleus .core{font-family:var(--mono);font-size:11px;letter-spacing:.25em;color:var(--teal);margin-bottom:6px;}
-  .nucleus .stat{font-family:var(--mono);font-size:12px;color:var(--t2);letter-spacing:.06em;}
-  svg.octo{width:100%;max-width:420px;height:auto;display:block;margin:6px auto 2px;}
-  .arm{cursor:pointer;}
-  .arm .node{fill:#0d1b1e;stroke-width:2;}
-  .arm[data-state="undiscovered"] .node{stroke:#3a5457;stroke-dasharray:5 4;}
-  .arm[data-state="undiscovered"] text{fill:#5f7d79;}
-  .arm[data-state="has-unread"] .node{stroke:var(--amber);fill:rgba(224,180,106,.25);}
-  .arm[data-state="read"] .node{stroke:var(--teal);fill:rgba(127,212,193,.18);}
-  .arm[data-state="has-unread"] .pulse{animation:pulse 1.6s ease infinite;}
-  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.25;}}
-  .limb{stroke:#2c4a4f;stroke-width:3;fill:none;stroke-linecap:round;}
-  .arm[data-state="has-unread"] .limb{stroke:var(--amber);}
-  .arm[data-state="read"] .limb{stroke:var(--teal);}
-  .arms{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px;}
-  @media(min-width:560px){.arms{grid-template-columns:1fr 1fr;}}
-  .arms li{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:12px 14px;}
-  .arms li[data-state="has-unread"]{border-color:var(--amber);}
-  .arms li[data-state="read"]{border-color:var(--line2);}
-  .arms .ah{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;}
-  .arms .asub{font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.1em;}
-  .badge{font-family:var(--mono);font-size:10px;letter-spacing:.1em;border-radius:20px;padding:2px 9px;border:1px solid var(--line2);color:var(--t2);margin-left:auto;white-space:nowrap;}
-  li[data-state="has-unread"] .badge{border-color:var(--amber);color:var(--amber);animation:pulse 1.6s ease infinite;}
-  li[data-state="read"] .badge{border-color:var(--teal);color:var(--teal);}
-  .docs{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:6px;}
-  .docs button{width:100%;text-align:left;background:#0c1d20;border:1px solid var(--line);color:var(--t1);border-radius:8px;padding:10px 12px;font-size:13px;cursor:pointer;line-height:1.7;}
-  .docs button:disabled{opacity:.45;cursor:default;}
-  .docs .dt{font-family:var(--mono);font-size:10px;color:var(--t3);display:block;letter-spacing:.06em;}
-  .viewer{position:fixed;inset:0;background:rgba(4,10,11,.82);display:none;align-items:center;justify-content:center;padding:18px;z-index:40;}
-  .viewer.open{display:flex;}
-  .card{width:100%;max-width:560px;max-height:86vh;overflow:auto;background:#f4f1ea;color:#22211f;border-radius:12px;padding:24px 22px;}
-  .card .kind{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:#7d786f;margin-bottom:6px;}
-  .card h2{font-size:18px;margin:0 0 12px;}
-  .card pre{white-space:pre-wrap;font-family:var(--sans);font-size:14px;line-height:2.0;margin:0 0 18px;}
-  .card .row{display:flex;gap:10px;}
-  .card button{flex:1;padding:12px;border-radius:9px;font-size:14px;cursor:pointer;border:1px solid #d8d2c4;}
-  .card .primary{background:#14131a;color:#f3efe6;border-color:#14131a;font-weight:700;}
-  .boot{position:fixed;inset:0;background:#060d0e;z-index:60;display:flex;align-items:center;justify-content:center;padding:24px;font-family:var(--mono);}
-  .boot.hide{display:none;}
-  .boot pre{font-size:12px;line-height:2.1;color:#9fb8b4;letter-spacing:.05em;margin:0;}
-  .boot .ok{color:var(--amber);}
-  .foot{margin-top:22px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--t3);letter-spacing:.06em;line-height:2.0;}
-  .foot button{background:none;border:1px solid var(--line);color:var(--t3);border-radius:8px;padding:8px 14px;font-family:var(--mono);font-size:10px;cursor:pointer;letter-spacing:.08em;}
-  .foot a{color:var(--t2);}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:var(--sans); color:#eef3f1; overflow:hidden;
+    background:
+      radial-gradient(90% 70% at 80% 10%, rgba(64,150,150,.25) 0%, transparent 60%),
+      radial-gradient(70% 60% at 15% 85%, rgba(30,110,110,.28) 0%, transparent 60%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,.022) 0 2px, transparent 2px 4px),
+      linear-gradient(160deg, var(--desk1), var(--desk2));
+    user-select:none; -webkit-user-select:none;
+  }
+  #desktop{position:fixed; inset:0 0 46px 0; overflow:hidden;}
+  #taskbar{
+    position:fixed; left:0; right:0; bottom:0; height:46px;
+    background:var(--task); border-top:1px solid var(--task-line);
+    display:flex; align-items:stretch; gap:6px; padding:0 8px; z-index:200;
+    font-family:var(--mono);
+  }
+  #startbtn{
+    display:flex; align-items:center; gap:8px; background:#1a3439; color:#ffd9a8;
+    border:1px solid #33565d; border-radius:6px; margin:6px 0; padding:0 14px;
+    font-family:var(--mono); font-size:13px; letter-spacing:.1em; cursor:pointer;
+  }
+  #startbtn:active{transform:translateY(1px);}
+  #tasks{flex:1; display:flex; align-items:center; gap:6px; overflow-x:auto; scrollbar-width:none;}
+  #tasks::-webkit-scrollbar{display:none;}
+  .taskbtn{
+    white-space:nowrap; background:#182c31; color:#cfe0dc; border:1px solid #2c4a51;
+    border-radius:6px; font-size:11px; padding:6px 10px; cursor:pointer; font-family:var(--mono);
+  }
+  .taskbtn.active{background:#274b52; color:#fff; border-color:#4d7a83;}
+  #clock{margin:6px 0; padding:0 12px; display:flex; flex-direction:column; justify-content:center;
+    border:1px solid #2c4a51; border-radius:6px; font-size:11px; color:#9fb8b4; text-align:right; line-height:1.5;}
+  #clock b{color:#e8ece7; font-size:12px;}
+  #clock .blink{animation:blink 1s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0;}}
+
+  /* デスクトップアイコン */
+  #icons{position:absolute; top:14px; left:14px; display:flex; flex-direction:column; gap:16px; z-index:5;}
+  @media (pointer:coarse), (max-width:560px){
+    #icons{flex-direction:row; top:10px; left:10px; right:10px; overflow-x:auto; padding-bottom:4px;}
+  }
+  .dicon{width:86px; text-align:center; cursor:pointer; padding:6px 2px; border:1px solid transparent; border-radius:6px;}
+  .dicon.sel{background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.25);}
+  .dicon .glyph{font-size:34px; line-height:1; filter:drop-shadow(0 3px 6px rgba(0,0,0,.5));}
+  .dicon .cap{font-size:11px; margin-top:5px; line-height:1.5; text-shadow:0 1px 4px #000;}
+  .dicon .hint{display:inline-block; font-size:9px; background:#b97f1f; color:#fff; border-radius:8px; padding:0 7px; margin-top:3px; font-family:var(--mono);}
+
+  /* ウィンドウ */
+  .win{
+    position:absolute; background:var(--win); color:var(--win-ink);
+    border:1px solid #0a0f11; border-radius:8px 8px 6px 6px;
+    box-shadow:0 18px 50px rgba(0,0,0,.55), 0 0 0 1px #3c5a61;
+    display:none; flex-direction:column; overflow:hidden; min-width:0;
+  }
+  .win.open{display:flex;}
+  .win.focus{box-shadow:0 22px 60px rgba(0,0,0,.65), 0 0 0 1px #6fa3ab;}
+  .win.min{display:none;}
+  .titlebar{
+    background:linear-gradient(180deg, var(--title1), var(--title2));
+    color:#f2f6f5; display:flex; align-items:center; gap:8px;
+    padding:7px 8px 7px 12px; font-size:12.5px; cursor:default; flex-shrink:0;
+  }
+  .titlebar .ticon{font-size:14px;}
+  .titlebar .t{flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:.03em;}
+  .titlebar .btns{display:flex; gap:4px;}
+  .titlebar .btns button{
+    width:30px; height:22px; border:1px solid rgba(255,255,255,.25); border-radius:4px;
+    background:rgba(255,255,255,.08); color:#fff; font-size:11px; cursor:pointer; font-family:var(--mono); line-height:1;
+  }
+  .titlebar .btns button:hover{background:rgba(255,255,255,.2);}
+  .titlebar .btns .x:hover{background:#c0392b; border-color:#c0392b;}
+  .menubar{display:flex; gap:14px; padding:4px 12px; font-size:11.5px; color:var(--win-sub);
+    border-bottom:1px solid #ddd6c8; background:#ece7db; flex-shrink:0;}
+  .addrbar{display:flex; gap:6px; align-items:center; padding:6px 10px; font-size:11.5px;
+    background:#f7f4ec; border-bottom:1px solid #ddd6c8; font-family:var(--mono); color:#55514a; flex-shrink:0;}
+  .addrbar .path{flex:1; background:#fff; border:1px solid #cfc8b8; border-radius:4px; padding:3px 8px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .wbody{padding:14px 16px 18px; overflow:auto; font-size:13.5px; line-height:2.0;}
+  .wbody.mono{font-family:var(--mono); font-size:12px; background:#10181a; color:#bcd4cf;}
+  .statusbar{border-top:1px solid #ddd6c8; background:#ece7db; font-size:10.5px; color:var(--win-sub);
+    padding:4px 12px; font-family:var(--mono); flex-shrink:0; letter-spacing:.04em;}
+
+  /* メモ帳 */
+  .notepad{background:#fffdf4; border:1px solid #d8d2c2; padding:16px 18px; font-size:13.5px; line-height:2.1;
+    box-shadow:inset 0 0 30px rgba(190,170,130,.12);}
+  .notepad .date{font-family:var(--mono); font-size:11px; color:var(--win-sub);}
+  .notepad .sign{text-align:right; color:#55514a;}
+
+  /* 付箋 */
+  .sticky{background:#fff3b0; border:1px solid #e0cf7a; padding:10px 12px; font-size:12px; line-height:1.9;
+    transform:rotate(-.6deg); box-shadow:0 4px 10px rgba(0,0,0,.18); color:#4d4420; margin:0 0 12px;}
+
+  /* フォルダ一覧 */
+  .folders{display:grid; gap:8px; margin-top:10px;}
+  @media(min-width:560px){.folders{grid-template-columns:1fr 1fr;}}
+  .folder{border:1px solid #cfc8b8; border-radius:6px; background:#fff; padding:9px 11px;}
+  .folder.unread{border:2px solid var(--amber); background:#fffaf0;}
+  .folder .fh{display:flex; align-items:center; gap:7px; font-weight:700; font-size:13px;}
+  .folder .tag{margin-left:auto; font-family:var(--mono); font-size:10px; padding:1px 8px; border-radius:10px; border:1px solid #bbb; color:#777;}
+  .folder.unread .tag{border-color:var(--amber); color:var(--amber); animation:blink 1.6s steps(1) infinite; font-weight:700;}
+  .folder.read .tag{border-color:var(--teal); color:var(--teal);}
+  .filebtn{display:block; width:100%; text-align:left; margin-top:7px; background:#f4f1ea; border:1px solid #d8d2c2;
+    border-radius:5px; padding:7px 10px; font-size:12.5px; cursor:pointer; line-height:1.7; color:var(--win-ink); font-family:var(--sans);}
+  .filebtn .st{font-family:var(--mono); font-size:10px; color:#8a857d; display:block;}
+  .filebtn.new .st{color:var(--amber); font-weight:700;}
+  .filebtn.done .st{color:var(--teal);}
+  .filebtn:disabled{opacity:.6; cursor:default;}
+
+  /* マネージャ */
+  .mgr-next{border:2px solid var(--amber); background:#fffaf0; border-radius:6px; padding:12px 14px; margin-bottom:10px;}
+  .mgr-next .q{font-family:var(--mono); font-size:10px; letter-spacing:.2em; color:var(--amber); margin-bottom:4px;}
+  .mgr-next .t{font-size:16px; font-weight:700;}
+  .mgr-next button{margin-top:10px; width:100%; padding:11px; font-size:14px; font-weight:700; cursor:pointer;
+    background:var(--title1); color:#fff; border:none; border-radius:6px; letter-spacing:.08em;}
+  .mgr-log{font-family:var(--mono); font-size:11px; color:#3f6b64; line-height:1.9;}
+
+  /* 文書ビューア */
+  .doc-kind{font-family:var(--mono); font-size:10px; letter-spacing:.18em; color:var(--win-sub); margin-bottom:4px;}
+  .doc-title{font-size:17px; font-weight:700; margin:0 0 10px;}
+  .doc-body{background:#fff; border:1px solid #d8d2c2; padding:14px 16px; font-size:13.5px; line-height:2.05; white-space:pre-wrap; font-family:var(--sans);}
+  .doc-btns{display:flex; gap:8px; margin-top:12px;}
+  .doc-btns button{flex:1; padding:11px; font-size:13px; border-radius:6px; cursor:pointer; border:1px solid #c9c2b2; background:#f4f1ea;}
+  .doc-btns .primary{background:#14131a; color:#f3efe6; border-color:#14131a; font-weight:700;}
+
+  /* タコ */
+  .tako-box{text-align:center; background:linear-gradient(180deg,#0e2226,#0b1b1f); border-radius:6px; padding:8px 4px 2px; margin-bottom:4px;}
+  svg.tako{width:100%; max-width:330px; height:auto;}
+  .tako-arm{cursor:pointer;}
+  .tako-arm .limb{fill:rgba(244,167,195,.9); stroke:#b25f86; stroke-width:1.5;}
+  .tako-arm[data-state="undiscovered"] .limb{fill:none; stroke:#33565d; stroke-dasharray:5 4;}
+  .tako-arm[data-state="undiscovered"] .sucker{fill:none;}
+  .tako-arm[data-state="has-unread"] .limb{fill:#ffd9a8; stroke:var(--amber); animation:armPulse 1.6s ease infinite;}
+  @keyframes armPulse{0%,100%{opacity:1;}50%{opacity:.55;}}
+  .tako-arm[data-state="read"] .limb{fill:#9fd8cb; stroke:var(--teal);}
+  .tako-arm text{font-family:var(--mono); font-size:9px; fill:#0b1b1f;}
+
+  /* トースト（機械通知） */
+  #toasts{position:fixed; right:10px; bottom:56px; display:flex; flex-direction:column; gap:8px; z-index:300; max-width:min(330px, 90vw);}
+  .toast{background:#0d1517; border:1px solid #33565d; border-left:4px solid var(--amber); color:#cfe0dc;
+    border-radius:6px; padding:9px 12px; font-family:var(--mono); font-size:11px; line-height:1.8;
+    box-shadow:0 8px 24px rgba(0,0,0,.5); animation:slideIn .3s ease;}
+  @keyframes slideIn{from{transform:translateX(20px); opacity:0;}to{transform:none; opacity:1;}}
+
+  /* スタートメニュー */
+  #startmenu{position:fixed; left:8px; bottom:52px; width:270px; background:var(--win); color:var(--win-ink);
+    border:1px solid #0a0f11; border-radius:8px; box-shadow:0 18px 50px rgba(0,0,0,.6); z-index:250; display:none; overflow:hidden;}
+  #startmenu.open{display:block;}
+  #startmenu .sm-h{background:linear-gradient(180deg,var(--title1),var(--title2)); color:#ffd9a8; font-family:var(--mono);
+    font-size:11px; letter-spacing:.15em; padding:10px 14px;}
+  #startmenu button{display:flex; gap:10px; align-items:center; width:100%; text-align:left; background:none; border:none;
+    padding:11px 14px; font-size:13px; cursor:pointer; color:var(--win-ink); font-family:var(--sans);}
+  #startmenu button:hover{background:#e3eefe;}
+  #startmenu .sm-f{border-top:1px solid #ddd6c8; padding:8px 14px; font-size:9.5px; color:var(--win-sub); font-family:var(--mono); line-height:1.8;}
+
+  /* 起動画面 */
+  #boot{position:fixed; inset:0; background:#060d0e; z-index:500; display:flex; align-items:center; justify-content:center; font-family:var(--mono);}
+  #boot.hide{display:none;}
+  #boot .in{text-align:center; width:min(340px, 84vw);}
+  #boot .logo{font-size:26px; letter-spacing:.3em; color:#e8ece7; margin-bottom:6px;}
+  #boot .sub{font-size:10px; letter-spacing:.2em; color:#5f7d79; margin-bottom:20px;}
+  #boot .bar{height:8px; border:1px solid #33565d; border-radius:5px; overflow:hidden;}
+  #boot .bar i{display:block; height:100%; width:0; background:#7fd4c1; transition:width .2s;}
+  #boot .lines{font-size:10px; color:#5f7d79; margin-top:14px; line-height:2; min-height:44px;}
 </style>
 </head>
 <body>
-  <div class="boot" id="boot"><pre id="bootlog"></pre></div>
 
-  <div class="wrap">
-    <header class="top">
-      <span>KORAN SYSTEM / 試作</span>
-      <span class="proto">PHASE A PROTOTYPE</span>
-    </header>
-
-    <section class="purpose" aria-label="目的と操作">
-      <h1>この端末には、欠けた記録が残されています。</h1>
-      <p>新しく復元された資料を読み、外部の記録と照らし合わせ、受信先を復元してください。</p>
-      <div class="ops">
-        基本操作：新着資料を読む ／ 資料同士を比べる ／ 必要な外部記録を開く<br>
-        当面の行動：下の「次の復元」にある一件を開くこと。
-      </div>
-    </section>
-
-    <section class="next" id="nextbox" aria-label="次の復元"></section>
-
-    <section class="nucleus" aria-label="記録核">
-      <div class="core">● 記録核</div>
-      <div class="stat" id="nucleus-stat">—</div>
-      <svg class="octo" id="octo" viewBox="0 0 320 320" role="img" aria-label="八本の記録肢"></svg>
-    </section>
-
-    <ul class="arms" id="arms"></ul>
-
-    <div class="foot">
-      build 08.16 ｜ storage topology: 8-arm distributed archive<br>
-      <span style="opacity:.8;">試作のため資料は3件のみ。汎用入力欄・変換道具・ストアは置かない。</span><br><br>
-      <button id="reset">表示状態を初期化（試験用）</button><br><br>
-      <a href="remote.html">‹ 中継へ戻る</a>　·　<a href="index.html">技術記録</a><br>
-      本作はフィクションです。
-    </div>
+<div id="boot">
+  <div class="in">
+    <div class="logo">🐙 KORAN</div>
+    <div class="sub">KORAN SYSTEM / build 08.16</div>
+    <div class="bar"><i id="bootbar"></i></div>
+    <div class="lines" id="bootlines">author: 蛸川小蘭<br>storage: 8-arm distributed archive</div>
   </div>
+</div>
 
-  <div class="viewer" id="viewer">
-    <div class="card">
-      <div class="kind" id="v-kind"></div>
-      <h2 id="v-title"></h2>
-      <pre id="v-body"></pre>
-      <div class="row">
-        <button id="v-close">記録核に戻る</button>
-        <button class="primary" id="v-read">読了として閉じる</button>
-      </div>
-    </div>
-  </div>
+<div id="desktop">
+  <div id="icons"></div>
+  <div id="wins"></div>
+</div>
+
+<div id="startmenu">
+  <div class="sm-h">🐙 KORAN OS</div>
+  <div id="sm-items"></div>
+  <div class="sm-f">build 08.16 ｜ 試作（資料3件）<br>本作はフィクションです。<br><a href="remote.html" style="color:#555;">‹ 中継へ戻る</a></div>
+</div>
+
+<div id="taskbar">
+  <button id="startbtn">🐙 スタート</button>
+  <div id="tasks"></div>
+  <div id="clock"><b>09:04<span class="blink">:</span>32</b><span>1973/09/12（停止中）</span></div>
+</div>
+
+<div id="toasts"></div>
 
 <script>
 (function(){
-  const $ = (id) => document.getElementById(id);
-  const boot = $('boot'), bootlog = $('bootlog');
+  'use strict';
+  const winsEl = document.getElementById('wins');
+  const tasksEl = document.getElementById('tasks');
+  const iconsEl = document.getElementById('icons');
+  const openWins = {};   // id -> {el, minimized}
+  let zTop = 10;
+  let cascade = 0;
+  const finePointer = window.matchMedia && window.matchMedia('(pointer:fine)').matches;
 
-  const lines = [
-    'KORAN SYSTEM / build 08.16',
-    'author: 蛸川小蘭',
-    'storage topology: 8-arm distributed archive',
-    'mode: isolated read session (via WATARI RELAY)',
-    '',
-    'checking sectors ... <span class="ok">OK</span>',
-    'restored fragments ... <span class="ok">1</span>',
-  ];
-  bootlog.innerHTML = lines.join('\n');
-  setTimeout(() => boot.classList.add('hide'), 1400);
-  boot.addEventListener('click', () => boot.classList.add('hide'));
-
-  const POS = [];
-  for (let i = 0; i < 8; i++) {
-    const a = (Math.PI * 2 * i) / 8 - Math.PI / 2;
-    POS.push({ x: 160 + Math.cos(a) * 105, y: 160 + Math.sin(a) * 105 });
+  /* ---------- 小さな部品 ---------- */
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
-
-  let currentDoc = null;
-
-  function fmtDate(iso) {
-    try {
+  function fmtDate(iso){
+    try{
       const d = new Date(iso);
-      return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}読了`;
-    } catch { return '読了'; }
+      return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} かため済み`;
+    }catch{ return 'かため済み'; }
+  }
+  function toast(msg){
+    const box = document.getElementById('toasts');
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = msg;
+    box.appendChild(el);
+    setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .4s'; }, 4200);
+    setTimeout(() => el.remove(), 4700);
   }
 
-  function render() {
-    const next = KoranOS.nextRestoration();
-    const p = KoranOS.progress();
-    const box = $('nextbox');
-
-    if (next) {
-      box.classList.remove('done');
-      box.innerHTML = '' +
-        '<div class="label">次の復元</div>' +
-        `<div class="title">「${escapeHtml(next.title)}」を確認する</div>` +
-        `<div class="meta">進行　第一記録群 ${p.viewed}/${p.total}　　未読 ${p.unread}</div>` +
-        '<button id="next-open">開く</button>';
-      $('next-open').addEventListener('click', () => openDoc(next.id));
-    } else {
-      box.classList.add('done');
-      box.innerHTML = '' +
-        '<div class="label">復元完了（試作範囲）</div>' +
-        `<div class="title">3件の断片を読み終えた</div>` +
-        `<div class="meta">進行　第一記録群 ${p.viewed}/${p.total}　　未読 0</div>`;
-    }
-
-    $('nucleus-stat').textContent =
-      `第一記録群 ${p.viewed}/${p.total} ｜ 未読 ${p.unread} ｜ 復元済 ${p.restored}/${p.total}`;
-
-    // SVG
-    const svg = $('octo');
-    let s = '<circle cx="160" cy="160" r="34" fill="#122629" stroke="#7fd4c1" stroke-width="2"/>' +
-            '<text x="160" y="164" text-anchor="middle" font-size="10" fill="#7fd4c1" font-family="monospace">核</text>';
-    KoranOS.ARMS.forEach((arm, i) => {
+  /* ---------- かわいいタコSVG ---------- */
+  function takoSVG(size){
+    // 8本の足：頭の下に放射状。state別に色分け（classで制御）
+    const arms = KoranOS.ARMS.map((arm, i) => {
+      const a = (Math.PI * 2 * i) / 8 + Math.PI / 8;
+      const x1 = 160 + Math.cos(a) * 52, y1 = 178 + Math.sin(a) * 34;
+      const x2 = 160 + Math.cos(a) * 108, y2 = 178 + Math.sin(a) * 78;
+      const mx = 160 + Math.cos(a) * 82, my = 178 + Math.sin(a) * 62 + 10;
       const st = KoranOS.armState(arm.id);
-      const pos = POS[i];
-      const mx = 160 + (pos.x - 160) * 0.45, my = 160 + (pos.y - 160) * 0.45;
-      s += `<g class="arm" data-state="${st}" data-arm="${arm.id}">` +
-        `<path class="limb" d="M160,160 Q${mx},${my} ${pos.x},${pos.y}"/>` +
-        `<circle class="node pulse" cx="${pos.x}" cy="${pos.y}" r="17"/>` +
-        `<text x="${pos.x}" y="${pos.y + 4}" text-anchor="middle" font-size="10" font-family="monospace">${i + 1}</text>` +
-        '</g>';
-    });
-    svg.innerHTML = s;
-    svg.querySelectorAll('.arm').forEach(g => {
-      g.addEventListener('click', () => {
-        const armId = g.getAttribute('data-arm');
-        const el = document.querySelector(`li[data-arm="${armId}"]`);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return `<g class="tako-arm" data-state="${st}" data-arm="${arm.id}">` +
+        `<path class="limb" d="M${x1.toFixed(1)},${y1.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}" stroke-width="17" stroke-linecap="round"/>` +
+        `<circle class="sucker" cx="${x2.toFixed(1)}" cy="${y2.toFixed(1)}" r="4.5" fill="#fff" opacity=".85"/>` +
+        `<text x="${x2.toFixed(1)}" y="${(y2+14).toFixed(1)}" text-anchor="middle">${i+1}</text>` +
+        `</g>`;
+    }).join('');
+    return `<svg class="tako" viewBox="60 40 200 230" role="img" aria-label="記録核のタコ">` +
+      arms +
+      // 頭
+      `<ellipse cx="160" cy="128" rx="62" ry="66" fill="#f4a7c3" stroke="#b25f86" stroke-width="3"/>` +
+      `<ellipse cx="138" cy="150" rx="14" ry="9" fill="#f27fa5" opacity=".55"/>` +
+      `<ellipse cx="182" cy="150" rx="14" ry="9" fill="#f27fa5" opacity=".55"/>` +
+      // 目
+      `<circle cx="136" cy="122" r="15" fill="#fff" stroke="#7c3f58" stroke-width="2.5"/>` +
+      `<circle cx="184" cy="122" r="15" fill="#fff" stroke="#7c3f58" stroke-width="2.5"/>` +
+      `<circle cx="139" cy="124" r="7" fill="#2b1a22"/>` +
+      `<circle cx="181" cy="124" r="7" fill="#2b1a22"/>` +
+      `<circle cx="141.5" cy="121.5" r="2.6" fill="#fff"/>` +
+      `<circle cx="183.5" cy="121.5" r="2.6" fill="#fff"/>` +
+      // 口（ω型の笑み）
+      `<path d="M150,146 q5,7 10,0 q5,7 10,0" fill="none" stroke="#7c3f58" stroke-width="2.5" stroke-linecap="round"/>` +
+      // 頭の斑点
+      `<circle cx="160" cy="82" r="5" fill="#e78bb0"/>` +
+      `<circle cx="128" cy="96" r="3.5" fill="#e78bb0"/>` +
+      `<circle cx="192" cy="96" r="3.5" fill="#e78bb0"/>` +
+      `</svg>`;
+  }
+
+  /* ---------- ウィンドウ管理 ---------- */
+  function winSize(){
+    const small = window.innerWidth < 560;
+    return small
+      ? { w: window.innerWidth - 16, x: 8, yBase: 86 }
+      : { w: 460, x: 150, yBase: 40 };
+  }
+  function openWin(id, title, icon, menu, addr, bodyHTML, statusHTML){
+    if (openWins[id]) {
+      const o = openWins[id];
+      o.el.classList.remove('min');
+      o.minimized = false;
+      focusWin(id);
+      return o.el;
+    }
+    const s = winSize();
+    const el = document.createElement('div');
+    el.className = 'win';
+    el.style.width = Math.min(s.w, window.innerWidth - 16) + 'px';
+    el.style.maxHeight = (window.innerHeight - 46 - 100) + 'px';
+    const off = (cascade % 4) * 26;
+    el.style.left = Math.max(8, Math.min(s.x + off, window.innerWidth - el.style.width.replace('px','') - 8)) + 'px';
+    el.style.top = (s.yBase + off) + 'px';
+    cascade++;
+    el.innerHTML =
+      `<div class="titlebar"><span class="ticon">${icon}</span><span class="t">${esc(title)}</span>` +
+      `<span class="btns"><button data-act="min" title="最小化">＿</button><button data-act="max" title="最大化">▢</button><button data-act="close" class="x" title="閉じる">✕</button></span></div>` +
+      (menu ? `<div class="menubar">${menu}</div>` : '') +
+      (addr ? `<div class="addrbar">📂<span class="path">${esc(addr)}</span></div>` : '') +
+      `<div class="wbody">${bodyHTML}</div>` +
+      (statusHTML ? `<div class="statusbar">${statusHTML}</div>` : '');
+    winsEl.appendChild(el);
+    openWins[id] = { el, minimized:false, title, icon };
+    el.classList.add('open');
+    el.querySelectorAll('.titlebar .btns button').forEach(b => {
+      b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const act = b.getAttribute('data-act');
+        if (act === 'close') closeWin(id);
+        if (act === 'min') minWin(id);
+        if (act === 'max') {
+          el.style.left = '8px'; el.style.top = '8px';
+          el.style.width = (window.innerWidth - 16) + 'px';
+        }
       });
     });
+    el.addEventListener('pointerdown', () => focusWin(id));
+    const bar = el.querySelector('.titlebar');
+    if (finePointer) {
+      bar.style.cursor = 'move';
+      bar.addEventListener('pointerdown', (e) => {
+        if (e.target.tagName === 'BUTTON') return;
+        const sx = e.clientX - el.offsetLeft, sy = e.clientY - el.offsetTop;
+        bar.setPointerCapture(e.pointerId);
+        const move = (ev) => {
+          el.style.left = Math.max(-40, Math.min(ev.clientX - sx, window.innerWidth - 80)) + 'px';
+          el.style.top = Math.max(0, Math.min(ev.clientY - sy, window.innerHeight - 120)) + 'px';
+        };
+        const up = () => { bar.removeEventListener('pointermove', move); bar.removeEventListener('pointerup', up); };
+        bar.addEventListener('pointermove', move);
+        bar.addEventListener('pointerup', up);
+      });
+    }
+    renderTasks();
+    focusWin(id);
+    return el;
+  }
+  function focusWin(id){
+    Object.keys(openWins).forEach(k => openWins[k].el.classList.remove('focus'));
+    if (openWins[id]) { openWins[id].el.style.zIndex = ++zTop; openWins[id].el.classList.add('focus'); }
+    renderTasks(id);
+  }
+  function closeWin(id){
+    if (!openWins[id]) return;
+    openWins[id].el.remove();
+    delete openWins[id];
+    renderTasks();
+  }
+  function minWin(id){
+    if (!openWins[id]) return;
+    openWins[id].el.classList.add('min');
+    openWins[id].minimized = true;
+    renderTasks();
+  }
+  function renderTasks(activeId){
+    tasksEl.innerHTML = '';
+    Object.keys(openWins).forEach(id => {
+      const o = openWins[id];
+      const b = document.createElement('button');
+      b.className = 'taskbtn' + (o.el.classList.contains('focus') ? ' active' : '');
+      b.textContent = `${o.minimized ? '＿ ' : ''}${o.icon} ${o.title}`;
+      b.addEventListener('click', () => {
+        if (o.minimized) { o.el.classList.remove('min'); o.minimized = false; focusWin(id); }
+        else if (o.el.classList.contains('focus')) minWin(id);
+        else focusWin(id);
+      });
+      tasksEl.appendChild(b);
+    });
+  }
 
-    // list
-    const ul = $('arms');
-    ul.innerHTML = '';
+  /* ---------- 各画面 ---------- */
+  const MEMO_HTML = `<div class="notepad"><div class="date">1973年9月11日 ― よんでね</div><br>` +
+    `この機械をひらく人へ。<br>わたしは蛸川小蘭といいます。本当はべつの名前でした。くわしいことは手記のほうに書きました。ここには、使いかただけ書きます。<br><br>` +
+    `このタコは、わたしのパソコンです。わたしが部品をあつめて縫いこみました。頭がこわれても足がおぼえているように、記録は八本の足にわけて置きました。だから足が八つあります。<br><br>` +
+    `・新しく直ったものは「復元マネージャー」にでます。上から順によんでください。<br>` +
+    `・よんだものは機械が「かため」ます。かためたものは、もうこわれません。<br>` +
+    `・外で見つけた紙（新聞や地図）は、あとでつきあわせます。今はまだ棚がありません。<br><br>` +
+    `宛先のらんが、まだ空いています。誰にとどけるか、決めないまま埋めます。ゆるしてください。時間がないので。<br>` +
+    `<div class="sign">小蘭</div></div>`;
+
+  function openMemo(){ openWin('memo', 'よんでね.txt — メモ帳', '📝', 'ファイル　編集　表示', '核:\\メモ\\よんでね.txt', MEMO_HTML, '1 / 1 ページ　文字数: 約520'); }
+
+  function explorerBody(){
+    const p = KoranOS.progress();
+    let h = `<div class="tako-box">${takoSVG()}</div>`;
+    h += `<div style="font-family:var(--mono);font-size:10.5px;color:#3f6b64;letter-spacing:.06em;text-align:center;">第一記録群 ${p.viewed}/${p.total} ｜ 未読 ${p.unread} ｜ 足をクリックで移動</div>`;
+    h += `<div class="folders">`;
     KoranOS.ARMS.forEach((arm, i) => {
       const st = KoranOS.armState(arm.id);
       const docs = KoranOS.armDocs(arm.id);
-      const li = document.createElement('li');
-      li.setAttribute('data-arm', arm.id);
-      li.setAttribute('data-state', st);
-      let badge = '輪郭のみ／名称なし';
-      if (st === 'has-unread') badge = '● 新規あり（脈動）';
-      if (st === 'read') badge = '✓ 読了（安定点灯）';
-      let docsHtml = '';
+      const cls = st === 'has-unread' ? 'folder unread' : (st === 'read' ? 'folder read' : 'folder');
+      let tag = '▒ 未検出';
+      if (st === 'has-unread') tag = '● 新規あり';
+      if (st === 'read') tag = '✓ 読了';
+      h += `<div class="${cls}" data-arm="${arm.id}"><div class="fh">📁 第${i+1}足<span class="tag">${tag}</span></div>`;
       if (!docs.length) {
-        docsHtml = '<div style="font-family:var(--mono);font-size:11px;color:var(--t3);margin-top:8px;">▒▒▒▒ 未検出 — 破損ノイズで途切れている</div>';
+        h += `<div style="font-family:var(--mono);font-size:10.5px;color:#999;margin-top:6px;">▒▒▒▒ ― ノイズで途切れています</div>`;
       } else {
-        docsHtml = '<div class="docs">' + docs.map(d => {
-          const restored = KoranOS.isRestored(d.id);
-          if (!restored) return `<button disabled>▒▒▒▒ 未発見<div class="dt">輪郭のみ</div></button>`;
-          const viewed = KoranOS.isViewed(d.id);
-          const tag = viewed ? `✓ ${fmtDate(KoranOS.viewedAt(d.id))}` : '● 新規 — 未読';
-          return `<button data-doc="${d.id}">◉ ${escapeHtml(d.title)}<span class="dt">${tag}</span></button>`;
-        }).join('') + '</div>';
+        docs.forEach(d => {
+          if (!KoranOS.isRestored(d.id)) {
+            h += `<button class="filebtn" disabled>▒▒▒▒ 未発見<span class="st">輪郭のみ</span></button>`;
+          } else if (KoranOS.isViewed(d.id)) {
+            h += `<button class="filebtn done" data-doc="${d.id}">📄 ${esc(d.title)}<span class="st">✓ ${esc(fmtDate(KoranOS.viewedAt(d.id)))}</span></button>`;
+          } else {
+            h += `<button class="filebtn new" data-doc="${d.id}">📄 ${esc(d.title)}<span class="st">● 新規 ― 未読</span></button>`;
+          }
+        });
       }
-      li.innerHTML = `<div class="ah"><span>第${i+1}肢</span><span class="asub">${escapeHtml(arm.sub)}</span><span class="badge">${badge}</span></div>${docsHtml}`;
-      ul.appendChild(li);
+      h += `</div>`;
     });
-    ul.querySelectorAll('button[data-doc]').forEach(b => {
+    h += `</div>`;
+    return h;
+  }
+  function openExplorer(){
+    const el = openWin('explorer', '記録核エクスプローラー', '🐙', null, '核:\\', explorerBody(), '8 本の足 ｜ 試作は 3 件のみ復元');
+    bindExplorer(el);
+  }
+  function refreshExplorer(){
+    if (!openWins['explorer']) return;
+    const body = openWins['explorer'].el.querySelector('.wbody');
+    body.innerHTML = explorerBody();
+    bindExplorer(openWins['explorer'].el);
+  }
+  function bindExplorer(root){
+    root.querySelectorAll('.tako-arm').forEach(g => {
+      g.style.cursor = 'pointer';
+      g.addEventListener('click', () => {
+        const arm = g.getAttribute('data-arm');
+        const f = root.querySelector(`.folder[data-arm="${arm}"]`);
+        if (f) f.scrollIntoView({ behavior:'smooth', block:'center' });
+      });
+    });
+    root.querySelectorAll('button[data-doc]').forEach(b => {
       b.addEventListener('click', () => openDoc(b.getAttribute('data-doc')));
     });
   }
 
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function managerBody(){
+    const next = KoranOS.nextRestoration();
+    const p = KoranOS.progress();
+    let h = `<div class="sticky">🌟 小蘭の付箋：上から順によんでね。よんだら機械がかためてくれるよ。――小蘭</div>`;
+    if (next) {
+      h += `<div class="mgr-next"><div class="q">RESTORE QUEUE: 1 ｜ つぎの復元</div>` +
+        `<div class="t">「${esc(next.title)}」</div>` +
+        `<button data-open="${next.id}">開く</button></div>`;
+    } else {
+      h += `<div class="mgr-next" style="border-color:#9fd8cb;"><div class="q" style="color:#1f7a6d;">QUEUE: EMPTY</div>` +
+        `<div class="t">3件よみおわり（試作範囲）</div></div>`;
+    }
+    h += `<div class="mgr-log">SECTORS: ${p.viewed}/${p.total} FIXED ｜ UNREAD: ${p.unread}<br>MODE: READ ONLY (via WATARI RELAY)</div>`;
+    return h;
+  }
+  function openManager(){
+    const el = openWin('manager', '復元マネージャー', '📥', null, '核:\\システム\\復元マネージャー', managerBody(), 'キューは常に 1 件だけ表示します');
+    el.querySelectorAll('button[data-open]').forEach(b => {
+      b.addEventListener('click', () => openDoc(b.getAttribute('data-open')));
+    });
+  }
+  function refreshManager(){
+    if (!openWins['manager']) return;
+    const body = openWins['manager'].el.querySelector('.wbody');
+    body.innerHTML = managerBody();
+    body.querySelectorAll('button[data-open]').forEach(b => {
+      b.addEventListener('click', () => openDoc(b.getAttribute('data-open')));
+    });
   }
 
-  function openDoc(id) {
+  function openDoc(id){
     const d = KoranOS.getDoc(id);
     if (!d || !KoranOS.isRestored(id)) return;
-    currentDoc = id;
-    $('v-kind').textContent = d.kind + ' ｜ ' + id;
-    $('v-title').textContent = d.title;
-    $('v-body').textContent = d.body;
-    $('viewer').classList.add('open');
+    const body = `<div class="doc-kind">${esc(d.kind)} ｜ ${esc(d.id)}</div>` +
+      `<h2 class="doc-title">${esc(d.title)}</h2>` +
+      `<div class="doc-body">${esc(d.body)}</div>` +
+      `<div class="doc-btns"><button data-act="close">閉じるだけ</button>` +
+      `<button class="primary" data-act="read">読了にして閉じる</button></div>`;
+    const el = openWin('doc:' + id, d.title, '📄', 'ファイル　編集', '核:\\' + d.title, body, KoranOS.isViewed(id) ? '✓ ' + fmtDate(KoranOS.viewedAt(id)) : '● 未読');
+    el.querySelector('[data-act="close"]').addEventListener('click', () => closeWin('doc:' + id));
+    el.querySelector('[data-act="read"]').addEventListener('click', () => {
+      const first = KoranOS.markViewed(id);
+      closeWin('doc:' + id);
+      refreshExplorer(); refreshManager(); refreshStartMenu();
+      if (first) {
+        const n = KoranOS.nextRestoration();
+        toast(n ? `SECTOR FIXED: ${id} ｜ NEXT: ${n.id}` : `SECTOR FIXED: ${id} ｜ QUEUE: EMPTY`);
+        if (n) setTimeout(() => openDoc(n.id), 600);
+      }
+    });
   }
 
-  function closeDoc(markRead) {
-    if (markRead && currentDoc) KoranOS.markViewed(currentDoc);
-    currentDoc = null;
-    $('viewer').classList.remove('open');
-    render();
+  function openTrash(){
+    openWin('trash', 'ごみ箱', '🗑️', 'ファイル　編集', '核:\\ごみ箱', '<div style="padding:26px 6px;text-align:center;color:#7a756a;">からです。<br><span style="font-size:11px;">（小蘭は要らないものを残さない主義でした）</span></div>', '0 個のオブジェクト');
   }
 
-  $('v-close').addEventListener('click', () => closeDoc(false));
-  $('v-read').addEventListener('click', () => closeDoc(true));
-  $('viewer').addEventListener('click', (e) => { if (e.target.id === 'viewer') closeDoc(false); });
-  $('reset').addEventListener('click', () => { KoranOS.resetForTest(); render(); });
+  /* ---------- デスクトップとスタート ---------- */
+  const ICONS = [
+    { id:'memo', glyph:'📝', cap:'よんでね.txt', hint:'まずこれ', act:openMemo },
+    { id:'manager', glyph:'📥', cap:'復元マネージャー', hint:null, act:openManager },
+    { id:'explorer', glyph:'🐙', cap:'記録核', hint:null, act:openExplorer },
+    { id:'trash', glyph:'🗑️', cap:'ごみ箱', hint:null, act:openTrash },
+  ];
+  function renderIcons(){
+    iconsEl.innerHTML = '';
+    ICONS.forEach(ic => {
+      const el = document.createElement('div');
+      el.className = 'dicon';
+      el.innerHTML = `<div class="glyph">${ic.glyph}</div><div class="cap">${esc(ic.cap)}</div>` +
+        (ic.hint ? `<span class="hint">▼ ${esc(ic.hint)}</span>` : '');
+      const open = () => { document.querySelectorAll('.dicon').forEach(d => d.classList.remove('sel')); el.classList.add('sel'); ic.act(); };
+      if (finePointer) {
+        el.addEventListener('click', () => { document.querySelectorAll('.dicon').forEach(d => d.classList.remove('sel')); el.classList.add('sel'); });
+        el.addEventListener('dblclick', open);
+      } else {
+        el.addEventListener('click', open);
+      }
+      iconsEl.appendChild(el);
+    });
+  }
+  function refreshStartMenu(){
+    const n = KoranOS.nextRestoration();
+    const p = KoranOS.progress();
+    document.getElementById('sm-items').innerHTML =
+      (n ? `<button data-sm="next">📥 つぎの復元：${esc(n.title)}</button>` : `<button data-sm="none" disabled style="opacity:.5;">✓ 試作3件よみおわり</button>`) +
+      `<button data-sm="explorer">🐙 記録核エクスプローラー（未読 ${p.unread}）</button>` +
+      `<button data-sm="memo">📝 よんでね.txt</button>` +
+      `<button data-sm="reset">🧹 表示を初期化（試験用）</button>`;
+    document.querySelectorAll('#sm-items button').forEach(b => {
+      b.addEventListener('click', () => {
+        const k = b.getAttribute('data-sm');
+        document.getElementById('startmenu').classList.remove('open');
+        if (k === 'next' && n) openDoc(n.id);
+        if (k === 'explorer') openExplorer();
+        if (k === 'memo') openMemo();
+        if (k === 'reset') { KoranOS.resetForTest(); try{localStorage.removeItem('koran_v1_launched');}catch(e){} location.reload(); }
+      });
+    });
+  }
+  document.getElementById('startbtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    refreshStartMenu();
+    document.getElementById('startmenu').classList.toggle('open');
+  });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#startmenu') && !e.target.closest('#startbtn'))
+      document.getElementById('startmenu').classList.remove('open');
+  });
 
-  render();
+  /* ---------- 起動 ---------- */
+  function boot(){
+    renderIcons(); refreshStartMenu();
+    const bar = document.getElementById('bootbar');
+    const lines = document.getElementById('bootlines');
+    let w = 0;
+    const t = setInterval(() => {
+      w += 25;
+      bar.style.width = Math.min(w, 100) + '%';
+      if (w >= 100) {
+        clearInterval(t);
+        lines.innerHTML += '<br>read session … <b style="color:#e0b46a;">OK</b>';
+        setTimeout(() => {
+          document.getElementById('boot').classList.add('hide');
+          let first = false;
+          try { first = !localStorage.getItem('koran_v1_launched'); localStorage.setItem('koran_v1_launched', '1'); } catch(e){}
+          openMemo(); openManager();
+          if (first) setTimeout(() => toast('NEW FRAGMENT: 1 ｜ 復元マネージャーにあります'), 700);
+        }, 400);
+      }
+    }, 220);
+    document.getElementById('boot').addEventListener('click', () => {
+      clearInterval(t);
+      document.getElementById('boot').classList.add('hide');
+    });
+  }
+  boot();
 })();
 </script>
 </body>
