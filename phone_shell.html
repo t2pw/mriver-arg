@@ -12,10 +12,10 @@
     --desk1:#0f2e33; --desk2:#0a1d21;
     --win:#f2efe8; --win-ink:#23211d; --win-sub:#7a756a;
     --title1:#274b52; --title2:#162e33;
-    --task:#101f23; --task-line:#2b4a51;
+    --task:#0e1c20; --task-line:rgba(127,212,193,.22);
     --amber:#b97f1f; --teal:#1f7a6d;
     --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"MS Gothic",monospace;
-    --sans:"MS UI Gothic","Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif;
+    --sans:system-ui,-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",sans-serif;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;height:100%;}
@@ -28,28 +28,31 @@
       linear-gradient(160deg, var(--desk1), var(--desk2));
     user-select:none; -webkit-user-select:none;
   }
-  #desktop{position:fixed; inset:0 0 46px 0; overflow:hidden;}
+  #desktop{position:fixed; inset:0 0 68px 0; overflow:hidden;}
   #taskbar{
-    position:fixed; left:0; right:0; bottom:0; height:46px;
-    background:var(--task); border-top:1px solid var(--task-line);
+    position:fixed; left:10px; right:10px; bottom:10px; height:48px;
+    background:rgba(14,28,32,.78); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+    border:1px solid var(--task-line); border-radius:14px;
     display:flex; align-items:stretch; gap:6px; padding:0 8px; z-index:200;
-    font-family:var(--mono);
+    font-family:var(--mono); box-shadow:0 10px 30px rgba(0,0,0,.45);
   }
   #startbtn{
-    display:flex; align-items:center; gap:8px; background:#1a3439; color:#ffd9a8;
-    border:1px solid #33565d; border-radius:6px; margin:6px 0; padding:0 14px;
-    font-family:var(--mono); font-size:13px; letter-spacing:.1em; cursor:pointer;
+    display:flex; align-items:center; gap:8px; background:rgba(224,180,106,.12); color:#ffd9a8;
+    border:1px solid rgba(224,180,106,.35); border-radius:10px; margin:7px 0; padding:0 14px;
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.08em; cursor:pointer;
   }
+  #startbtn:hover{background:rgba(224,180,106,.22);}
   #startbtn:active{transform:translateY(1px);}
   #tasks{flex:1; display:flex; align-items:center; gap:6px; overflow-x:auto; scrollbar-width:none;}
   #tasks::-webkit-scrollbar{display:none;}
   .taskbtn{
-    white-space:nowrap; background:#182c31; color:#cfe0dc; border:1px solid #2c4a51;
-    border-radius:6px; font-size:11px; padding:6px 10px; cursor:pointer; font-family:var(--mono);
+    white-space:nowrap; background:rgba(255,255,255,.05); color:#cfe0dc; border:1px solid transparent;
+    border-radius:9px; font-size:11px; padding:6px 12px; cursor:pointer; font-family:var(--mono);
   }
-  .taskbtn.active{background:#274b52; color:#fff; border-color:#4d7a83;}
-  #clock{margin:6px 0; padding:0 12px; display:flex; flex-direction:column; justify-content:center;
-    border:1px solid #2c4a51; border-radius:6px; font-size:11px; color:#9fb8b4; text-align:right; line-height:1.5;}
+  .taskbtn:hover{background:rgba(255,255,255,.1);}
+  .taskbtn.active{background:rgba(127,212,193,.16); color:#fff; border-color:rgba(127,212,193,.35);}
+  #clock{margin:7px 0; padding:0 12px; display:flex; flex-direction:column; justify-content:center;
+    border:none; border-radius:9px; font-size:11px; color:#9fb8b4; text-align:right; line-height:1.5;}
   #clock b{color:#e8ece7; font-size:12px;}
   #clock .blink{animation:blink 1s steps(1) infinite;}
   @keyframes blink{50%{opacity:0;}}
@@ -61,7 +64,8 @@
   }
   .dicon{width:86px; text-align:center; cursor:pointer; padding:6px 2px; border:1px solid transparent; border-radius:6px; position:relative;}
   .dicon.sel{background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.25);}
-  .dicon .glyph{font-size:34px; line-height:1; filter:drop-shadow(0 3px 6px rgba(0,0,0,.5));}
+  .dicon .glyph{font-size:34px; line-height:1; filter:drop-shadow(0 3px 6px rgba(0,0,0,.5)); transition:transform .15s ease;}
+  .dicon:hover .glyph{transform:translateY(-2px);}
   .dicon .cap{font-size:11px; margin-top:5px; line-height:1.5; text-shadow:0 1px 4px #000;}
   .dicon .hint{display:inline-block; font-size:9px; background:#b97f1f; color:#fff; border-radius:8px; padding:0 7px; margin-top:3px; font-family:var(--mono);}
   .dicon .bdg{position:absolute; top:0; right:6px; background:#b97f1f; color:#fff; font-family:var(--mono);
@@ -70,38 +74,39 @@
 
   /* ウィンドウ */
   .win{
-    position:absolute; background:var(--win); color:var(--win-ink);
-    border:1px solid #0a0f11; border-radius:8px 8px 6px 6px;
-    box-shadow:0 18px 50px rgba(0,0,0,.55), 0 0 0 1px #3c5a61;
+    position:absolute; background:rgba(242,239,232,.98);
+    color:var(--win-ink);
+    border:1px solid rgba(10,15,17,.6); border-radius:14px;
+    box-shadow:0 24px 70px rgba(0,0,0,.55), 0 2px 8px rgba(0,0,0,.3);
     display:none; flex-direction:column; overflow:hidden; min-width:0;
   }
   .win.open{display:flex;}
-  .win.focus{box-shadow:0 22px 60px rgba(0,0,0,.65), 0 0 0 1px #6fa3ab;}
+  .win.focus{box-shadow:0 28px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(111,163,171,.55);}
   .win.min{display:none;}
   .titlebar{
-    background:linear-gradient(180deg, var(--title1), var(--title2));
-    color:#f2f6f5; display:flex; align-items:center; gap:8px;
-    padding:7px 8px 7px 12px; font-size:12.5px; cursor:default; flex-shrink:0;
+    background:transparent;
+    color:var(--win-ink); display:flex; align-items:center; gap:8px;
+    padding:10px 8px 8px 16px; font-size:12.5px; cursor:default; flex-shrink:0;
   }
   .titlebar .ticon{font-size:14px;}
-  .titlebar .t{flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:.03em;}
-  .titlebar .btns{display:flex; gap:4px;}
+  .titlebar .t{flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:.03em; font-weight:600;}
+  .titlebar .btns{display:flex; gap:2px;}
   .titlebar .btns button{
-    width:30px; height:22px; border:1px solid rgba(255,255,255,.25); border-radius:4px;
-    background:rgba(255,255,255,.08); color:#fff; font-size:11px; cursor:pointer; font-family:var(--mono); line-height:1;
+    width:32px; height:24px; border:none; border-radius:6px;
+    background:transparent; color:#8a857d; font-size:11px; cursor:pointer; font-family:var(--mono); line-height:1;
   }
-  .titlebar .btns button:hover{background:rgba(255,255,255,.2);}
-  .titlebar .btns .x:hover{background:#c0392b; border-color:#c0392b;}
-  .menubar{display:flex; gap:14px; padding:4px 12px; font-size:11.5px; color:var(--win-sub);
-    border-bottom:1px solid #ddd6c8; background:#ece7db; flex-shrink:0;}
-  .addrbar{display:flex; gap:6px; align-items:center; padding:6px 10px; font-size:11.5px;
-    background:#f7f4ec; border-bottom:1px solid #ddd6c8; font-family:var(--mono); color:#55514a; flex-shrink:0;}
-  .addrbar .path{flex:1; background:#fff; border:1px solid #cfc8b8; border-radius:4px; padding:3px 8px;
+  .titlebar .btns button:hover{background:rgba(0,0,0,.07); color:var(--win-ink);}
+  .titlebar .btns .x:hover{background:#c0392b; border-color:#c0392b; color:#fff;}
+  .menubar{display:flex; gap:14px; padding:2px 16px 6px; font-size:11px; color:var(--win-sub);
+    background:transparent; flex-shrink:0;}
+  .addrbar{display:flex; gap:6px; align-items:center; padding:0 12px 8px; font-size:11px;
+    background:transparent; font-family:var(--mono); color:#55514a; flex-shrink:0;}
+  .addrbar .path{flex:1; background:rgba(255,255,255,.7); border:1px solid #d8d2c2; border-radius:8px; padding:4px 10px;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  .wbody{padding:14px 16px 18px; overflow:auto; font-size:13.5px; line-height:2.0;}
+  .wbody{padding:6px 16px 18px; overflow:auto; font-size:13.5px; line-height:2.0;}
   .wbody.mono{font-family:var(--mono); font-size:12px; background:#10181a; color:#bcd4cf;}
-  .statusbar{border-top:1px solid #ddd6c8; background:#ece7db; font-size:10.5px; color:var(--win-sub);
-    padding:4px 12px; font-family:var(--mono); flex-shrink:0; letter-spacing:.04em;}
+  .statusbar{background:transparent; font-size:10px; color:#a09a8c;
+    padding:6px 16px 10px; font-family:var(--mono); flex-shrink:0; letter-spacing:.04em;}
 
   /* メモ帳 */
   .notepad{background:#fffdf4; border:1px solid #d8d2c2; padding:16px 18px; font-size:13.5px; line-height:2.1;
@@ -244,7 +249,7 @@
 </div>
 
 <div id="taskbar">
-  <button id="startbtn">🐙 スタート</button>
+  <button id="startbtn">🐙 たこらん</button>
   <div id="tasks"></div>
   <div id="clock"><b>09:04<span class="blink">:</span>32</b><span>1973/09/12（停止中）</span></div>
 </div>
