@@ -129,6 +129,9 @@
   .filebtn:disabled{opacity:.6; cursor:default;}
 
   /* マネージャ */
+  .actq{background:var(--title1); color:#ffd9a8; border-radius:6px; padding:9px 14px; font-size:12.5px;
+    letter-spacing:.04em; margin-bottom:10px;}
+  .actq .q{font-family:var(--mono); font-size:9px; letter-spacing:.2em; color:#9fb8b4; display:block; margin-bottom:2px;}
   .mgr-next{border:2px solid var(--amber); background:#fffaf0; border-radius:6px; padding:12px 14px; margin-bottom:10px;}
   .mgr-next .q{font-family:var(--mono); font-size:10px; letter-spacing:.2em; color:var(--amber); margin-bottom:4px;}
   .mgr-next .t{font-size:16px; font-weight:700;}
@@ -413,7 +416,7 @@
   const MEMO_HTML = `<div class="notepad"><div class="date">KORAN OS ― よんでね</div><br>` +
     `このOSはわたしが作りました。蛸川小蘭といいます。<br>` +
     `タコの名前はたこらんです。記録の置き場所は、たこつぼと呼んでいます。足が八本あるので、記録も八つにわけました。頭がこわれても足がおぼえています。<br><br>` +
-    `・新しく直ったものは「復元マネージャー」にでます。上から順によんでください。<br>` +
+    `・新しく直ったものは「復元マネージャー」にでます。光っている足から開いてください。<br>` +
     `・よんだものは機械が「かため」ます。かためたものは、もうこわれません。<br><br>` +
     `―――<br>1973年9月11日　追記<br><br>` +
     `ここは、わたしが来たところから二十四年後です。たこらんと一緒に埋まります。<br>` +
@@ -485,7 +488,8 @@
   function managerBody(){
     const next = KoranOS.nextTask();
     const p = KoranOS.progress();
-    let h = `<div class="sticky">🌟 小蘭の付箋：上から順によんでね。よんだら機械がかためてくれるよ。――小蘭</div>`;
+    let h = `<div class="actq"><span class="q">第一幕</span>記録から抜けた人物は誰か</div>`;
+    h += `<div class="sticky">🌟 小蘭の付箋：光っている足から開いてね。順番はきめないよ。よんだら機械がかためてくれるよ。――小蘭</div>`;
     if (next) {
       h += `<div class="mgr-next"><div class="q">RESTORE QUEUE: 1 ｜ つぎの復元</div>` +
         `<div class="t">「${esc(next.title)}」</div>` +
@@ -521,8 +525,8 @@
     refreshExplorer(); refreshManager(); refreshStartMenu();
     if (first) {
       const n = KoranOS.nextTask();
+      // 次は自動で開かない。通知だけ返し、開くのはプレイヤーに任せる。
       toast(n ? `SECTOR FIXED: ${id} ｜ NEXT: ${n.id}` : `SECTOR FIXED: ${id} ｜ ACT1 COMPLETE`);
-      if (n) setTimeout(() => openDoc(n.id), 600);
     }
   }
 
