@@ -146,13 +146,13 @@
   .tako-box{text-align:center; background:linear-gradient(180deg,#0e2226,#0b1b1f); border-radius:6px; padding:8px 4px 2px; margin-bottom:4px;}
   svg.tako{width:100%; max-width:330px; height:auto;}
   .tako-arm{cursor:pointer;}
-  .tako-arm .limb{fill:rgba(244,167,195,.9); stroke:#b25f86; stroke-width:1.5;}
-  .tako-arm[data-state="undiscovered"] .limb{fill:none; stroke:#33565d; stroke-dasharray:5 4;}
+  .tako-arm .limb{fill:none; stroke:#c65a64; stroke-width:24;}
+  .tako-arm[data-state="undiscovered"] .limb{stroke:#3d5457; stroke-dasharray:6 5;}
   .tako-arm[data-state="undiscovered"] .sucker{fill:none;}
-  .tako-arm[data-state="has-unread"] .limb{fill:#ffd9a8; stroke:var(--amber); animation:armPulse 1.6s ease infinite;}
+  .tako-arm[data-state="has-unread"] .limb{stroke:#e08a7a; animation:armPulse 1.6s ease infinite;}
   @keyframes armPulse{0%,100%{opacity:1;}50%{opacity:.55;}}
-  .tako-arm[data-state="read"] .limb{fill:#9fd8cb; stroke:var(--teal);}
-  .tako-arm text{font-family:var(--mono); font-size:9px; fill:#0b1b1f;}
+  .tako-arm[data-state="read"] .limb{stroke:#b05560;}
+  .tako-arm text{font-family:var(--mono); font-size:9px; fill:#9fb8b4;}
 
   /* トースト（機械通知） */
   #toasts{position:fixed; right:10px; bottom:56px; display:flex; flex-direction:column; gap:8px; z-index:300; max-width:min(330px, 90vw);}
@@ -181,6 +181,13 @@
   #boot .bar{height:8px; border:1px solid #33565d; border-radius:5px; overflow:hidden;}
   #boot .bar i{display:block; height:100%; width:0; background:#7fd4c1; transition:width .2s;}
   #boot .lines{font-size:10px; color:#5f7d79; margin-top:14px; line-height:2; min-height:44px;}
+
+  /* ログオフ */
+  #logoff{position:fixed; inset:0; background:#04080a; z-index:500; display:none; align-items:center; justify-content:center; font-family:var(--mono);}
+  #logoff.on{display:flex;}
+  #logoff .l-msg{text-align:center; font-size:13px; letter-spacing:.3em; color:#9fb8b4; line-height:2.6;}
+  #logoff .l-sub{font-size:10px; letter-spacing:.15em; color:#5f7d79;}
+  #logoff .blink{animation:blink 1s steps(1) infinite;}
 </style>
 </head>
 <body>
@@ -194,6 +201,8 @@
   </div>
 </div>
 
+<div id="logoff"><div class="l-msg">LOGOFF<span class="blink">…</span><br><span class="l-sub">セッションを切断しました</span></div></div>
+
 <div id="desktop">
   <div id="icons"></div>
   <div id="wins"></div>
@@ -202,7 +211,7 @@
 <div id="startmenu">
   <div class="sm-h">🐙 KORAN OS</div>
   <div id="sm-items"></div>
-  <div class="sm-f">build 08.16 ｜ 試作（資料3件）<br>本作はフィクションです。<br><a href="remote.html" style="color:#555;">‹ 中継へ戻る</a></div>
+  <div class="sm-f">build 08.16 ｜ 試作（資料3件）<br>本作はフィクションです。</div>
 </div>
 
 <div id="taskbar">
@@ -244,40 +253,40 @@
     setTimeout(() => el.remove(), 4700);
   }
 
-  /* ---------- かわいいタコSVG ---------- */
+  /* ---------- ぬいぐるみ風のタコSVG ----------
+     小蘭が現代で持ち込んだ当時の姿＝新品の布地。
+     大きな黒目・小さな笑み・ずんぐりした足・足先の光る端子。 */
   function takoSVG(size){
-    // 8本の足：頭の下に放射状。state別に色分け（classで制御）
+    // 8本の足：頭の下に放射状。ずんぐり短め。state別に色分け（classで制御）
     const arms = KoranOS.ARMS.map((arm, i) => {
       const a = (Math.PI * 2 * i) / 8 + Math.PI / 8;
-      const x1 = 160 + Math.cos(a) * 52, y1 = 178 + Math.sin(a) * 34;
-      const x2 = 160 + Math.cos(a) * 108, y2 = 178 + Math.sin(a) * 78;
-      const mx = 160 + Math.cos(a) * 82, my = 178 + Math.sin(a) * 62 + 10;
+      const x1 = 160 + Math.cos(a) * 48, y1 = 182 + Math.sin(a) * 30;
+      const x2 = 160 + Math.cos(a) * 96, y2 = 182 + Math.sin(a) * 66;
+      const mx = 160 + Math.cos(a) * 74, my = 182 + Math.sin(a) * 52 + 9;
       const st = KoranOS.armState(arm.id);
+      // 第8足の先に端子の灯り（回収写真の通り）
+      const port = (i === 7)
+        ? `<rect x="${(x2-9).toFixed(1)}" y="${(y2-6).toFixed(1)}" width="18" height="12" rx="2" fill="#3a2c22" stroke="#201612" stroke-width="1.5"/>` +
+          `<rect x="${(x2-6).toFixed(1)}" y="${(y2-3.5).toFixed(1)}" width="12" height="7" rx="1" fill="#f5a742">` +
+          `<animate attributeName="opacity" values="1;.5;1" dur="2s" repeatCount="indefinite"/></rect>`
+        : `<ellipse class="sucker" cx="${x2.toFixed(1)}" cy="${y2.toFixed(1)}" rx="5" ry="6.5" fill="#e9b7b7" opacity=".9"/>`;
       return `<g class="tako-arm" data-state="${st}" data-arm="${arm.id}">` +
-        `<path class="limb" d="M${x1.toFixed(1)},${y1.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}" stroke-width="17" stroke-linecap="round"/>` +
-        `<circle class="sucker" cx="${x2.toFixed(1)}" cy="${y2.toFixed(1)}" r="4.5" fill="#fff" opacity=".85"/>` +
-        `<text x="${x2.toFixed(1)}" y="${(y2+14).toFixed(1)}" text-anchor="middle">${i+1}</text>` +
+        `<path class="limb" d="M${x1.toFixed(1)},${y1.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}" stroke-width="24" stroke-linecap="round"/>` +
+        port +
+        `<text x="${x2.toFixed(1)}" y="${(y2+20).toFixed(1)}" text-anchor="middle">${i+1}</text>` +
         `</g>`;
     }).join('');
-    return `<svg class="tako" viewBox="60 40 200 230" role="img" aria-label="記録核のタコ">` +
+    return `<svg class="tako" viewBox="60 40 200 235" role="img" aria-label="たこらん">` +
       arms +
-      // 頭
-      `<ellipse cx="160" cy="128" rx="62" ry="66" fill="#f4a7c3" stroke="#b25f86" stroke-width="3"/>` +
-      `<ellipse cx="138" cy="150" rx="14" ry="9" fill="#f27fa5" opacity=".55"/>` +
-      `<ellipse cx="182" cy="150" rx="14" ry="9" fill="#f27fa5" opacity=".55"/>` +
-      // 目
-      `<circle cx="136" cy="122" r="15" fill="#fff" stroke="#7c3f58" stroke-width="2.5"/>` +
-      `<circle cx="184" cy="122" r="15" fill="#fff" stroke="#7c3f58" stroke-width="2.5"/>` +
-      `<circle cx="139" cy="124" r="7" fill="#2b1a22"/>` +
-      `<circle cx="181" cy="124" r="7" fill="#2b1a22"/>` +
-      `<circle cx="141.5" cy="121.5" r="2.6" fill="#fff"/>` +
-      `<circle cx="183.5" cy="121.5" r="2.6" fill="#fff"/>` +
-      // 口（ω型の笑み）
-      `<path d="M150,146 q5,7 10,0 q5,7 10,0" fill="none" stroke="#7c3f58" stroke-width="2.5" stroke-linecap="round"/>` +
-      // 頭の斑点
-      `<circle cx="160" cy="82" r="5" fill="#e78bb0"/>` +
-      `<circle cx="128" cy="96" r="3.5" fill="#e78bb0"/>` +
-      `<circle cx="192" cy="96" r="3.5" fill="#e78bb0"/>` +
+      // 頭（新品の赤い布地）
+      `<ellipse cx="160" cy="130" rx="60" ry="64" fill="#c65a64" stroke="#8a3a42" stroke-width="3"/>` +
+      // 目（大きな黒目・上目づかい）
+      `<ellipse cx="137" cy="126" rx="11" ry="15" fill="#2a2226"/>` +
+      `<ellipse cx="183" cy="126" rx="11" ry="15" fill="#2a2226"/>` +
+      `<circle cx="140.5" cy="120" r="3.6" fill="#fff" opacity=".95"/>` +
+      `<circle cx="186.5" cy="120" r="3.6" fill="#fff" opacity=".95"/>` +
+      // 小さな笑み
+      `<path d="M151,156 q9,8 18,0" fill="none" stroke="#5e2f36" stroke-width="2.5" stroke-linecap="round"/>` +
       `</svg>`;
   }
 
@@ -382,13 +391,15 @@
   }
 
   /* ---------- 各画面 ---------- */
-  const MEMO_HTML = `<div class="notepad"><div class="date">1973年9月11日 ― よんでね</div><br>` +
-    `この機械をひらく人へ。<br>わたしは蛸川小蘭といいます。本当はべつの名前でした。くわしいことは手記のほうに書きました。ここには、使いかただけ書きます。<br><br>` +
-    `このタコは、わたしのパソコンです。わたしが部品をあつめて縫いこみました。頭がこわれても足がおぼえているように、記録は八本の足にわけて置きました。だから足が八つあります。<br><br>` +
+  const MEMO_HTML = `<div class="notepad"><div class="date">KORAN OS ― よんでね</div><br>` +
+    `このOSはわたしが作りました。蛸川小蘭といいます。<br>` +
+    `タコの名前はたこらんです。記録の置き場所は、たこつぼと呼んでいます。足が八本あるので、記録も八つにわけました。頭がこわれても足がおぼえています。<br><br>` +
     `・新しく直ったものは「復元マネージャー」にでます。上から順によんでください。<br>` +
-    `・よんだものは機械が「かため」ます。かためたものは、もうこわれません。<br>` +
-    `・外で見つけた紙（新聞や地図）は、あとでつきあわせます。今はまだ棚がありません。<br><br>` +
-    `宛先のらんが、まだ空いています。誰にとどけるか、決めないまま埋めます。ゆるしてください。時間がないので。<br>` +
+    `・よんだものは機械が「かため」ます。かためたものは、もうこわれません。<br><br>` +
+    `―――<br>1973年9月11日　追記<br><br>` +
+    `ここは、わたしが来たところから二十四年後です。たこらんと一緒に埋まります。<br>` +
+    `外で見つけた紙（新聞や地図）は、あとでつきあわせてください。今はまだ棚がありません。<br>` +
+    `宛先のらんが、まだ空いています。誰にとどけるか、決めないまま埋めます。ゆるしてください。<br>` +
     `<div class="sign">小蘭</div></div>`;
 
   function openMemo(){ openWin('memo', 'よんでね.txt — メモ帳', '📝', 'ファイル　編集　表示', '核:\\メモ\\よんでね.txt', MEMO_HTML, '1 / 1 ページ　文字数: 約520'); }
@@ -425,7 +436,7 @@
     return h;
   }
   function openExplorer(){
-    const el = openWin('explorer', '記録核エクスプローラー', '🐙', null, '核:\\', explorerBody(), '8 本の足 ｜ 試作は 3 件のみ復元');
+    const el = openWin('explorer', 'たこつぼエクスプローラー', '🐙', null, 'たこつぼ:\\', explorerBody(), '8 本の足 ｜ 試作は 3 件のみ復元');
     bindExplorer(el);
   }
   function refreshExplorer(){
@@ -486,7 +497,7 @@
       `<div class="doc-body">${esc(d.body)}</div>` +
       `<div class="doc-btns"><button data-act="close">閉じるだけ</button>` +
       `<button class="primary" data-act="read">読了にして閉じる</button></div>`;
-    const el = openWin('doc:' + id, d.title, '📄', 'ファイル　編集', '核:\\' + d.title, body, KoranOS.isViewed(id) ? '✓ ' + fmtDate(KoranOS.viewedAt(id)) : '● 未読');
+    const el = openWin('doc:' + id, d.title, '📄', 'ファイル　編集', 'たこつぼ:\\' + d.title, body, KoranOS.isViewed(id) ? '✓ ' + fmtDate(KoranOS.viewedAt(id)) : '● 未読');
     el.querySelector('[data-act="close"]').addEventListener('click', () => closeWin('doc:' + id));
     el.querySelector('[data-act="read"]').addEventListener('click', () => {
       const first = KoranOS.markViewed(id);
@@ -508,7 +519,7 @@
   const ICONS = [
     { id:'memo', glyph:'📝', cap:'よんでね.txt', hint:'まずこれ', act:openMemo },
     { id:'manager', glyph:'📥', cap:'復元マネージャー', hint:null, act:openManager },
-    { id:'explorer', glyph:'🐙', cap:'記録核', hint:null, act:openExplorer },
+    { id:'explorer', glyph:'🐙', cap:'たこつぼ', hint:null, act:openExplorer },
     { id:'trash', glyph:'🗑️', cap:'ごみ箱', hint:null, act:openTrash },
   ];
   function renderIcons(){
@@ -533,8 +544,9 @@
     const p = KoranOS.progress();
     document.getElementById('sm-items').innerHTML =
       (n ? `<button data-sm="next">📥 つぎの復元：${esc(n.title)}</button>` : `<button data-sm="none" disabled style="opacity:.5;">✓ 試作3件よみおわり</button>`) +
-      `<button data-sm="explorer">🐙 記録核エクスプローラー（未読 ${p.unread}）</button>` +
+      `<button data-sm="explorer">🐙 たこつぼ（未読 ${p.unread}）</button>` +
       `<button data-sm="memo">📝 よんでね.txt</button>` +
+      `<button data-sm="logoff">🔌 ログオフ</button>` +
       `<button data-sm="reset">🧹 表示を初期化（試験用）</button>`;
     document.querySelectorAll('#sm-items button').forEach(b => {
       b.addEventListener('click', () => {
@@ -543,8 +555,24 @@
         if (k === 'next' && n) openDoc(n.id);
         if (k === 'explorer') openExplorer();
         if (k === 'memo') openMemo();
+        if (k === 'logoff') confirmLogoff();
         if (k === 'reset') { KoranOS.resetForTest(); try{localStorage.removeItem('koran_v1_launched');}catch(e){} location.reload(); }
       });
+    });
+  }
+
+  /* ---------- ログオフ：確認→切断表示→中継画面へ ---------- */
+  function confirmLogoff(){
+    const body = `<div style="padding:6px 2px 2px;line-height:2.1;">読み取りセッションを切断します。<br>` +
+      `かためた記録は残ります。</div>` +
+      `<div class="doc-btns"><button data-act="back">もどる</button>` +
+      `<button class="primary" data-act="off">切断する</button></div>`;
+    const el = openWin('logoff-c', 'セッションの切断', '🔌', null, null, body, null);
+    el.querySelector('[data-act="back"]').addEventListener('click', () => closeWin('logoff-c'));
+    el.querySelector('[data-act="off"]').addEventListener('click', () => {
+      closeWin('logoff-c');
+      document.getElementById('logoff').classList.add('on');
+      setTimeout(() => { window.location.href = 'remote.html?session=closed'; }, 1500);
     });
   }
   document.getElementById('startbtn').addEventListener('click', (e) => {
