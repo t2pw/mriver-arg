@@ -57,9 +57,12 @@ const KoranOS = (() => {
       arm: 'arm2',
       title: '事件翌朝のノート',
       kind: '手記 01',
-      task: 'read',
+      task: 'infer',
       prereqs: ['act1_notice'],
-      action: '読む',
+      action: '解く',
+      answers: ['クラウド'],
+      hint1: '前後の文を読むこと。―― どこからでも開けて、濡れても燃えても消えない場所。',
+      hint2: '四文字。クから始まる、向こうの言葉。',
       body: [
         '昭和24年8月17日',
         '',
@@ -213,7 +216,7 @@ const KoranOS = (() => {
   ];
 
   function defaultState() {
-    return { restored: ['act1_notice'], done: {} };
+    return { restored: ['act1_notice'], done: {}, misses: {} };
   }
 
   function load() {
@@ -222,6 +225,7 @@ const KoranOS = (() => {
       if (!raw) return defaultState();
       const s = JSON.parse(raw);
       if (!s || !Array.isArray(s.restored) || typeof s.done !== 'object' || !s.done) return defaultState();
+      if (!s.misses || typeof s.misses !== 'object') s.misses = {};
       return s;
     } catch {
       return defaultState();
@@ -251,6 +255,26 @@ const KoranOS = (() => {
   function prereqsMet(doc) {
     const s = load();
     return (doc.prereqs || []).every(id => s.done[id]);
+  }
+
+  /** 推定ミス回数（ヒント段階用。ペナルティなし） */
+  function getMisses(id) {
+    return load().misses[id] || 0;
+  }
+  function addMiss(id) {
+    const s = load();
+    s.misses[id] = (s.misses[id] || 0) + 1;
+    save(s);
+    return s.misses[id];
+  }
+
+  /** 解答判定（空白無視・ひらがなはカタカナ扱い） */
+  function normalizeAnswer(value) {
+    return String(value).trim().replace(/[\s　]+/g, '').replace(/[ぁ-ん]/g, (c) => String.fromCharCode(c.charCodeAt(0) + 0x60));
+  }
+  function checkAnswer(doc, input) {
+    const v = normalizeAnswer(input);
+    return (doc.answers || []).some((a) => normalizeAnswer(a) === v);
   }
 
   /** 完了にする。完了で依存資料が1件ずつ復元される。 */
@@ -340,6 +364,7 @@ const KoranOS = (() => {
     ARMS, DOCS, STATE_KEY,
     load, getDoc, isRestored, isDone, doneAt,
     completeDoc, nextTask, nextRestoration, openCount, unreadCount, progress,
+    getMisses, addMiss, checkAnswer,
     armState, armDocs, getExternalVisits, hasExternalFlag,
     isLaunched, markLaunched, resetForTest,
   };

@@ -148,7 +148,11 @@
   .doc-body{background:#fff; border:1px solid #d8d2c2; padding:14px 16px; font-size:13.5px; line-height:2.05; white-space:pre-wrap; font-family:var(--sans);}
   .doc-btns{display:flex; gap:8px; margin-top:12px;}
   .doc-btns button{flex:1; padding:11px; font-size:13px; border-radius:6px; cursor:pointer; border:1px solid #c9c2b2; background:#f4f1ea;}
+  .doc-btns button:disabled{opacity:.45; cursor:default;}
   .doc-btns .primary{background:#14131a; color:#f3efe6; border-color:#14131a; font-weight:700;}
+  .doc-btns input{flex:2; min-width:0; padding:11px 12px; font-size:14px; border-radius:6px;
+    border:1px solid #c9c2b2; background:#fff; font-family:var(--sans);
+    user-select:text; -webkit-user-select:text;}
 
   /* 写真・地図・外部照合 */
   .doc-photo{width:100%; display:block; border-radius:6px; border:1px solid #d8d2c2; background:#111;}
@@ -542,7 +546,15 @@
     let body = `<div class="doc-kind">${esc(d.kind)} ｜ ${esc(d.id)}</div>` +
       `<h2 class="doc-title">${esc(d.title)}</h2>`;
 
-    if (d.task === 'photo') {
+    if (d.task === 'infer') {
+      body += `<div class="doc-body">${esc(d.body)}</div>` +
+        `<div class="extbox" style="margin-top:10px;"><div class="q">REDACTION RESTORE ― 黒塗りの復元</div>` +
+        `<div>欠損語：████ ／ 字種：現代語</div>` +
+        `<div class="mapmsg" id="dz-inferhint" style="color:#8a857d;">文脈から元の言葉を推定し、下の欄に入れること。</div></div>` +
+        `<div class="doc-btns"><input id="dz-inferinput" placeholder="欠損語を入れる" autocomplete="off">` +
+        `<button class="primary" data-act="restore">復元する</button></div>` +
+        `<div class="doc-btns"><button data-act="close">閉じるだけ</button></div>`;
+    } else if (d.task === 'photo') {
       body += `<img src="${d.image}" class="doc-photo" alt="昭和二十四年の写真"` +
         ` onerror="this.outerHTML='<div class=\'doc-imgbroken\'>[ 画像データ 破損 ]</div>'">` +
         `<div class="doc-body" style="margin-top:10px;">${esc(d.body)}</div>` +
@@ -590,6 +602,21 @@
     const q = (sel) => el.querySelector(sel);
     if (q('[data-act="close"]')) q('[data-act="close"]').addEventListener('click', () => closeWin('doc:' + id));
     if (q('[data-act="read"]')) q('[data-act="read"]').addEventListener('click', () => finishDoc(id));
+    const inferInput = q('#dz-inferinput');
+    const doRestore = () => {
+      if (KoranOS.checkAnswer(d, inferInput.value)) {
+        finishDoc(id);
+        toast('RESTORED: 欠損語を固定しました');
+      } else {
+        const m = KoranOS.addMiss(id);
+        const hint = el.querySelector('#dz-inferhint');
+        if (m >= 4 && d.hint2) { hint.textContent = d.hint2; hint.style.color = '#a03a3a'; }
+        else if (m >= 2 && d.hint1) { hint.textContent = d.hint1; hint.style.color = '#a03a3a'; }
+        toast('不一致 ― 文脈を読み直すこと');
+      }
+    };
+    if (q('[data-act="restore"]')) q('[data-act="restore"]').addEventListener('click', doRestore);
+    if (inferInput) inferInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') doRestore(); });
     if (q('[data-act="zoom-news"]')) q('[data-act="zoom-news"]').addEventListener('click', () => {
       el.querySelector('#dz-zoom').style.display = 'block';
       q('[data-act="zoom-news"]').disabled = true;
