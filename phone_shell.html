@@ -119,6 +119,8 @@
   .folder .tag{margin-left:auto; font-family:var(--mono); font-size:10px; padding:1px 8px; border-radius:10px; border:1px solid #bbb; color:#777;}
   .folder.unread .tag{border-color:var(--amber); color:var(--amber); animation:blink 1.6s steps(1) infinite; font-weight:700;}
   .folder.read .tag{border-color:var(--teal); color:var(--teal);}
+  .folder.extwait{border:2px dotted var(--amber); background:#f7f5ee;}
+  .folder.extwait .tag{border-color:var(--amber); color:var(--amber); font-weight:700;}
   .filebtn{display:block; width:100%; text-align:left; margin-top:7px; background:#f4f1ea; border:1px solid #d8d2c2;
     border-radius:5px; padding:7px 10px; font-size:12.5px; cursor:pointer; line-height:1.7; color:var(--win-ink); font-family:var(--sans);}
   .filebtn .st{font-family:var(--mono); font-size:10px; color:#8a857d; display:block;}
@@ -142,6 +144,22 @@
   .doc-btns button{flex:1; padding:11px; font-size:13px; border-radius:6px; cursor:pointer; border:1px solid #c9c2b2; background:#f4f1ea;}
   .doc-btns .primary{background:#14131a; color:#f3efe6; border-color:#14131a; font-weight:700;}
 
+  /* 写真・地図・外部照合 */
+  .doc-photo{width:100%; display:block; border-radius:6px; border:1px solid #d8d2c2; background:#111;}
+  .doc-imgbroken{padding:40px 10px; text-align:center; background:#111; color:#555; font-family:var(--mono); font-size:11px; letter-spacing:.2em; border-radius:6px;}
+  .zoombox{margin-top:10px; background:#130b0d; border:1px solid rgba(200,88,88,.35); border-radius:6px;
+    padding:12px 14px; font-family:var(--mono); font-size:12px; line-height:2; color:#e8ece7;}
+  .zoombox .z-h{font-size:9px; color:#8a857d; letter-spacing:.15em; margin-bottom:4px;}
+  .extbox{margin:0 0 10px; background:#10181a; border:1px solid #33565d; border-radius:6px;
+    padding:12px 14px; font-family:var(--mono); font-size:11.5px; line-height:2; color:#bcd4cf;}
+  .extbox .q{font-size:10px; letter-spacing:.18em; color:#e0b46a; margin-bottom:4px;}
+  .extbox .ok{color:#7fd4c1;}
+  #dz-map{width:100%; height:auto; display:block; background:#e9e3d1; border:1px solid #cfc8b8; border-radius:6px;}
+  .mapspot{cursor:pointer;}
+  .mapmsg{margin-top:8px; font-family:var(--mono); font-size:11px; color:#3f6b64; line-height:1.9;}
+  .mapmsg.bad{color:#a03a3a;}
+  .mapmsg.good{color:#1f7a6d; font-weight:700;}
+
   /* タコ */
   .tako-box{text-align:center; background:linear-gradient(180deg,#0e2226,#0b1b1f); border-radius:6px; padding:8px 4px 2px; margin-bottom:4px;}
   svg.tako{width:100%; max-width:330px; height:auto;}
@@ -152,6 +170,7 @@
   .tako-arm[data-state="has-unread"] .limb{stroke:#e08a7a; animation:armPulse 1.6s ease infinite;}
   @keyframes armPulse{0%,100%{opacity:1;}50%{opacity:.55;}}
   .tako-arm[data-state="read"] .limb{stroke:#b05560;}
+  .tako-arm[data-state="external-wait"] .limb{stroke:#c9a227; stroke-dasharray:10 6;}
   .tako-arm text{font-family:var(--mono); font-size:9px; fill:#9fb8b4;}
 
   /* トースト（機械通知） */
@@ -402,31 +421,34 @@
     `宛先のらんが、まだ空いています。誰にとどけるか、決めないまま埋めます。ゆるしてください。<br>` +
     `<div class="sign">小蘭</div></div>`;
 
-  function openMemo(){ openWin('memo', 'よんでね.txt — メモ帳', '📝', 'ファイル　編集　表示', '核:\\メモ\\よんでね.txt', MEMO_HTML, '1 / 1 ページ　文字数: 約520'); }
+  function openMemo(){ openWin('memo', 'よんでね.txt — メモ帳', '📝', 'ファイル　編集　表示', 'たこつぼ:\\メモ\\よんでね.txt', MEMO_HTML, '1 / 1 ページ'); }
 
   function explorerBody(){
     const p = KoranOS.progress();
     let h = `<div class="tako-box">${takoSVG()}</div>`;
-    h += `<div style="font-family:var(--mono);font-size:10.5px;color:#3f6b64;letter-spacing:.06em;text-align:center;">第一記録群 ${p.viewed}/${p.total} ｜ 未読 ${p.unread} ｜ 足をクリックで移動</div>`;
+    h += `<div style="font-family:var(--mono);font-size:10.5px;color:#3f6b64;letter-spacing:.06em;text-align:center;">第一記録群 ${p.done}/${p.total} ｜ 未完了 ${p.open} ｜ 足をクリックで移動</div>`;
     h += `<div class="folders">`;
     KoranOS.ARMS.forEach((arm, i) => {
       const st = KoranOS.armState(arm.id);
       const docs = KoranOS.armDocs(arm.id);
-      const cls = st === 'has-unread' ? 'folder unread' : (st === 'read' ? 'folder read' : 'folder');
-      let tag = '▒ 未検出';
+      const cls = st === 'has-unread' ? 'folder unread' : (st === 'read' ? 'folder read' : (st === 'external-wait' ? 'folder extwait' : 'folder'));
+      let tag = `▒ 未検出`;
       if (st === 'has-unread') tag = '● 新規あり';
+      if (st === 'external-wait') tag = '🔌 照合待ち';
       if (st === 'read') tag = '✓ 読了';
-      h += `<div class="${cls}" data-arm="${arm.id}"><div class="fh">📁 第${i+1}足<span class="tag">${tag}</span></div>`;
+      h += `<div class="${cls}" data-arm="${arm.id}"><div class="fh">📁 第${i+1}足 ${esc(arm.sub)}<span class="tag">${tag}</span></div>`;
       if (!docs.length) {
-        h += `<div style="font-family:var(--mono);font-size:10.5px;color:#999;margin-top:6px;">▒▒▒▒ ― ノイズで途切れています</div>`;
+        h += `<div style="font-family:var(--mono);font-size:10.5px;color:#999;margin-top:6px;">▒▒▒▒ ― 第二幕以降（試作範囲外）</div>`;
       } else {
         docs.forEach(d => {
           if (!KoranOS.isRestored(d.id)) {
             h += `<button class="filebtn" disabled>▒▒▒▒ 未発見<span class="st">輪郭のみ</span></button>`;
-          } else if (KoranOS.isViewed(d.id)) {
-            h += `<button class="filebtn done" data-doc="${d.id}">📄 ${esc(d.title)}<span class="st">✓ ${esc(fmtDate(KoranOS.viewedAt(d.id)))}</span></button>`;
+          } else if (KoranOS.isDone(d.id)) {
+            h += `<button class="filebtn done" data-doc="${d.id}">📄 ${esc(d.title)}<span class="st">✓ ${esc(fmtDate(KoranOS.doneAt(d.id)))}</span></button>`;
+          } else if (d.task === 'external') {
+            h += `<button class="filebtn new" data-doc="${d.id}">🔌 ${esc(d.title)}<span class="st">◌ 未取得 ― ${esc(d.external.label)}を開く</span></button>`;
           } else {
-            h += `<button class="filebtn new" data-doc="${d.id}">📄 ${esc(d.title)}<span class="st">● 新規 ― 未読</span></button>`;
+            h += `<button class="filebtn new" data-doc="${d.id}">📄 ${esc(d.title)}<span class="st">● 新規 ― ${esc(d.action)}が必要</span></button>`;
           }
         });
       }
@@ -436,7 +458,8 @@
     return h;
   }
   function openExplorer(){
-    const el = openWin('explorer', 'たこつぼエクスプローラー', '🐙', null, 'たこつぼ:\\', explorerBody(), '8 本の足 ｜ 試作は 3 件のみ復元');
+    const p = KoranOS.progress();
+    const el = openWin('explorer', 'たこつぼエクスプローラー', '🐙', null, 'たこつぼ:\\', explorerBody(), `第一記録群 ${p.done}/${p.total} ｜ 8 本の足`);
     bindExplorer(el);
   }
   function refreshExplorer(){
@@ -460,22 +483,22 @@
   }
 
   function managerBody(){
-    const next = KoranOS.nextRestoration();
+    const next = KoranOS.nextTask();
     const p = KoranOS.progress();
     let h = `<div class="sticky">🌟 小蘭の付箋：上から順によんでね。よんだら機械がかためてくれるよ。――小蘭</div>`;
     if (next) {
       h += `<div class="mgr-next"><div class="q">RESTORE QUEUE: 1 ｜ つぎの復元</div>` +
         `<div class="t">「${esc(next.title)}」</div>` +
-        `<button data-open="${next.id}">開く</button></div>`;
+        `<button data-open="${next.id}">▸ ${esc(next.action)}</button></div>`;
     } else {
       h += `<div class="mgr-next" style="border-color:#9fd8cb;"><div class="q" style="color:#1f7a6d;">QUEUE: EMPTY</div>` +
-        `<div class="t">3件よみおわり（試作範囲）</div></div>`;
+        `<div class="t">第一幕よみおわり（試作範囲）</div></div>`;
     }
-    h += `<div class="mgr-log">SECTORS: ${p.viewed}/${p.total} FIXED ｜ UNREAD: ${p.unread}<br>MODE: READ ONLY (via WATARI RELAY)</div>`;
+    h += `<div class="mgr-log">SECTORS: ${p.done}/${p.total} FIXED ｜ OPEN: ${p.open}<br>MODE: READ ONLY (via WATARI RELAY)</div>`;
     return h;
   }
   function openManager(){
-    const el = openWin('manager', '復元マネージャー', '📥', null, '核:\\システム\\復元マネージャー', managerBody(), 'キューは常に 1 件だけ表示します');
+    const el = openWin('manager', '復元マネージャー', '📥', null, 'たこつぼ:\\システム\\復元マネージャー', managerBody(), 'キューは常に 1 件だけ表示します');
     el.querySelectorAll('button[data-open]').forEach(b => {
       b.addEventListener('click', () => openDoc(b.getAttribute('data-open')));
     });
@@ -489,30 +512,119 @@
     });
   }
 
+  function docStatus(d){
+    return KoranOS.isDone(d.id) ? '✓ ' + fmtDate(KoranOS.doneAt(d.id)) : '● 未完了';
+  }
+  function finishDoc(id){
+    const first = KoranOS.completeDoc(id);
+    closeWin('doc:' + id);
+    refreshExplorer(); refreshManager(); refreshStartMenu();
+    if (first) {
+      const n = KoranOS.nextTask();
+      toast(n ? `SECTOR FIXED: ${id} ｜ NEXT: ${n.id}` : `SECTOR FIXED: ${id} ｜ ACT1 COMPLETE`);
+      if (n) setTimeout(() => openDoc(n.id), 600);
+    }
+  }
+
   function openDoc(id){
     const d = KoranOS.getDoc(id);
     if (!d || !KoranOS.isRestored(id)) return;
-    const body = `<div class="doc-kind">${esc(d.kind)} ｜ ${esc(d.id)}</div>` +
-      `<h2 class="doc-title">${esc(d.title)}</h2>` +
-      `<div class="doc-body">${esc(d.body)}</div>` +
-      `<div class="doc-btns"><button data-act="close">閉じるだけ</button>` +
-      `<button class="primary" data-act="read">読了にして閉じる</button></div>`;
-    const el = openWin('doc:' + id, d.title, '📄', 'ファイル　編集', 'たこつぼ:\\' + d.title, body, KoranOS.isViewed(id) ? '✓ ' + fmtDate(KoranOS.viewedAt(id)) : '● 未読');
-    el.querySelector('[data-act="close"]').addEventListener('click', () => closeWin('doc:' + id));
-    el.querySelector('[data-act="read"]').addEventListener('click', () => {
-      const first = KoranOS.markViewed(id);
-      closeWin('doc:' + id);
-      refreshExplorer(); refreshManager(); refreshStartMenu();
-      if (first) {
-        const n = KoranOS.nextRestoration();
-        toast(n ? `SECTOR FIXED: ${id} ｜ NEXT: ${n.id}` : `SECTOR FIXED: ${id} ｜ QUEUE: EMPTY`);
-        if (n) setTimeout(() => openDoc(n.id), 600);
+    if (openWins['doc:' + id]) { focusWin('doc:' + id); return; }
+    let body = `<div class="doc-kind">${esc(d.kind)} ｜ ${esc(d.id)}</div>` +
+      `<h2 class="doc-title">${esc(d.title)}</h2>`;
+
+    if (d.task === 'photo') {
+      body += `<img src="${d.image}" class="doc-photo" alt="昭和二十四年の写真"` +
+        ` onerror="this.outerHTML='<div class=\'doc-imgbroken\'>[ 画像データ 破損 ]</div>'">` +
+        `<div class="doc-body" style="margin-top:10px;">${esc(d.body)}</div>` +
+        `<div class="zoombox" id="dz-zoom" style="display:none;"><div class="z-h">壁面 拡大</div>` +
+        `芙島民報　昭和二十四年八月十八日<br>列車脱線　けが人二十名</div>` +
+        `<div class="doc-btns"><button data-act="zoom">壁の新聞を拡大する</button></div>` +
+        `<div class="doc-btns"><button data-act="close">閉じるだけ</button>` +
+        `<button class="primary" data-act="read" disabled>読了にして閉じる</button></div>`;
+    } else if (d.task === 'external') {
+      const got = KoranOS.hasExternalFlag(d.external.flag);
+      body += `<div class="extbox"><div class="q">EXTERNAL MATCH REQUIRED</div>` +
+        `<div>参照先：${esc(d.external.label)}</div>` +
+        `<div>内容：${esc(d.external.detail)}</div>` +
+        `<div>状態：<span id="dz-estate" class="${got ? 'ok' : ''}">${got ? '取得済み' : '未取得'}</span></div></div>` +
+        `<div class="doc-body">${esc(d.body)}</div>` +
+        `<div class="doc-btns"><button data-act="open-ext">郷土資料室を開く ↗</button>` +
+        `<button class="primary" data-act="verify">照合結果を確認</button></div>` +
+        `<div class="doc-btns"><button data-act="close">閉じる</button></div>`;
+    } else if (d.task === 'map') {
+      body += `<div class="doc-body" style="margin-bottom:10px;">${esc(d.body)}</div>` +
+        `<svg id="dz-map" viewBox="0 0 300 220" role="img" aria-label="書込地図">` +
+        `<rect x="0" y="0" width="300" height="220" fill="#e9e3d1"/>` +
+        `<path d="M0,180 Q80,150 140,170 T300,140" stroke="#9db8c4" stroke-width="10" fill="none" opacity=".7"/>` +
+        `<g class="mapspot" data-spot="station"><circle cx="90" cy="80" r="9" fill="#8a857d" stroke="#55514a" stroke-width="2"/><text x="90" y="102" text-anchor="middle" font-size="10" fill="#55514a">芙島駅</text></g>` +
+        `<g class="mapspot" data-spot="momomi"><circle cx="150" cy="150" r="9" fill="#c8a96e" stroke="#7a5f22" stroke-width="2"/><text x="150" y="172" text-anchor="middle" font-size="10" fill="#55514a">桃見山</text></g>` +
+        `<g class="mapspot" data-spot="aonuma"><circle cx="215" cy="52" r="10" fill="none" stroke="#a03a3a" stroke-width="2.5" stroke-dasharray="4 3"><animate attributeName="opacity" values="1;.4;1" dur="1.6s" repeatCount="indefinite"/></circle><circle cx="215" cy="52" r="3.5" fill="#a03a3a"/><text x="215" y="74" text-anchor="middle" font-size="10" fill="#a03a3a">北の沼</text></g>` +
+        `</svg>` +
+        `<div class="mapmsg" id="dz-mapmsg">印を選んで開くこと。</div>` +
+        `<div class="doc-btns"><button data-act="close">閉じる</button></div>`;
+    } else {
+      body += `<div class="doc-body">${esc(d.body)}</div>` +
+        `<div class="doc-btns"><button data-act="close">閉じるだけ</button>` +
+        `<button class="primary" data-act="read">読了にして閉じる</button></div>`;
+    }
+
+    const el = openWin('doc:' + id, d.title, d.task === 'external' ? '🔌' : '📄',
+      'ファイル　編集', 'たこつぼ:\\' + d.title, body, docStatus(d));
+    const q = (sel) => el.querySelector(sel);
+    if (q('[data-act="close"]')) q('[data-act="close"]').addEventListener('click', () => closeWin('doc:' + id));
+    if (q('[data-act="read"]')) q('[data-act="read"]').addEventListener('click', () => finishDoc(id));
+    if (q('[data-act="zoom"]')) q('[data-act="zoom"]').addEventListener('click', () => {
+      el.querySelector('#dz-zoom').style.display = 'block';
+      q('[data-act="zoom"]').disabled = true;
+      q('[data-act="zoom"]').textContent = '拡大済み';
+      q('[data-act="read"]').disabled = false;
+      toast('ENLARGED: 壁面新聞 1949-08-18');
+    });
+    if (q('[data-act="open-ext"]')) q('[data-act="open-ext"]').addEventListener('click', () => {
+      window.open(d.external.url, '_blank', 'noopener');
+    });
+    if (q('[data-act="verify"]')) q('[data-act="verify"]').addEventListener('click', () => {
+      if (KoranOS.hasExternalFlag(d.external.flag)) {
+        finishDoc(id);
+        toast('EXTERNAL MATCH: 1 ｜ ' + d.external.flag);
+      } else {
+        toast('NO SIGNAL: まだ取得できていません');
       }
+    });
+    el.querySelectorAll('.mapspot').forEach(g => {
+      g.addEventListener('click', () => {
+        const msg = el.querySelector('#dz-mapmsg');
+        if (g.getAttribute('data-spot') === 'aonuma') {
+          msg.className = 'mapmsg good';
+          msg.textContent = '1973年追記：蒼沼南岸 ― 経路を特定しました';
+          setTimeout(() => finishDoc(id), 900);
+        } else {
+          msg.className = 'mapmsg bad';
+          msg.textContent = '応答なし ― ここの書入れはありません';
+        }
+      });
     });
   }
 
+  /* 外部サイトから戻ったとき、閲覧印を進行へ反映する */
+  function checkExternalReturn(announce){
+    if (KoranOS.isRestored('act1_external') && !KoranOS.isDone('act1_external') &&
+        KoranOS.hasExternalFlag('fushima-archive')) {
+      KoranOS.completeDoc('act1_external');
+      if (openWins['doc:act1_external']) closeWin('doc:act1_external');
+      refreshExplorer(); refreshManager(); refreshStartMenu();
+      if (announce) toast('EXTERNAL MATCH: 1 ｜ fushima-archive');
+      return true;
+    }
+    return false;
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkExternalReturn(true); });
+  window.addEventListener('pageshow', () => checkExternalReturn(true));
+  window.addEventListener('storage', () => checkExternalReturn(true));
+
   function openTrash(){
-    openWin('trash', 'ごみ箱', '🗑️', 'ファイル　編集', '核:\\ごみ箱', '<div style="padding:26px 6px;text-align:center;color:#7a756a;">からです。<br><span style="font-size:11px;">（小蘭は要らないものを残さない主義でした）</span></div>', '0 個のオブジェクト');
+    openWin('trash', 'ごみ箱', '🗑️', 'ファイル　編集', 'たこつぼ:\\ごみ箱', '<div style="padding:26px 6px;text-align:center;color:#7a756a;">からです。<br><span style="font-size:11px;">（小蘭は要らないものを残さない主義でした）</span></div>', '0 個のオブジェクト');
   }
 
   /* ---------- デスクトップとスタート ---------- */
@@ -540,11 +652,11 @@
     });
   }
   function refreshStartMenu(){
-    const n = KoranOS.nextRestoration();
+    const n = KoranOS.nextTask();
     const p = KoranOS.progress();
     document.getElementById('sm-items').innerHTML =
-      (n ? `<button data-sm="next">📥 つぎの復元：${esc(n.title)}</button>` : `<button data-sm="none" disabled style="opacity:.5;">✓ 試作3件よみおわり</button>`) +
-      `<button data-sm="explorer">🐙 たこつぼ（未読 ${p.unread}）</button>` +
+      (n ? `<button data-sm="next">📥 つぎの復元：${esc(n.title)}</button>` : `<button data-sm="none" disabled style="opacity:.5;">✓ 第一幕よみおわり</button>`) +
+      `<button data-sm="explorer">🐙 たこつぼ（未完了 ${p.open}）</button>` +
       `<button data-sm="memo">📝 よんでね.txt</button>` +
       `<button data-sm="logoff">🔌 ログオフ</button>` +
       `<button data-sm="reset">🧹 表示を初期化（試験用）</button>`;
@@ -556,7 +668,7 @@
         if (k === 'explorer') openExplorer();
         if (k === 'memo') openMemo();
         if (k === 'logoff') confirmLogoff();
-        if (k === 'reset') { KoranOS.resetForTest(); try{localStorage.removeItem('koran_v1_launched');}catch(e){} location.reload(); }
+        if (k === 'reset') { KoranOS.resetForTest(); location.reload(); }
       });
     });
   }
@@ -599,8 +711,8 @@
         lines.innerHTML += '<br>read session … <b style="color:#e0b46a;">OK</b>';
         setTimeout(() => {
           document.getElementById('boot').classList.add('hide');
-          let first = false;
-          try { first = !localStorage.getItem('koran_v1_launched'); localStorage.setItem('koran_v1_launched', '1'); } catch(e){}
+          const first = !KoranOS.isLaunched();
+          KoranOS.markLaunched();
           openMemo(); openManager();
           if (first) setTimeout(() => toast('NEW FRAGMENT: 1 ｜ 復元マネージャーにあります'), 700);
         }, 400);

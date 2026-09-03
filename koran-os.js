@@ -1,77 +1,223 @@
 /**
- * koran-os.js — 小蘭OS 最小プロトタイプ (Phase A)
+ * koran-os.js — 小蘭OS 進行層 (Phase B: 第一幕)
  *
- * 目的: たこつぼ（八肢ナビ）・未発見/未読/読了の三状態と「次の復元」だけを動かす。
- * 現行 os.js / koe_* とは別キー (koran_v1_*) を使い、既存セーブに触れない。
- * ダミー資料3件のみ。汎用キーワード欄・モールス・16進・Prayストアは持たない。
+ * 第一記録群6資料。読了・写真観察・外部照合・地点特定で進む。
+ * 現行 os.js / koe_restored とは別キー (koran_v2_*) を使う。
+ * 外部サイトの閲覧印 koe_external_visits は読み取り専用で参照する。
+ * 汎用キーワード欄・モールス・16進・Prayストアは持たない。
  */
 'use strict';
 
 const KoranOS = (() => {
-  const STATE_KEY = 'koran_v1_state';
+  const STATE_KEY = 'koran_v2_state';
+  const LAUNCHED_KEY = 'koran_v2_launched';
+  const LEGACY_KEYS = ['koran_v1_state', 'koran_v1_launched'];
 
-  // 八肢。各肢が資料群へつながる。Phase Aは3件だけ実資料、残りは未発見。
+  // 八肢。第一〜第六肢が第一記録群。第七・第八肢は第二幕以降（試作範囲外）。
   const ARMS = [
-    { id: 'arm1', label: '第一肢', sub: '受信記録' },
-    { id: 'arm2', label: '第二肢', sub: '現場記録' },
-    { id: 'arm3', label: '第三肢', sub: '画像記録' },
-    { id: 'arm4', label: '第四肢', sub: '未検出' },
-    { id: 'arm5', label: '第五肢', sub: '未検出' },
-    { id: 'arm6', label: '第六肢', sub: '未検出' },
-    { id: 'arm7', label: '第七肢', sub: '未検出' },
-    { id: 'arm8', label: '第八肢', sub: '未検出' },
+    { id: 'arm1', label: '第一足', sub: '受信記録' },
+    { id: 'arm2', label: '第二足', sub: '現場記録' },
+    { id: 'arm3', label: '第三足', sub: '画像記録' },
+    { id: 'arm4', label: '第四足', sub: '外部照合' },
+    { id: 'arm5', label: '第五足', sub: '人物記録' },
+    { id: 'arm6', label: '第六足', sub: '書込地図' },
+    { id: 'arm7', label: '第七足', sub: '未検出' },
+    { id: 'arm8', label: '第八足', sub: '未検出' },
   ];
 
-  // ダミー3件。短い循環: 次の復元を見る→未読を開く→読了→次が復元される。
   const DOCS = [
     {
-      id: 'koran_a01',
+      id: 'act1_notice',
       arm: 'arm1',
-      title: '受信通知／この記録について',
-      kind: '通知',
-      prereq: null,
+      title: '受信通知／たこつぼについて',
+      kind: '受信通知',
+      task: 'read',
+      prereqs: [],
+      action: '読む',
       body: [
-        'この端末には、欠けた記録が残されています。',
-        '新しく復元された資料を読み、外部の記録と照らし合わせ、受信先を復元してください。',
+        'RECEIVE LOG',
+        '送信日時：1973-09-12 09:04',
+        '記録者：蛸川小蘭',
+        '受信者：███',
+        '読取状態：一部欠損',
+        '固定処理：閲覧時に実行',
         '',
-        '【基本操作】',
-        '・新着資料を読む',
-        '・資料同士を比べる（※本プロトタイプでは読了のみ）',
-        '・必要な外部記録を開く（※本プロトタイプでは省略）',
+        'いつかこれを読む人へ。',
         '',
-        'まずは下の「次の復元」にある一件を開いてください。',
+        '蛸川小蘭という名前で、月湯温泉の宿に勤めています。',
+        '戸籍はありません。ここへ来る前の身元を証明する物もありません。',
+        'この名前も、昭和二十四年の夏に宿帳へ書いたものです。',
+        '',
+        '同じ夏、T北本線のM川駅近くで列車が脱線しました。',
+        '私は事件の翌朝から、新聞、名簿、地図を集めています。',
+        'その中に、どの名簿にも載らない人が一人います。',
+        '',
+        '今日、この土地を離れます。',
+        '集めたものは、年代と種類ごとに分けて、たこつぼへ入れました。',
+        '最初のノートは、事件翌朝に書いたものです。',
       ].join('\n'),
     },
     {
-      id: 'koran_a02',
+      id: 'act1_note',
       arm: 'arm2',
-      title: '事件翌朝の断片（試作）',
-      kind: '手記断片',
-      prereq: 'koran_a01',
+      title: '事件翌朝のノート',
+      kind: '手記 01',
+      task: 'read',
+      prereqs: ['act1_notice'],
+      action: '読む',
       body: [
-        '八月十七日、朝。宿の主人は帳面から目を上げなかった。',
-        '外では蝉が鳴いていた。昨夜のことは誰も口にしない。',
+        '昭和24年8月17日',
         '',
-        '（※Phase A用の短い断片。本文は全編移植時に差し替える）',
+        '月湯温泉の宿で書いている。押し入れの中には布団が三組あり、黴と樟脳の匂いがする。',
+        '昨夜どこから来たのかも話せない女が、灯りをつけて紙に向かっているところを見られたくなかった。',
+        '戸を閉めれば、鉛筆の音までは廊下に届かない。',
+        '',
+        '八月十六日の夜、私はT北本線のM川駅近くで目を覚ました。',
+        '線路脇の砂利に頬をつけていた。持っていたのは、タコのぬいぐるみだけだった。',
+        'なぜあそこにいたのかは、覚えていない。',
+        '',
+        '懐中電灯の光が何本も地面を動き、誰かが怒鳴っていた。',
+        '草むらへ入ったところで手首をつかまれた。',
+        '作業着の男が指を唇に当て、私を畦道まで連れ出した。',
+        '',
+        '「何をしていた」',
+        '「分かりません」',
+        '',
+        '私がそう答えると、男はタコを一度見た。',
+        '西へ行け、駅は使うな、川沿いに上れば温泉がある、と言った。',
+        '',
+        '別れる前に名前だけ訊いた。猫塚清治と答えた。',
+        '',
+        '教えられた道を歩き、夜明け前にこの宿へ着いた。',
+        '帳場で名前を訊かれ、手の中のぬいぐるみを見ながら「蛸川」と答えた。',
+        '主人は聞き返さず、宿帳に書いた。',
+        '',
+        '事件のことは、朝の話し声で知った。列車が落ち、死者が出たという。',
+        '清治さんがあの場所にいたことは、宿の人にも話していない。',
+        '',
+        '紙に書いたものは、この紙の上にしかない。',
+        '向こうにいた頃なら、どの端末からでも開ける████へ置き、控えを取れた。',
+        'ここでは濡れれば消え、燃えれば終わる。',
+        '主人から便箋を余分にもらい、同じことを二度書くことにした。',
+        '',
+        '八月二十日　追記',
+        '',
+        '朝、警察官が二人来た。私は二階の柱の陰から帳場を見ていた。',
+        '主人は宿帳を閉じ、首を横に振った。',
+        '二人が帰ったあと、いつもの時間に朝食が来た。私の分もあった。',
+        '',
+        '山の宿に新聞が届いたのは二日遅れだった。',
+        '逮捕者の欄に、清治さんの名前はなかった。',
+        '',
+        '礼は言えなかった。',
       ].join('\n'),
     },
     {
-      id: 'koran_a03',
+      id: 'act1_photo',
       arm: 'arm3',
-      title: '昭和二十四年八月の写真（断片）',
-      kind: '画像断片',
-      prereq: 'koran_a02',
+      title: '昭和二十四年八月の写真',
+      kind: '写真 01',
+      task: 'photo',
+      prereqs: ['act1_note'],
+      action: '観察する',
+      image: 'images/photo_koaru.jpg',
       body: [
-        '壁に貼られた新聞の日付だけが読める。人物については断定しない。',
-        '写り方の違和感を覚えておくこと。',
+        '撮影者：行商の写真師　／　撮影日：壁面の新聞から推定　／　裏面に書入れ',
         '',
-        '（※Phase A用の短い断片。観察パズルはPhase Cで実装）',
+        '宿の座敷で、一人の女性が正面を向いている。',
+        '女性の名前は書かれていない。',
+        '髪は結われていない。正面を向き、歯を見せて笑っている。',
+        '',
+        '壁には脱線事故を報じる新聞が貼られている。',
+        '日付を読むには、壁面を拡大すること。',
+        '',
+        '裏面　鉛筆書き',
+        'この人はここにいた',
+        '八月十六日の夜',
+        '現場にいた',
+        'でも記録にはいない',
+      ].join('\n'),
+    },
+    {
+      id: 'act1_external',
+      arm: 'arm4',
+      title: '外部照合：郷土資料室',
+      kind: '外部照合',
+      task: 'external',
+      prereqs: ['act1_photo'],
+      action: '照合する',
+      external: {
+        flag: 'fushima-archive',
+        label: '芙島市立図書館 郷土資料室',
+        detail: '新聞縮刷・事件概要・署名名簿',
+        url: 'fushima-archive/?from=koe',
+      },
+      body: [
+        'EXTERNAL MATCH REQUIRED',
+        '参照先：芙島市立図書館 郷土資料室',
+        '内容：新聞縮刷・事件概要・署名名簿',
+        '状態：未取得',
+        '',
+        'たこつぼの中だけでは、公的な記録と突き合わせられないよ。',
+        '図書館の目録を開いて、事故と逮捕者の記録を確かめてね。――小蘭',
+      ].join('\n'),
+    },
+    {
+      id: 'act1_seiji',
+      arm: 'arm5',
+      title: '清治さんのこと',
+      kind: '手記 02',
+      task: 'read',
+      prereqs: ['act1_note', 'act1_photo', 'act1_external'],
+      action: '読む',
+      body: [
+        '昭和24年9月–11月',
+        '',
+        '新聞と名簿を調べた。事件の夜に私を逃がした清治さんは、被告にも証人にも入っていない。',
+        'K鉄の保線作業員名簿にも、同じ名前は見つからなかった。写真もない。',
+        '',
+        '芙島市郊外に、猫塚という表札の家がある。',
+        '前に菜園があり、軒には、あの夜と同じ形の作業着が掛かっていた。',
+        '道の向こうから何度か見たが、門を開けることはできなかった。',
+        '',
+        '八月の終わり、新聞に「不審人物を引き続き捜索中」という小さな記事が出た。',
+        '年齢も人相も曖昧で、誰を指すのか分からない。',
+        '私が訪ねたことで、あの家に警察を連れていくかもしれなかった。',
+        '',
+        '十一月二日　夜',
+        '',
+        '主人が寝てから、便箋を一枚出した。',
+        '清治さんへ礼を書くつもりだった。',
+        '',
+        '封筒に「猫塚清治」と書き、すぐ線を引いた。',
+        '名簿にない名前を私が外へ出してよいのか、判断できなかった。',
+        '便箋と封筒は引き出しへ戻した。',
+        '',
+        '翌晩、新しい封筒を出した。宛名のところで、また止まった。',
+      ].join('\n'),
+    },
+    {
+      id: 'act1_map',
+      arm: 'arm6',
+      title: '芙島市書込地図 1949–1973',
+      kind: '地図 01',
+      task: 'map',
+      prereqs: ['act1_seiji'],
+      action: '探す',
+      body: [
+        '原図：芙島市街図　／　書入れ：蛸川小蘭　／　筆記具二種',
+        '',
+        '同じ地図に、三月の日付が二十三年分書き込まれている。',
+        'ほとんどは桃見山の周辺に集まり、最後の一つだけ北へ離れている。',
+        '',
+        '1973年の書入れ：「今年は北の沼へ」',
+        '北の印を開くこと。',
       ].join('\n'),
     },
   ];
 
   function defaultState() {
-    return { restored: ['koran_a01'], viewed: {} };
+    return { restored: ['act1_notice'], done: {} };
   }
 
   function load() {
@@ -79,7 +225,7 @@ const KoranOS = (() => {
       const raw = localStorage.getItem(STATE_KEY);
       if (!raw) return defaultState();
       const s = JSON.parse(raw);
-      if (!s || !Array.isArray(s.restored) || typeof s.viewed !== 'object') return defaultState();
+      if (!s || !Array.isArray(s.restored) || typeof s.done !== 'object' || !s.done) return defaultState();
       return s;
     } catch {
       return defaultState();
@@ -98,72 +244,108 @@ const KoranOS = (() => {
     return load().restored.includes(id);
   }
 
-  function isViewed(id) {
-    return Boolean(load().viewed[id]);
+  function isDone(id) {
+    return Boolean(load().done[id]);
   }
 
-  function viewedAt(id) {
-    return load().viewed[id] || null;
+  function doneAt(id) {
+    return load().done[id] || null;
   }
 
-  /** 読了にする。読了で次の資料が1件復元される（短い循環）。 */
-  function markViewed(id) {
+  function prereqsMet(doc) {
     const s = load();
-    if (!s.restored.includes(id)) return false;
-    const first = !s.viewed[id];
-    if (first) {
-      s.viewed[id] = new Date().toISOString();
-      const doc = getDoc(id);
-      // 次の資料を1件だけ復元する
-      const next = DOCS.find(d => d.prereq === id && !s.restored.includes(d.id));
-      if (next) s.restored.push(next.id);
-      save(s);
+    return (doc.prereqs || []).every(id => s.done[id]);
+  }
+
+  /** 完了にする。完了で依存資料が1件ずつ復元される。 */
+  function completeDoc(id) {
+    const s = load();
+    if (!s.restored.includes(id) || s.done[id]) return false;
+    s.done[id] = new Date().toISOString();
+    for (const d of DOCS) {
+      if (s.restored.includes(d.id)) continue;
+      if ((d.prereqs || []).every(p => s.done[p])) s.restored.push(d.id);
     }
-    return first;
+    save(s);
+    return true;
   }
 
-  /** 常設の「次の復元」1件。未読の復元済みを優先し、なければなし。 */
-  function nextRestoration() {
+  /** 常設の「次の復元」1件。復元済み・未完了の先頭。 */
+  function nextTask() {
     const s = load();
-    const unread = DOCS.find(d => s.restored.includes(d.id) && !s.viewed[d.id]);
-    return unread || null;
+    return DOCS.find(d => s.restored.includes(d.id) && !s.done[d.id]) || null;
   }
 
-  function unreadCount() {
+  // 後方互換エイリアス（Phase Aの画面コード用）
+  const nextRestoration = nextTask;
+
+  function openCount() {
     const s = load();
-    return DOCS.filter(d => s.restored.includes(d.id) && !s.viewed[d.id]).length;
+    return DOCS.filter(d => s.restored.includes(d.id) && !s.done[d.id]).length;
   }
+  const unreadCount = openCount;
 
   function progress() {
     const s = load();
-    const viewed = DOCS.filter(d => s.viewed[d.id]).length;
-    return { viewed, total: DOCS.length, unread: unreadCount(), restored: s.restored.length };
+    const done = DOCS.filter(d => s.done[d.id]).length;
+    return { viewed: done, done, total: DOCS.length, unread: openCount(), open: openCount(), restored: s.restored.length };
   }
 
-  /** 肢の状態: undiscovered / has-unread / has-restored-read / partial */
+  /**
+   * 肢の状態:
+   * undiscovered（輪郭のみ）/ has-unread（新規あり・脈動）/
+   * external-wait（開いた端子＋必要な外部資料名）/ read（読了・安定点灯）
+   */
   function armState(armId) {
     const docs = DOCS.filter(d => d.arm === armId);
     if (!docs.length) return 'undiscovered';
     const s = load();
     const restored = docs.filter(d => s.restored.includes(d.id));
     if (!restored.length) return 'undiscovered';
-    if (restored.some(d => !s.viewed[d.id])) return 'has-unread';
-    return 'read';
+    const open = restored.filter(d => !s.done[d.id]);
+    if (!open.length) return 'read';
+    if (open.some(d => d.task === 'external')) return 'external-wait';
+    return 'has-unread';
   }
 
   function armDocs(armId) {
     return DOCS.filter(d => d.arm === armId);
   }
 
+  /** 外部サイトの閲覧印（読み取り専用）。同一オリジンで共有される。 */
+  function getExternalVisits() {
+    try {
+      const v = JSON.parse(localStorage.getItem('koe_external_visits') || '[]');
+      return Array.isArray(v) ? v : [];
+    } catch {
+      return [];
+    }
+  }
+  function hasExternalFlag(flag) {
+    return getExternalVisits().includes(flag);
+  }
+
+  function isLaunched() {
+    try { return Boolean(localStorage.getItem(LAUNCHED_KEY)); } catch { return false; }
+  }
+  function markLaunched() {
+    try { localStorage.setItem(LAUNCHED_KEY, '1'); } catch {}
+  }
+
   function resetForTest() {
-    try { localStorage.removeItem(STATE_KEY); } catch {}
+    try {
+      localStorage.removeItem(STATE_KEY);
+      localStorage.removeItem(LAUNCHED_KEY);
+      LEGACY_KEYS.forEach(k => localStorage.removeItem(k));
+    } catch {}
   }
 
   return {
     ARMS, DOCS, STATE_KEY,
-    load, getDoc, isRestored, isViewed, viewedAt,
-    markViewed, nextRestoration, unreadCount, progress,
-    armState, armDocs, resetForTest,
+    load, getDoc, isRestored, isDone, doneAt,
+    completeDoc, nextTask, nextRestoration, openCount, unreadCount, progress,
+    armState, armDocs, getExternalVisits, hasExternalFlag,
+    isLaunched, markLaunched, resetForTest,
   };
 })();
 
