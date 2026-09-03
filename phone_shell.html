@@ -6,7 +6,7 @@
 <meta name="description" content="蛸川小蘭の自作OS。タコ型端末のデスクトップ（試作）。">
 <meta name="robots" content="noindex">
 <title>KORAN OS — ようこそ</title>
-<script src="koran-os.js"></script>
+<script src="koran-os.js?v=b4"></script>
 <style>
   :root{
     --desk1:#0f2e33; --desk2:#0a1d21;
@@ -689,12 +689,12 @@
       if (ic.id === 'manager' && hasNext) badge = `<span class="bdg">!</span>`;
       el.innerHTML = badge + `<div class="glyph">${ic.glyph}</div><div class="cap">${esc(ic.cap)}</div>` +
         (ic.hint ? `<span class="hint">▼ ${esc(ic.hint)}</span>` : '');
-      const open = () => { document.querySelectorAll('.dicon').forEach(d => d.classList.remove('sel')); el.classList.add('sel'); ic.act(); };
+      const launch = () => { document.querySelectorAll('.dicon').forEach(d => d.classList.remove('sel')); el.classList.add('sel'); ic.act(); };
       if (finePointer) {
         el.addEventListener('click', () => { document.querySelectorAll('.dicon').forEach(d => d.classList.remove('sel')); el.classList.add('sel'); });
-        el.addEventListener('dblclick', open);
+        el.addEventListener('dblclick', launch);
       } else {
-        el.addEventListener('click', open);
+        el.addEventListener('click', launch);
       }
       iconsEl.appendChild(el);
     });
@@ -748,7 +748,22 @@
 
   /* ---------- 起動 ---------- */
   function boot(){
-    renderIcons(); refreshStartMenu();
+    const overlay = document.getElementById('boot');
+    const fail = (msg) => {
+      const el = document.getElementById('bootlines');
+      if (el) el.innerHTML += '<br><span style="color:#c85858;">' + esc(msg) + '</span><br>再読み込み（Ctrl+F5）してください。';
+    };
+    try {
+      // 古い進行層がキャッシュで残っていると起動しないため、先に検出する
+      if (!window.KoranOS || KoranOS.STATE_KEY !== 'koran_v2_state' || typeof KoranOS.openCount !== 'function') {
+        fail('更新データを読み込めていません');
+        return;
+      }
+      renderIcons(); refreshStartMenu();
+    } catch (e) {
+      fail('起動に失敗しました');
+      return;
+    }
     const bar = document.getElementById('bootbar');
     const lines = document.getElementById('bootlines');
     let w = 0;
@@ -772,6 +787,10 @@
       clearInterval(t);
       document.getElementById('boot').classList.add('hide');
     });
+    // failsafe：8秒たっても起動画面が消えなければ理由を出す
+    setTimeout(() => {
+      if (!overlay.classList.contains('hide')) fail('応答がありません');
+    }, 8000);
   }
   boot();
 })();
